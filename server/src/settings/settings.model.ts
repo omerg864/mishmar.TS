@@ -2,7 +2,6 @@ import * as mongoose from "mongoose";
 
 export const SettingsScheme = new mongoose.Schema<Settings>({
     submit: {
-        required: true,
         type: Boolean,
         default: false,
     },

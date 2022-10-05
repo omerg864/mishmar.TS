@@ -17,23 +17,26 @@ export const ShiftScheme = new mongoose.Schema<Shift>({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
+        required: true,
     },
     scheduleId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Schedule",
+        required: true,
     },
-    weeks: {
+    weeks: [{
         type: mongoose.Schema.Types.Map,
-        default: new Map<string, Object>(),
+        default: new Map(),
         required: false,
-    }
+    }]
 });
 
 
 export interface Shift {
+    id?: mongoose.Schema.Types.ObjectId;
     weekend_night: number;
     weekend_day: number;
     userId: mongoose.Schema.Types.ObjectId;
     scheduleId: mongoose.Schema.Types.ObjectId;
-    weeks: Map<string, Object>;
+    weeks: Map<string, string>[];
 }

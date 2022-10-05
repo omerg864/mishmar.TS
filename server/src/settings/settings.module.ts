@@ -1,9 +1,19 @@
-import { Module } from '@nestjs/common';
+import { UserScheme } from 'src/user/user.model';
+import { MongooseModule } from '@nestjs/mongoose';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { SettingsController } from './settings.controller';
 import { SettingsService } from './settings.service';
+import { SettingsScheme } from './settings.model';
+import { AuthMiddleware, SiteManagerMiddleware } from 'src/middleware/auth.middlware';
 
 @Module({
+  imports: [MongooseModule.forFeature([{name: 'Settings', schema: SettingsScheme}, {name: 'User', schema: UserScheme}])],
   controllers: [SettingsController],
   providers: [SettingsService]
 })
-export class SettingsModule {}
+export class SettingsModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'settings', method: RequestMethod.PATCH});
+    consumer.apply(AuthMiddleware).forRoutes({path: 'settings', method: RequestMethod.GET});
+  }
+}

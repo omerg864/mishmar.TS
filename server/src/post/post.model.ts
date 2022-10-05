@@ -1,7 +1,7 @@
 import * as mongoose from "mongoose";
 
 
-export const PostScheme = new mongoose.Schema<Post>({
+export const PostScheme = new mongoose.Schema<PostInterface>({
     title: {
         type: String,
         required: true,
@@ -13,7 +13,8 @@ export const PostScheme = new mongoose.Schema<Post>({
     },
     content: {
         type: String,
-        required: true,
+        required: false,
+        default: "",
     },
     date: {
         type: Date,
@@ -22,7 +23,8 @@ export const PostScheme = new mongoose.Schema<Post>({
 })
 
 
-export interface Post {
+export interface PostInterface {
+    id?: mongoose.Schema.Types.ObjectId;
     title: string;
     userId: mongoose.Schema.Types.ObjectId;
     content: string;

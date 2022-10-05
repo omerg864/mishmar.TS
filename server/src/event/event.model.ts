@@ -1,7 +1,7 @@
 import * as mongoose from "mongoose";
 
 
-export const EventScheme = new mongoose.Schema<Event>({
+export const EventScheme = new mongoose.Schema<EventInterface>({
     date: {
         type: Date,
         required: true
@@ -20,7 +20,8 @@ export const EventScheme = new mongoose.Schema<Event>({
 })
 
 
-export interface Event {
+export interface EventInterface {
+    id?: mongoose.Schema.Types.ObjectId;
     date: Date;
     content: string;
     users: mongoose.Types.ObjectId[];

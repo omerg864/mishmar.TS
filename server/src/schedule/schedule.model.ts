@@ -11,11 +11,11 @@ export const ScheduleScheme = new mongoose.Schema<Schedule>({
         required: true,
         default: 2
     },
-    weeks: {
-        type: mongoose.Types.Map,
+    weeks: [{
+        type: mongoose.Schema.Types.Map,
         required: true,
-        default: new Map<String, Object>()
-    },
+        default: new Map()
+    }],
     publish: {
         type: Boolean,
         default: false,
@@ -25,8 +25,9 @@ export const ScheduleScheme = new mongoose.Schema<Schedule>({
 
 
 export interface Schedule {
+    id?: mongoose.Schema.Types.ObjectId;
     date: Date;
     num_weeks: number;
-    weeks: Map<String, Object>;
+    weeks: Map<string, string>[];
     publish: boolean;
 }

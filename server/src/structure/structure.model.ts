@@ -13,7 +13,8 @@ export const StructureScheme = new mongoose.Schema<Structure>({
     },
     description: {
         type: String,
-        required: true,
+        required: false,
+        default: ''
     },
     shift: {
         type: Number,
@@ -39,6 +40,7 @@ export const StructureScheme = new mongoose.Schema<Structure>({
 
 
 export interface Structure {
+    id? : mongoose.Schema.Types.ObjectId;
     title: string,
     index: number,
     description: string,
