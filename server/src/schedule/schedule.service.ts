@@ -5,7 +5,7 @@ import { Structure } from 'src/structure/structure.model';
 import { Schedule } from './schedule.model';
 import { Document } from 'mongoose';
 
-type WeeksMap = Map<string, { shift: string|Structure, value: string}[]>
+type Shift = { shift: string|Structure, days: string[]}
 
 @Injectable()
 export class ScheduleService {
@@ -15,18 +15,14 @@ export class ScheduleService {
 
     async populateSchedule(schedule: Schedule): Promise<Schedule> {
         let schedule_temp: Schedule = {...schedule["_doc"]}
-        let weeks_tmp: WeeksMap[]|Object[] = [];
+        let weeks_tmp: Shift[][] = [];
         for( let i = 0; i < schedule.weeks.length; i++ ) {
-            let week_tmp: WeeksMap = new Map();
-            for( let obj of (schedule.weeks[i] as WeeksMap).keys() ) {
-                let week: {shift: Structure, value: string}[] =[]
-                for ( let j = 0; j < (schedule.weeks[i] as WeeksMap).get(obj).length; j++ ) {
-                    let model_obj = await this.structureModel.findById((schedule.weeks[i] as WeeksMap).get(obj)[j].shift);
-                    week.push({shift: model_obj, value: (schedule.weeks[i] as WeeksMap).get(obj)[j].value});
-                }
-                week_tmp.set(obj.toString(), week);
+            let week_tmp: Shift[] = [];
+            for( let j = 0; j < schedule.weeks[i].length; j++ ) {
+                let structureModel = await this.structureModel.findById( schedule.weeks[i][j].shift );
+                week_tmp.push({ shift: structureModel, days: schedule.weeks[i][j].days});
             }
-            weeks_tmp.push(Object.assign({}, ...Array.from(week_tmp.entries()).map(([k, v]) =>({[k]: v}) )));
+            weeks_tmp.push( week_tmp);
         }
         schedule_temp.weeks = weeks_tmp;
         return schedule_temp;
@@ -74,15 +70,11 @@ export class ScheduleService {
 
     async create(schedule: Schedule): Promise<Schedule> {
         const rows = await this.structureModel.find().sort({ shift: 1, index: 1});
-        let weeks: WeeksMap[] = [];
+        let weeks: Shift[][] = [];
         for (let i = 0; i < schedule.num_weeks; i++) {
-            weeks[i] = new Map();
-            let week: {shift: string, value: string}[] = []
+            weeks[i] = []
             for (let j = 0; j < rows.length; j++) {
-                week.push({shift: rows[j]._id.toString(), value: ''});
-            }
-            for (let k = 0; k < 7; k++) {
-                weeks[i].set(k.toString(), week);
+                weeks[i].push({shift: rows[j]._id.toString(), days: ['', '', '', '', '', '', '']});
             }
         }
         return await this.scheduleModel.create({...schedule, weeks});

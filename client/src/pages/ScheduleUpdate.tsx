@@ -95,11 +95,7 @@ const ScheduleUpdate = (props: IProps) => {
           </StyledTableRow>
         </TableHead>
         <TableBody>
-            {Object.keys(schedule.weeks[index]).map(week => (
-                <StyledTableRow key={week}>
-                    
-                </StyledTableRow>
-            ))}
+            
             <TableRow
               key={index}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

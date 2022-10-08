@@ -12,22 +12,22 @@ export const ScheduleScheme = new mongoose.Schema<Schedule>({
         required: true,
         default: 2
     },
-    weeks: [{
-        type: mongoose.Schema.Types.Map,
-        required: true,
-        off: new mongoose.Schema({
-            value: {
-                type: String,
-                required: true,
-                default: ''
-            },
-            shift : {
+    weeks: [[
+        {
+            shift: {
                 type: mongoose.Schema.Types.ObjectId,
-                required: true,
-                ref: 'Structure'
-            }
-        })
-    }],
+                ref: "Structure",
+                required: true
+            },
+            days: [
+                {
+                    type: String,
+                    required: true,
+                    default: ""
+                }
+            ]
+        },
+    ]],
     publish: {
         type: Boolean,
         default: false,
@@ -41,7 +41,7 @@ export interface Schedule {
     id: mongoose.Schema.Types.ObjectId|string;
     date: Date;
     num_weeks: number;
-    weeks: Map<string, {shift: string|mongoose.Schema.Types.ObjectId|Structure, value: string}[]>[]|Object[];
+    weeks: {shift: mongoose.Schema.Types.ObjectId|Structure|string , days: string[]}[][];
     publish: boolean;
     days?: Date[][];
 }
