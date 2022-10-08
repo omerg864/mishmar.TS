@@ -13,7 +13,7 @@ export class StructureController {
     }
 
     @Delete(':id')
-    async deleteStructure(@Param('id') id: string): Promise<string> {
+    async deleteStructure(@Param('id') id: string): Promise<{id: string}> {
         return this.structureService.deleteStructure(id);
     }
 

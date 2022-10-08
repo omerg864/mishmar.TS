@@ -14,7 +14,7 @@ export class StructureService {
     async updateManyStructures(structures: Structure[]): Promise<Structure[]> {
         let structures_temp: Structure[] = [];
         for (let i = 0; i < structures.length; i++) {
-            structures_temp.push(await this.structureModel.findByIdAndUpdate(structures[i].id, structures[i], {new: true}));
+            structures_temp.push(await this.structureModel.findByIdAndUpdate(structures[i]._id, structures[i], {new: true}));
         }
         return structures_temp;
     }
@@ -27,13 +27,13 @@ export class StructureService {
         return this.structureModel.findByIdAndUpdate(structure.id, structure, { new: true});
     }
 
-    async deleteStructure(id: string): Promise<string> {
+    async deleteStructure(id: string): Promise<{id: string}> {
         const structure = await this.structureModel.findById(id);
         if (!structure) {
             throw new NotFoundException('Structure not found');
         }
         await structure.remove();
-        return structure.id.toString();
+        return {id :structure.id.toString()};
     }
 
     async getAll(): Promise<Structure[]> {

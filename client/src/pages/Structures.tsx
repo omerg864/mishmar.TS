@@ -26,9 +26,10 @@ const Structures = (props: IProps) => {
     const [loading, setLoading] = useState<boolean>(false);
     const cookies = new Cookies();
     const [structures, setStructures] = useState<Structure[]>([]);
-    const [savedStractures, setSavedStractures] = useState<Structure[]>([]);
-    const [changes, setChanges] = useState<string[]>([]);
-    const [newStructure, setNewStructure] = useState<Structure>({title: '', description: '', shift: 0, index: 0, opening: false, pull: false, manager: false} as Structure);
+    //const [savedStractures, setSavedStractures] = useState<Structure[]>([]);
+    //const [changes, setChanges] = useState<string[]>([]);
+    const defaultValue = {title: '', description: '', shift: 0, index: 0, opening: false, pull: false, manager: false} as Structure
+    const [newStructure, setNewStructure] = useState<Structure>(defaultValue);
 
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
         [`&.${tableCellClasses.head}`]: {
@@ -45,10 +46,6 @@ const Structures = (props: IProps) => {
           backgroundColor: 'theme.palette.action.hover',
         },
       }));
-
-      const checkChange = (name: string, value: string|number|boolean): boolean => {
-        return true;
-      }
 
       const newCheckboxChange = (event: any) => {
         const name: keyof Structure = event.target.name;
@@ -117,7 +114,7 @@ const Structures = (props: IProps) => {
                 toast.error(data.message);
             } else {
                 setStructures(data);
-                setSavedStractures(data);
+                //setSavedStractures(data);
             }
         } catch (e) {
             console.log(e);
@@ -130,7 +127,63 @@ const Structures = (props: IProps) => {
     }, []);
 
     const saveStructures = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`http://localhost:5000/structure/many`, 
+        { headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + cookies.get('userToken')},
+          method: 'PATCH', body: JSON.stringify(structures)
+      })
+        const data = await response.json();
+        if (data.error) {
+          toast.error(data.message);
+        } else {
+          toast.success("Changes Saved");
+        }
+      } catch (err) {
+        console.log(err);
+        toast.error("Internal server error");
+      }
+      setLoading(false);
+    }
 
+    const creteStructure = async () => {
+      setLoading(true);
+      await saveStructures();
+      try {
+        const response = await fetch(`http://localhost:5000/structure`,
+        { headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + cookies.get('userToken')}, 
+        method: 'POST', body: JSON.stringify(newStructure)});
+        const data = await response.json();
+        if (data.error) {
+          toast.error(data.message);
+        } else {
+          toast.success("Created successfully");
+        }
+      } catch (err) {
+        console.log(err);
+        toast.error("Internal server error");
+      }
+      setNewStructure(defaultValue);
+      setLoading(false);
+      getStructures();
+    }
+
+    const deleteStructure = async (e: any) => {
+      setLoading(true);
+      try {
+        const response = await fetch(`http://localhost:5000/structure/${e.target.value}`, { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}, method: 'DELETE'});
+        const data = await response.json();
+        if (data.error) {
+          toast.error(data.message);
+        } else {
+          toast.success("Structure deleted successfully");
+        }
+      } catch (err) {
+        console.log(err);
+        toast.error("Internal server error");
+      }
+      setLoading(false);
+      getStructures();
     }
 
 
@@ -146,7 +199,7 @@ const Structures = (props: IProps) => {
     <main>
         <h1>Structure</h1>
         <div className='save-btn-container'>
-        <Button variant="contained" color="primary" >Save</Button>
+        <Button variant="contained" color="primary" onClick={saveStructures}>Save</Button>
         </div>
         <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -184,7 +237,7 @@ const Structures = (props: IProps) => {
               <TableCell align="center"><Checkbox name={`opening`} checked={newStructure.opening} onChange={newCheckboxChange} /></TableCell>
               <TableCell align="center"><Checkbox name={`manager`} checked={newStructure.manager} onChange={newCheckboxChange} /></TableCell>
               <TableCell align="center"><Checkbox name={`pull`} checked={newStructure.pull} onChange={newCheckboxChange} /></TableCell>
-              <TableCell align="center"><Button variant="contained" color="primary" >Create</Button></TableCell>
+              <TableCell align="center"><Button variant="contained" color="primary" onClick={creteStructure}>Create</Button></TableCell>
             </TableRow>
           {structures.map((structure) => (
             <TableRow
@@ -209,7 +262,7 @@ const Structures = (props: IProps) => {
               <TableCell align="center"><Checkbox name={`opening&&${structure._id}`} checked={structure.opening} onChange={checkboxChange} /></TableCell>
               <TableCell align="center"><Checkbox name={`manager&&${structure._id}`} checked={structure.manager} onChange={checkboxChange} /></TableCell>
               <TableCell align="center"><Checkbox name={`pull&&${structure._id}`} checked={structure.pull} onChange={checkboxChange} /></TableCell>
-              <TableCell align="center"></TableCell>
+              <TableCell align="center"><Button variant="contained" color="error" value={structure._id} onClick={deleteStructure} >Delete</Button></TableCell>
             </TableRow>
           ))}
         </TableBody>
