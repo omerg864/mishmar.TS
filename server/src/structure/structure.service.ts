@@ -7,11 +7,19 @@ import { InjectModel } from '@nestjs/mongoose';
 export class StructureService {
     constructor(@InjectModel('Structure') private readonly structureModel: Model<Structure>) {}
 
-    async createStructure(structure: Structure) {
+    async createStructure(structure: Structure): Promise<Structure>{
         return this.structureModel.create(structure);
     }
 
-    async updateStructure(structure: Structure) {
+    async updateManyStructures(structures: Structure[]): Promise<Structure[]> {
+        let structures_temp: Structure[] = [];
+        for (let i = 0; i < structures.length; i++) {
+            structures_temp.push(await this.structureModel.findByIdAndUpdate(structures[i].id, structures[i], {new: true}));
+        }
+        return structures_temp;
+    }
+
+    async updateStructure(structure: Structure): Promise<Structure> {
         const structureFound = this.structureModel.findById(structure.id);
         if (!structureFound) {
             throw new NotFoundException('Structure not found');
@@ -19,7 +27,7 @@ export class StructureService {
         return this.structureModel.findByIdAndUpdate(structure.id, structure, { new: true});
     }
 
-    async deleteStructure(id: string) {
+    async deleteStructure(id: string): Promise<string> {
         const structure = await this.structureModel.findById(id);
         if (!structure) {
             throw new NotFoundException('Structure not found');
@@ -28,11 +36,11 @@ export class StructureService {
         return structure.id.toString();
     }
 
-    async getAll() {
+    async getAll(): Promise<Structure[]> {
         return this.structureModel.find();
     }
 
-    async getStructure(id: string) {
+    async getStructure(id: string): Promise<Structure> {
         return this.structureModel.findById(id);
     }
 

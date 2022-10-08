@@ -40,7 +40,8 @@ export const StructureScheme = new mongoose.Schema<Structure>({
 
 
 export interface Structure {
-    id? : mongoose.Schema.Types.ObjectId;
+    id? : mongoose.Schema.Types.ObjectId|string;
+    _id? : mongoose.Schema.Types.ObjectId|string;
     title: string,
     index: number,
     description: string,
