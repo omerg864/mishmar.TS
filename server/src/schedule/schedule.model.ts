@@ -41,7 +41,7 @@ export interface Schedule {
     id: mongoose.Schema.Types.ObjectId|string;
     date: Date;
     num_weeks: number;
-    weeks: Map<string, {shift: string|mongoose.Schema.Types.ObjectId|Structure, value: string}>[]|Object[];
+    weeks: Map<string, {shift: string|mongoose.Schema.Types.ObjectId|Structure, value: string}[]>[]|Object[];
     publish: boolean;
     days?: Date[][];
 }
