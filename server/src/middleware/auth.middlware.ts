@@ -17,16 +17,20 @@ const checkUser = async (headers: {authorization : string}, userModel: Model<Use
       if (!token) {
           throw new UnauthorizedException('No Token Provided')
       }
-      const payload = jwt.verify(token, 'ABC');
-      const userId = payload['id'];
-      if (!userId) {
-          throw new UnauthorizedException('No User Provided')
+      try {
+        const payload = jwt.verify(token, 'ABC');
+        const userId = payload['id'];
+        if (!userId) {
+            throw new UnauthorizedException('No User Provided')
+        }
+        const userFound = await userModel.findById(userId);
+        if (!userFound) {
+            throw new NotFoundException('User not found')
+        }
+        return userFound;
+      } catch (err) {
+        throw new UnauthorizedException('Incorrect Token')
       }
-      const userFound = await userModel.findById(userId);
-      if (!userFound) {
-          throw new NotFoundException('User not found')
-      }
-      return userFound;
 }
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {

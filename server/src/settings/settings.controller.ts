@@ -17,4 +17,9 @@ export class SettingsController {
     async updateSettings(@Body() settings: Settings): Promise<Settings> {
         return this.settingsService.updateSettings(settings);
     }
+
+    @Get('general')
+    async getGeneral(): Promise<{title: string, submit: boolean}>{
+        return this.settingsService.getGeneral();
+    }
 }

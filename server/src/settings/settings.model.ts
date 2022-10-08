@@ -10,6 +10,11 @@ export const SettingsScheme = new mongoose.Schema<Settings>({
         type: String,
         default: "",
     },
+    pin_code: {
+        required: false,
+        type: String,
+        default: "1234",
+    },
     title: {
         required: false,
         type: String,
@@ -30,6 +35,7 @@ export const SettingsScheme = new mongoose.Schema<Settings>({
 
 export interface Settings {
     submit: boolean;
+    pin_code: string;
     officer: string;
     title: string;
     max_seq_nights: number;

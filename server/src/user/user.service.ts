@@ -4,11 +4,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
+import { Settings } from 'src/settings/settings.model';
 
 @Injectable()
 export class UserService {
 
-    constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
+    constructor(@InjectModel('User') private readonly userModel: Model<User>, @InjectModel('Settings') private readonly settingsModel: Model<Settings>) {}
 
     generateToken(id: string) : string {
         return jwt.sign({ id }, "ABC", { expiresIn: '30d' });
@@ -25,10 +26,11 @@ export class UserService {
             throw new UnauthorizedException('Incorrect password');
         }
         const token = this.generateToken(user.id);
-        return { ...user["_doc"], token };
+        delete user["_doc"].password;
+        return { user: {...user["_doc"]}, token };
     }
 
-    async register(user: User) {
+    async register(user: User, pin_code: string) {
         let userFound = await this.userModel.findOne( { email: { $regex : new RegExp(user.username, "i") }});
         if (userFound) {
             throw new ConflictException('username already in use');
@@ -36,6 +38,14 @@ export class UserService {
         userFound = await this.userModel.findOne({ email: { $regex : new RegExp(user.email, "i") } })
         if (userFound) {
             throw new ConflictException('email already in use');
+        }
+        let settings = await this.settingsModel.findOne();
+        if (!settings) {
+            settings = new this.settingsModel();
+            await settings.save();
+        }
+        if (settings.pin_code !== pin_code) {
+            throw new UnauthorizedException('Pin code incorrect');
         }
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(user.password, salt);
@@ -69,6 +79,18 @@ export class UserService {
     async getAll(){
         const users = await this.userModel.find();
         return users;
+    }
+
+    async authUser(id: string): Promise<{user: boolean, manager: boolean}> {
+        const user = await this.userModel.findById(id);
+        let manager = false;
+        if (user.role.includes('ADMIN') || user.role.includes('SITE_MANAGER')) {
+            manager = true;
+        }
+        return {
+            user: true,
+            manager
+        };
     }
 
 }

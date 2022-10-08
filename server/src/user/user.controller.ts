@@ -14,8 +14,8 @@ export class UserController {
     }
 
     @Post('register')
-    async register(@Body() user: User) {
-        return await this.userService.register(user);
+    async register(@Body('user') user: User, @Body('pin_code') pinCode: string) {
+        return await this.userService.register(user, pinCode);
     }
 
     @Patch()
@@ -31,5 +31,10 @@ export class UserController {
     @Get('all')
     async getAllUsers() {
         return await this.userService.getAll();
+    }
+
+    @Get('auth')
+    async authUser(@UserID() id: string): Promise<{user: boolean, manager: boolean}> {
+        return await this.userService.authUser(id);
     }
 }

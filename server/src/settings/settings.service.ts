@@ -22,4 +22,9 @@ export class SettingsService {
         const settingsFound = await this.get();
         return await this.settingsModel.findOneAndUpdate({}, settings, {new: true});
     }
+
+    async getGeneral(): Promise<{title: string, submit: boolean}> {
+        const settingsFound = await this.get();
+        return { title: settingsFound.title, submit: settingsFound.submit}
+    }
 }

@@ -1,0 +1,123 @@
+
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  align-items: center;
+  height: 100vh;
+  padding: 10px;
+}
+
+.text_input {
+  background-color: white;
+}
+
+.container {
+  border: 1px solid #000;
+  border-radius: 5px;
+  width: 50%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  align-items: center;
+  background-color: lightgray;
+}
+
+.container form {
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-new {
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  align-items: center;
+  gap: 10px;
+}
+
+.loadingSpinnerContainer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 5000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loadingSpinner {
+  width: 64px;
+  height: 64px;
+  border: 8px solid;
+  border-color: #000 transparent rgb(0, 174, 255) transparent;
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.manager-div {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid black;
+  width: 100%;
+  padding: 10px;
+}
+
+.schedule {
+  border: 1px solid black;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.space-div {
+  display: flex;
+  justify-content: space-around;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+/* Zebra striping */
+tr:nth-of-type(odd) {
+  background: rgb(179, 179, 179);
+}
+th {
+  background: #333;
+  color: white;
+  font-weight: bold;
+}
+td, th {
+  padding: 6px;
+  border: 1px solid #ccc;
+  text-align: center;
+	white-space: pre-line;
+}
+
+.save-btn-container {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}

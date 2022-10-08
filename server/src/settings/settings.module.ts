@@ -14,6 +14,6 @@ import { AuthMiddleware, SiteManagerMiddleware } from 'src/middleware/auth.middl
 export class SettingsModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(SiteManagerMiddleware).forRoutes({path: 'settings', method: RequestMethod.PATCH});
-    consumer.apply(AuthMiddleware).forRoutes({path: 'settings', method: RequestMethod.GET});
+    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'settings', method: RequestMethod.GET});
   }
 }
