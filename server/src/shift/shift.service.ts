@@ -26,11 +26,11 @@ export class ShiftService {
     }
 
     async update(shift: Shift): Promise<Shift> {
-        const shiftFound = await this.shiftModel.findById(shift.id);
+        const shiftFound = await this.shiftModel.findById(shift._id);
         if (!shiftFound) {
             throw new NotFoundException('Shift not found');
         }
-        return await this.shiftModel.findByIdAndUpdate(shift.id, shift, { new: true });
+        return await this.shiftModel.findByIdAndUpdate(shift._id, shift, { new: true });
     }
 
     async delete(id: string): Promise<string> {

@@ -24,19 +24,46 @@ export const ShiftScheme = new mongoose.Schema<Shift>({
         ref: "Schedule",
         required: true,
     },
+    notes: {
+        type: String,
+        default: "",
+    },
     weeks: [{
-        type: mongoose.Schema.Types.Map,
-        default: new Map(),
-        required: false,
+        morning: {
+            type: Boolean,
+            default: false,
+        },
+        noon: {
+            type: Boolean,
+            default: false,
+        },
+        night: {
+            type: Boolean,
+            default: false
+        },
+        pull: {
+            type: Boolean,
+            default: true,
+        },
+        reinforcement: {
+            type: Boolean,
+            default: false,
+        },
+        notes: {
+            type: String,
+            default: "",
+        }
     }]
 });
 
 
 export interface Shift {
-    id?: mongoose.Schema.Types.ObjectId;
+    id?: mongoose.Schema.Types.ObjectId|string;
+    _id: mongoose.Schema.Types.ObjectId|string;
     weekend_night: number;
     weekend_day: number;
     userId: mongoose.Schema.Types.ObjectId;
     scheduleId: mongoose.Schema.Types.ObjectId;
-    weeks: Map<string, string>[];
+    notes: string;
+    weeks: {morning: boolean, noon: boolean, night: boolean, pull: boolean, reinforcement: boolean, notes: string}[];
 }

@@ -81,11 +81,11 @@ export class ScheduleService {
     }
 
     async update(schedule: Schedule): Promise<Schedule> {
-        let scheduleFound = await this.scheduleModel.findById(schedule.id);
+        let scheduleFound = await this.scheduleModel.findById(schedule._id);
         if (!scheduleFound) {
             throw new NotFoundException('Schedule not found');
         }
-        let newSchedule: Schedule = await this.scheduleModel.findByIdAndUpdate(schedule.id, schedule, {new: true});
+        let newSchedule: Schedule = await this.scheduleModel.findByIdAndUpdate(schedule._id, schedule, {new: true});
         newSchedule = await this.populateSchedule(newSchedule);
         let days: Date[][] = this.calculateDays(newSchedule);
         return {...newSchedule, days};

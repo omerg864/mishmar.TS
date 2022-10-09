@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom';
-import { Schedule } from '../types/types';
+import { Schedule, ShiftWeek, Structure } from '../types/types';
 import Cookies from 'universal-cookie';
 import { toast } from 'react-toastify';
 import Spinner from '../components/Spinner'
@@ -13,7 +13,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
-
+import TextareaAutosize from '@mui/material/TextareaAutosize';
+import { Button } from '@mui/material';
 
 interface IProps {
     manager: boolean;
@@ -55,6 +56,31 @@ const ScheduleUpdate = (props: IProps) => {
         setIsLoading(false);
     }
 
+    const changeSchedule = (e: any) => {
+        const [ week, shift, day ] = e.target.name.split('-');
+        let schedule_temp = {...schedule}
+        schedule_temp.weeks[week][shift].days[day] = e.target.value;
+        setSchedule(schedule_temp);
+    }
+
+    const saveSchedule = async (e: any) => {
+        setIsLoading(true);
+        try {
+            const response = await fetch('http://localhost:5000/schedule/', { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken')  },
+            method: 'PATCH', body: JSON.stringify(schedule) });
+            const data = await response.json();
+            if (data.error) {
+                toast.error(data.message);
+            } else {
+                toast.success("Saved Successfully");
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error("Internal server error");
+        }
+        setIsLoading(false);
+    }
+
     useEffect(() => {
         getSchedule();
     }, []);
@@ -71,9 +97,10 @@ const ScheduleUpdate = (props: IProps) => {
   return (
     <main>
         <h1>{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
+        <Button variant="contained" color="primary" onClick={saveSchedule}>Save</Button>
         <TableContainer component={Paper}>
-        {numberToArray(schedule.num_weeks).map((week, index) => (
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        {numberToArray(schedule.num_weeks).map((week, index1) => (
+      <Table sx={{ minWidth: 650 }} aria-label="simple table" key={index1}>
         <TableHead>
         <StyledTableRow>
         <StyledTableCell align="center">תאריך</StyledTableCell>
@@ -95,20 +122,25 @@ const ScheduleUpdate = (props: IProps) => {
           </StyledTableRow>
         </TableHead>
         <TableBody>
-            
-            <TableRow
-              key={index}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell align="center" scope="row"></TableCell>
-              <TableCell align="center"></TableCell>
-              <TableCell align="center"></TableCell>
-              <TableCell align="center"></TableCell>
-              <TableCell align="center"></TableCell>
-              <TableCell align="center"></TableCell>
-              <TableCell align="center"></TableCell>
-              <TableCell align="center"></TableCell>
-            </TableRow>
+            {schedule.weeks[week].map((shift, index2) => (
+                <TableRow
+                key={(shift.shift as Structure)._id}
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                <TableCell align="center" scope="row"><p>{(shift.shift as Structure).title}</p><p>{(shift.shift as Structure).description}</p></TableCell>
+                {shift.days.map((day, index) => (
+                    <TableCell key={`${(shift.shift as Structure)._id}-${index}`} align="center" scope="row">
+                        <TextareaAutosize
+                    minRows={3}
+                    value={day}
+                    onChange={changeSchedule}
+                    name={`${week}-${index2}-${index}`}
+                    style={{ width: 200 }}
+                  />
+                  </TableCell>
+                ))}
+                </TableRow>
+            ))}
         </TableBody>
       </Table>
         ))}
