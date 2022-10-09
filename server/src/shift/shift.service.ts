@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { UserID } from 'src/middleware/auth.middlware';
 import { Shift } from './shift.model';
 
 @Injectable()
@@ -19,6 +20,18 @@ export class ShiftService {
             throw new NotFoundException('Shift not found');
         }
         return shift;
+    }
+
+    async getUserScheduleShift(userId: string, scheduleId: string): Promise<Shift> {
+        let shiftFound = await this.shiftModel.findOne( { userId: userId, scheduleId: scheduleId});
+        if (!shiftFound) {
+            let weeks: {morning: boolean, noon: boolean, night: boolean, pull: boolean, reinforcement: boolean, notes: string}[] = [];
+            
+            let newShift = new this.shiftModel({ userId: userId, scheduleId: scheduleId});
+            await newShift.save();
+            return newShift;
+        }
+        return shiftFound;
     }
 
     async create(shift: Shift): Promise<Shift> {

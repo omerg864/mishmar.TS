@@ -13,6 +13,11 @@ export class ScheduleController {
         return await this.scheduleService.getAll();
     }
 
+    @Get('last')
+    async getLastSchedule(): Promise<Schedule> {
+        return await this.scheduleService.getLast();
+    }
+
     @Get(':id')
     async getSchedule(@Param('id') id: string): Promise<Schedule> {
         return await this.scheduleService.getSchedule(id);

@@ -57,6 +57,9 @@ const Header = (props: IProps) => {
       case 'MANAGE BOARD':
         navigate('/management');
         break;
+      case 'SHIFT':
+        navigate('/shift');
+        break;
       default:
         break;
     }

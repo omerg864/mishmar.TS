@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Structure } from 'src/structure/structure.model';
@@ -37,6 +37,15 @@ export class ScheduleService {
             schedules_temp.push(schedule_temp);
         }
         return schedules_temp;
+    }
+
+    async getLast() : Promise<Schedule> {
+        let schedules = await this.scheduleModel.find().sort({ date: -1}).select('-weeks');
+        if (schedules.length === 0) {
+            throw new ConflictException('No schedules found')
+        }
+        let days: Date[][] = this.calculateDays(schedules[0]);
+        return { ...schedules[0]["_doc"], days}
     }
 
     addDays = (date: Date, days: number): Date => {

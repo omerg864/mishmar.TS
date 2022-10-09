@@ -3,10 +3,18 @@ export type ShiftWeek = {shift: Structure|string, days: string[]}
 export interface Schedule {
     _id: string;
     id: string;
-    date: string;
+    date: string|Date;
     num_weeks: number;
     weeks: ShiftWeek[][];
     publish: boolean;
+    days: string[][];
+}
+
+
+export interface ScheduleUser {
+    _id: string;
+    date: Date;
+    num_weeks: number;
     days: string[][];
 }
 

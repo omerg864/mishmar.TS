@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { UserID } from 'src/middleware/auth.middlware';
 import { Shift } from './shift.model';
 import { ShiftService } from './shift.service';
 
@@ -11,6 +12,11 @@ export class ShiftController {
     @Get('all')
     async getAll(): Promise<Shift[]> {
         return this.shiftService.getAll();
+    }
+
+    @Get('user/:scheduleId')
+    async getUserScheduleShift(@UserID() userId: string, @Param('scheduleId') scheduleId: string): Promise<Shift> {
+        return this.shiftService.getUserScheduleShift(userId, scheduleId);
     }
 
     @Get(':id')

@@ -15,6 +15,7 @@ import { AuthMiddleware, SiteManagerMiddleware } from 'src/middleware/auth.middl
 export class ShiftModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(SiteManagerMiddleware).forRoutes({path: 'shift/all', method: RequestMethod.GET});
+    consumer.apply(AuthMiddleware).forRoutes({path: 'shift/user/:scheduleId', method: RequestMethod.GET});
     consumer.apply(AuthMiddleware).forRoutes({path: 'shift/:id', method: RequestMethod.GET});
     consumer.apply(AuthMiddleware).forRoutes({path: 'shift', method: RequestMethod.POST});
     consumer.apply(AuthMiddleware).forRoutes({path: 'shift', method: RequestMethod.PATCH});
