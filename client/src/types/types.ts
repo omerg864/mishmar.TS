@@ -38,5 +38,5 @@ export interface Shift {
     userId: string;
     scheduleId: string;
     notes: string;
-    weeks: {morning: boolean, noon: boolean, night: boolean, pull: boolean, reinforcement: boolean, notes: string}[];
+    weeks: {morning: boolean[], noon: boolean[], night: boolean[], pull: boolean[], reinforcement: boolean[], notes: string[]}[];
 }

@@ -1,3 +1,4 @@
+import { ScheduleScheme } from './../schedule/schedule.model';
 import { AdminManagerMiddleware } from './../middleware/auth.middlware';
 import { ShiftScheme } from './shift.model';
 import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
@@ -8,7 +9,7 @@ import { UserScheme } from 'src/user/user.model';
 import { AuthMiddleware, SiteManagerMiddleware } from 'src/middleware/auth.middlware';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'Shift', schema: ShiftScheme}, {name: 'User', schema: UserScheme}])],
+  imports: [MongooseModule.forFeature([{ name: 'Shift', schema: ShiftScheme}, {name: 'Schedule', schema: ScheduleScheme}, {name: 'User', schema: UserScheme}])],
   controllers: [ShiftController],
   providers: [ShiftService]
 })

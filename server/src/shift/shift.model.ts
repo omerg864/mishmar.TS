@@ -29,30 +29,30 @@ export const ShiftScheme = new mongoose.Schema<Shift>({
         default: "",
     },
     weeks: [{
-        morning: {
+        morning: [{
             type: Boolean,
             default: false,
-        },
-        noon: {
+        }],
+        noon: [{
             type: Boolean,
             default: false,
-        },
-        night: {
+        }],
+        night: [{
             type: Boolean,
             default: false
-        },
-        pull: {
+        }],
+        pull: [{
             type: Boolean,
             default: true,
-        },
-        reinforcement: {
+        }],
+        reinforcement: [{
             type: Boolean,
             default: false,
-        },
-        notes: {
+        }],
+        notes: [{
             type: String,
             default: "",
-        }
+        }]
     }]
 });
 
@@ -65,5 +65,5 @@ export interface Shift {
     userId: mongoose.Schema.Types.ObjectId;
     scheduleId: mongoose.Schema.Types.ObjectId;
     notes: string;
-    weeks: {morning: boolean, noon: boolean, night: boolean, pull: boolean, reinforcement: boolean, notes: string}[];
+    weeks: {morning: boolean[], noon: boolean[], night: boolean[], pull: boolean[], reinforcement: boolean[], notes: string[]}[];
 }
