@@ -1,16 +1,18 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { User } from 'src/user/user.model';
 import { EventInterface } from './event.model';
 
 @Injectable()
 export class EventService {
 
-    constructor(@InjectModel('Event') private readonly eventModel: Model<EventInterface>) {}
+    constructor(@InjectModel('Event') private readonly eventModel: Model<EventInterface>, @InjectModel('User') private readonly userModel: Model<User>) {}
 
-    async getAll(): Promise<EventInterface[]> {
-        const events = await this.eventModel.find();
-        return events;
+    async getAll(): Promise<{events: EventInterface[], users: User[]}> {
+        const events = await this.eventModel.find().sort( { date: -1});
+        const users = await this.userModel.find();
+        return {events, users};
     }
 
     async getEvent(id: string): Promise<EventInterface> {

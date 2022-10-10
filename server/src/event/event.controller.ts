@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { User } from 'src/user/user.model';
 import { EventInterface } from './event.model';
 import { EventService } from './event.service';
 
@@ -9,7 +10,7 @@ export class EventController {
 
 
     @Get('all')
-    async getAllEvents(): Promise<EventInterface[]> {
+    async getAllEvents(): Promise<{events: EventInterface[], users: User[]}> {
         return this.eventService.getAll();
     }
 

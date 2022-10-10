@@ -40,3 +40,17 @@ export interface Shift {
     notes: string;
     weeks: {morning: boolean[], noon: boolean[], night: boolean[], pull: boolean[], reinforcement: boolean[], notes: string[]}[];
 }
+
+export interface EventType {
+    _id: string;
+    content: string;
+    date: string;
+    users: string[]|User[];
+}
+
+export interface User {
+    _id: string;
+    name: string;
+    nickname: string;
+
+}
