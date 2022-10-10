@@ -37,4 +37,9 @@ export class UserController {
     async authUser(@UserID() id: string): Promise<{user: boolean, manager: boolean}> {
         return await this.userService.authUser(id);
     }
+
+    @Get(':id')
+    async getUser(@Param('id') id: string): Promise<User> {
+        return await this.userService.getUser(id);
+    }
 }

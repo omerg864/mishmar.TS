@@ -19,6 +19,11 @@ export class ShiftController {
         return await this.shiftService.scheduleShifts(id);
     }
 
+    @Get('user/:userId/:scheduleId/manager')
+    async getUserScheduleShiftManager(@Param('userId') userId: string, @Param('scheduleId') scheduleId: string): Promise<Shift> {
+        return this.shiftService.getUserScheduleShift(userId, scheduleId);
+    }
+
     @Get('user/:scheduleId')
     async getUserScheduleShift(@UserID() userId: string, @Param('scheduleId') scheduleId: string): Promise<Shift> {
         return this.shiftService.getUserScheduleShift(userId, scheduleId);

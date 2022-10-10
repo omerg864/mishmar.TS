@@ -15,6 +15,7 @@ import ScheduleNew from './pages/ScheduleNew';
 import Structures from './pages/Structures';
 import Shift from './pages/Shift';
 import ScheduleShift from './pages/ScheduleShift';
+import ScheduleShiftUser from './pages/ScheduleShiftUser';
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
       <Route path="/structure" element={<Structures manager={manager}/>} />
       <Route path="/shift" element={<Shift authenticated={authenticated}/>} />
       <Route path="/schedule/:id/shifts" element={<ScheduleShift authenticated={authenticated}/>} />
+      <Route path="/shift/schedule/:scheduleId/user/:userId" element={<ScheduleShiftUser manager={manager}/>} />
     </Routes>
     </>
   );

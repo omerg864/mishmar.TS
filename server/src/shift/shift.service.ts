@@ -54,7 +54,9 @@ export class ShiftService {
                             users.push({ nickname, id});
                         }
                         if (shifts[i].weeks[j][params[h]][k]) {
-                            userIn = true;
+                            if (params[h] !== 'pull') {
+                                userIn = true;
+                            }
                             let value = nickname
                             if (params[h] === 'morning') {
                                 if (!shifts[i].weeks[j].pull[k]) {
@@ -91,7 +93,6 @@ export class ShiftService {
             }
             return false;
         })
-        console.log(userMins);
         let noUsers = await this.userModel.find({ _id: {$nin: userids}}).select(["nickname", "id"]);
         noUsers = noUsers.map(user => {return {...user["_doc"], id: user._id.toString()}});
         return {weeks, users, noUsers: (noUsers as {nickname: string, id: string }[]), minUsers: userMins};
@@ -105,10 +106,8 @@ export class ShiftService {
         return shift;
     }
 
-    async getUserScheduleShift(userId: string, scheduleId: string): Promise<Shift> {
-        let shiftFound = await this.shiftModel.findOne( { userId: userId, scheduleId: scheduleId});
-        if (!shiftFound) {
-            let weeks: {morning: boolean[], noon: boolean[], night: boolean[], pull: boolean[], reinforcement: boolean[], notes: string[]}[] = [];
+    async createNewShift(userId: string, scheduleId: string): Promise<Shift> {
+        let weeks: {morning: boolean[], noon: boolean[], night: boolean[], pull: boolean[], reinforcement: boolean[], notes: string[]}[] = [];
             let schedule = await this.scheduleModel.findById(scheduleId);
             for (let i = 0; i < schedule.num_weeks; i++) {
                 weeks.push({
@@ -123,6 +122,12 @@ export class ShiftService {
             let newShift = new this.shiftModel({ userId: userId, scheduleId: scheduleId, weeks});
             await newShift.save();
             return newShift;
+    }
+
+    async getUserScheduleShift(userId: string, scheduleId: string): Promise<Shift> {
+        let shiftFound = await this.shiftModel.findOne( { userId: userId, scheduleId: scheduleId});
+        if (!shiftFound) {
+            return this.createNewShift(userId, scheduleId);
         }
         return shiftFound;
     }

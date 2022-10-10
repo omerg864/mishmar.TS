@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import Spinner from '../components/Spinner'
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
-import { Button, Checkbox } from '@mui/material';
+import { Button, Checkbox, TableHead } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import { toast } from 'react-toastify';
 import { addDays, dateToString, dateToStringShort, numberToArray } from '../functions/functions';
 import { ScheduleUser, ShiftWeek } from '../types/types';
+import TableHead2 from '../components/TableHead';
+import TableBodyShift from '../components/TableBodyShift';
 
 
 interface IProps {
@@ -41,23 +37,6 @@ const ScheduleShift = (props: IProps) => {
     const [minUsers, setMinUsers] = useState([] as {nickname: string, id: string, noon: number[], morning: number[]}[]);
     const [schedule, setSchedule] = useState({num_weeks: 0, date: new Date(), days: [] as string[][], _id: '1'} as ScheduleUser);
     const cookies = new Cookies();
-
-
-    const StyledTableCell = styled(TableCell)(({ theme }) => ({
-        [`&.${tableCellClasses.head}`]: {
-          backgroundColor: theme.palette.common.black,
-          color: theme.palette.common.white,
-        },
-        [`&.${tableCellClasses.body}`]: {
-          fontSize: 14,
-        },
-      }));
-      
-      const StyledTableRow = styled(TableRow)(({ theme }) => ({
-        '&:nth-of-type(odd)': {
-          backgroundColor: 'theme.palette.action.hover',
-        },
-      }));
 
 
     const getData = async () => {
@@ -127,56 +106,26 @@ const ScheduleShift = (props: IProps) => {
         <div>
             <h4>הגישו סידור: {users.length} </h4>
             {users.map(user => (
-                <a href={`/schedule/${schedule._id}/user/${user.id}`}>{user.nickname}, </a>
+                <a key={`user-${schedule._id}-${user.id}`} href={`/shift/schedule/${schedule._id}/user/${user.id}`}>{user.nickname}, </a>
             ))}
         </div>
         <div>
             <h4> לא הגישו סידור: {noUsers.length} </h4>
             {noUsers.map(user => (
-                <a href={`/schedule/${schedule._id}/user/${user.id}`}>{user.nickname}, </a>
+                <a key={`noUser-${schedule._id}-${user.id}`} href={`/shift/schedule/${schedule._id}/user/${user.id}`}>{user.nickname}, </a>
             ))}
         </div>
         <div>
             <h4> לא הגישו מינימום: {minUsers.length} </h4>
             {minUsers.map(user => (
-                <a href={`/schedule/${schedule._id}/user/${user.id}`}>{user.nickname}, </a>
+                <a key={`min-${schedule._id}-${user.id}`} href={`/shift/schedule/${schedule._id}/user/${user.id}`}>{user.nickname}, </a>
             ))}
         </div>
         </div>
         <TableContainer component={Paper}>
         {numberToArray(schedule.num_weeks).map((week, index1) => (
-      <Table sx={{ minWidth: 650 }} aria-label="simple table" key={`week-${index1}`}>
-        <TableHead>
-        <StyledTableRow>
-        <StyledTableCell align="center">תאריך</StyledTableCell>
-        {schedule.days[week].map((day) => {
-                return (
-                    <StyledTableCell align="center" key={day}>{dateToStringShort(new Date(day))}</StyledTableCell>
-                )
-            })}
-        </StyledTableRow>
-          <StyledTableRow>
-            <StyledTableCell align="center"></StyledTableCell>
-            <StyledTableCell align="center">ראשון</StyledTableCell>
-            <StyledTableCell align="center">שני</StyledTableCell>
-            <StyledTableCell align="center">שלישי</StyledTableCell>
-            <StyledTableCell align="center">רביעי</StyledTableCell>
-            <StyledTableCell align="center">חמישי</StyledTableCell>
-            <StyledTableCell align="center">שישי</StyledTableCell>
-            <StyledTableCell align="center">שבת</StyledTableCell>
-          </StyledTableRow>
-        </TableHead>
-        <TableBody>
-            {rows.map((row) => (
-            <TableRow key={`${row}-${week}`}>
-                <TableCell align="center">{row}</TableCell>
-            {numberToArray(7).map(num => (
-                    <TableCell  key={`${row}-${week}-${num}`} style={{padding: '1px'}} align="center">{data[week][row as keyof ShiftScheduleWeek][num]}</TableCell>
-            ))}
-            </TableRow>
-            ))}
-        </TableBody>
-      </Table>
+            <TableHead2 key={`week-${week}`} days={schedule.days[week]} 
+            children={<TableBodyShift rows={rows} week={week} data={data} update={false} disabled={false}/>}/>
         ))}
         </TableContainer>
     </main>
