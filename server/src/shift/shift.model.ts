@@ -1,4 +1,5 @@
 import * as mongoose from "mongoose";
+import { User } from "src/user/user.model";
 
 
 export const ShiftScheme = new mongoose.Schema<Shift>({
@@ -62,8 +63,17 @@ export interface Shift {
     _id: mongoose.Schema.Types.ObjectId|string;
     weekend_night: number;
     weekend_day: number;
-    userId: mongoose.Schema.Types.ObjectId;
+    userId: mongoose.Schema.Types.ObjectId|User;
     scheduleId: mongoose.Schema.Types.ObjectId;
     notes: string;
     weeks: {morning: boolean[], noon: boolean[], night: boolean[], pull: boolean[], reinforcement: boolean[], notes: string[]}[];
+}
+
+export interface ShiftScheduleWeek {
+    morning: string[];
+    noon: string[];
+    night: string[]; 
+    pull: string[];
+    reinforcement: string[]; 
+    notes: string[];
 }

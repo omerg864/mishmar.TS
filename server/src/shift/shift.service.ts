@@ -3,16 +3,98 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserID } from 'src/middleware/auth.middlware';
 import { Schedule } from 'src/schedule/schedule.model';
-import { Shift } from './shift.model';
+import { User } from 'src/user/user.model';
+import { Shift, ShiftScheduleWeek } from './shift.model';
+
 
 @Injectable()
 export class ShiftService {
 
-    constructor(@InjectModel('Shift') private readonly shiftModel: Model<Shift>, @InjectModel('Schedule') private readonly scheduleModel: Model<Schedule>) {}
+    constructor(@InjectModel('Shift') private readonly shiftModel: Model<Shift>, @InjectModel('User') private readonly userModel: Model<User>, @InjectModel('Schedule') private readonly scheduleModel: Model<Schedule>) {}
 
 
-    async getAll(): Promise<Shift[]> {
+    async getAll(query: {userId: string, scheduleId: string}): Promise<Shift[]> {
+        if (query) {
+            return await this.shiftModel.find(query);
+        }
         return await this.shiftModel.find();
+    }
+
+    async scheduleShifts(scheduleId: string): Promise<{weeks: ShiftScheduleWeek[], users: {nickname: string, id: string }[], noUsers: {nickname: string, id: string }[], minUsers: {nickname: string, id: string, morning: number[], noon: number[]  }[]}> {
+        const schedule = await this.scheduleModel.findById(scheduleId);
+        if (!schedule) {
+            throw new NotFoundException('Schedule not found');
+        }
+        const shifts = await this.shiftModel.find({ scheduleId: scheduleId }).populate('userId');
+        const params = ["morning", "noon", "night", "pull", "reinforcement", "notes"];
+        let users: {nickname: string, id: string}[] = [];
+        let weeks: ShiftScheduleWeek[] = [];
+        let userMins: {id: string, nickname: string, morning: number[], noon: number[]}[] = [];
+        let counters: {morning: number[], noon: number[]};
+        let userIn: boolean;
+        for (let i = 0; i < shifts.length; i++) {
+            userIn = false;
+            let nickname = (shifts[i].userId as User).nickname;
+            let id = (shifts[i].userId as User)._id.toString();
+            counters = {morning: [], noon: []};
+            for (let j = 0; j < shifts[i].weeks.length; j++) {
+                weeks.push({
+                    morning: ["", "", "", "", "", "", ""],
+                    noon: ["", "", "", "", "", "", ""],
+                    night: ["", "", "", "", "", "", ""],
+                    pull: ["", "", "", "", "", "", ""],
+                    reinforcement: ["", "", "", "", "", "", ""],
+                    notes: ["", "", "", "", "", "", ""]
+                });
+                counters.morning[j] = 0;
+                counters.noon[j] = 0;
+                for( let h = 0; h < params.length; h++ ) {
+                    for ( let k = 0; k < shifts[i].weeks[j][params[h]].length; k++ ) {
+                        if (users.filter(u => u.id === id).length === 0) {
+                            users.push({ nickname, id});
+                        }
+                        if (shifts[i].weeks[j][params[h]][k]) {
+                            userIn = true;
+                            let value = nickname
+                            if (params[h] === 'morning') {
+                                if (!shifts[i].weeks[j].pull[k]) {
+                                    value += " (לא משיכה) ";
+                                }
+                                if (k < 5){
+                                    counters.morning[j]++;
+                                }
+                            }
+                            if (k < 5) {
+                                if (params[h] === 'noon') {
+                                    counters.noon[j]++;
+                                }
+                            }
+                            if (weeks[j][params[h]][k] === "") {
+                                weeks[j][params[h]][k] = value;
+                            } else {
+                                weeks[j][params[h]][k] += "/n" + value;
+                            }
+                        }
+                    }
+                }
+            }
+            if (userIn) {
+                userMins.push({ nickname, id, morning: counters.morning, noon: counters.noon });
+            }
+        }
+        let userids = users.map(user => user.id);
+        userMins = userMins.filter(u => {
+            for (let i = 0; i < u.morning.length; i++) {
+                if (u.morning[i] < 2 || u.noon[i] < 1) {
+                    return true;
+                }
+            }
+            return false;
+        })
+        console.log(userMins);
+        let noUsers = await this.userModel.find({ _id: {$nin: userids}}).select(["nickname", "id"]);
+        noUsers = noUsers.map(user => {return {...user["_doc"], id: user._id.toString()}});
+        return {weeks, users, noUsers: (noUsers as {nickname: string, id: string }[]), minUsers: userMins};
     }
 
     async getShift(id: string): Promise<Shift> {

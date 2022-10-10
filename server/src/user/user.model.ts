@@ -50,6 +50,7 @@ export const UserScheme = new mongoose.Schema<User>({
 
 export interface User {
     id?: string;
+    _id: string;
     name: string;
     nickname: string;
     username: string;
