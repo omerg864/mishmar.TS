@@ -25,13 +25,18 @@ export class EventController {
         return this.eventService.createEvent(body);
     }
 
+    @Patch('many')
+    async patchManyEvents(@Body() body: EventInterface[]): Promise<EventInterface[]> {
+        return this.eventService.updateManyEvents(body);
+    }
+
     @Patch()
     async patchEvent(@Body() body: EventInterface): Promise<EventInterface> {
         return this.eventService.updateEvent(body);
     }
 
     @Delete(':id')
-    async deleteEvent(@Param('id') id: string): Promise<string> {
+    async deleteEvent(@Param('id') id: string): Promise<{id : string}> {
         return this.eventService.deleteEvent(id);
     }
 }

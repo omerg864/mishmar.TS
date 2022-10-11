@@ -23,18 +23,30 @@ export class EventService {
         return event;
     }
 
-    async deleteEvent(eventId: string): Promise<string> {
+    async deleteEvent(eventId: string): Promise<{id : string}> {
         const event = await this.eventModel.findById(eventId);
         if (!event) {
             throw new NotFoundException('Event not found');
         }
         await this.eventModel.deleteOne({ _id: event._id });
-        return event._id.toString();
+        return { id: event._id.toString() };
     }
 
     async createEvent(event: EventInterface): Promise<EventInterface> {
         const eventModel = await this.eventModel.create(event);
         return eventModel;
+    }
+
+    async updateManyEvents(events: EventInterface[]): Promise<EventInterface[]> {
+        let events_temp: EventInterface[] = [];
+        for (let i = 0; i < events.length; i++) {
+            const eventFound = await this.eventModel.findOne({ _id: events[i]._id });
+            if (!eventFound) {
+                throw new NotFoundException('Event not found');
+            }
+            events_temp.push(await this.eventModel.findByIdAndUpdate({ _id: events[i]._id }, events[i], { new: true }));
+        }
+        return events_temp;
     }
 
     async updateEvent(event: EventInterface): Promise<EventInterface> {

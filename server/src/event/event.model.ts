@@ -22,6 +22,7 @@ export const EventScheme = new mongoose.Schema<EventInterface>({
 
 export interface EventInterface {
     id?: mongoose.Schema.Types.ObjectId;
+    _id: string|mongoose.Schema.Types.ObjectId;
     date: Date;
     content: string;
     users: mongoose.Types.ObjectId[];

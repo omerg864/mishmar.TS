@@ -33,22 +33,13 @@ interface IProps {
     names: User[];
     inputLabel: string;
     values: string[];
+    name: string;
     onChange?: (event: SelectChangeEvent<string[]>) => void;
 }
 
 export default function ChipSelect(props: IProps) {
   const theme = useTheme();
-  const [personName, setPersonName] = React.useState<string[]>([]);
 
-  const handleChange = (event: SelectChangeEvent<typeof personName>) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
-    );
-  };
 
   return (
     <div>
@@ -58,6 +49,7 @@ export default function ChipSelect(props: IProps) {
           labelId="demo-multiple-chip-label"
           id="demo-multiple-chip"
           multiple
+          name={props.name}
           value={props.values}
           onChange={props.onChange}
           input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
@@ -74,7 +66,7 @@ export default function ChipSelect(props: IProps) {
             <MenuItem
               key={user._id}
               value={user._id}
-              style={getStyles(user.nickname, personName, theme)}
+              style={getStyles(user.nickname, props.values, theme)}
             >
               {user.nickname}
             </MenuItem>

@@ -42,7 +42,7 @@ export interface Shift {
 }
 
 export interface EventType {
-    _id: string;
+    _id?: string;
     content: string;
     date: string;
     users: string[]|User[];
