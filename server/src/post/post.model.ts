@@ -25,6 +25,7 @@ export const PostScheme = new mongoose.Schema<PostInterface>({
 
 export interface PostInterface {
     id?: mongoose.Schema.Types.ObjectId;
+    _id?: mongoose.Schema.Types.ObjectId|string;
     title: string;
     userId: mongoose.Schema.Types.ObjectId;
     content: string;

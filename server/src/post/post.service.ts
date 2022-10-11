@@ -8,12 +8,12 @@ export class PostService {
 
     constructor(@InjectModel('Post') private readonly postModel: Model<PostInterface>) {}
 
-    async create(post: PostInterface): Promise<PostInterface> {
-        return await this.postModel.create(post);
+    async create(userId: string, post: PostInterface): Promise<PostInterface> {
+        return await this.postModel.create({...post, userId: userId});
     }
 
     async getPost(id: string): Promise<PostInterface> {
-        const postFound = await this.postModel.findById(id);
+        const postFound = await this.postModel.findById(id).populate('userId', ["nickname"]);
         if (!postFound) {
             throw new NotFoundException('Post not found');
         }
@@ -21,7 +21,7 @@ export class PostService {
     }
 
     async getAll(): Promise<PostInterface[]>{
-        const posts = await this.postModel.find();
+        const posts = await this.postModel.find().populate('userId', ["nickname"]);
         return posts;
     }
 
@@ -34,11 +34,11 @@ export class PostService {
         return postFound.id.toString();
     }
 
-    async updatePost(post: PostInterface): Promise<PostInterface> {
-        const postFound = await this.postModel.findById(post.id);
+    async updatePost(userId: string, post: PostInterface): Promise<PostInterface> {
+        const postFound = await this.postModel.findById(post._id);
         if (!postFound) {
             throw new NotFoundException('Post not found');
         }
-        return await this.postModel.findByIdAndUpdate(post.id, post, { new: true});
+        return await this.postModel.findByIdAndUpdate(post._id, {...post, userId: userId}, { new: true});
     }
 }

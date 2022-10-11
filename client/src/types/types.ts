@@ -48,9 +48,16 @@ export interface EventType {
     users: string[]|User[];
 }
 
+export interface PostType {
+    _id?: string;
+    title: string;
+    content: string;
+    date: string;
+    userId: string|User;
+}
+
 export interface User {
     _id: string;
     name: string;
     nickname: string;
-
 }

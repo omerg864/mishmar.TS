@@ -70,7 +70,6 @@ const Manager = (props: IProps) => {
         <h2>Events</h2>
         <div className='manager-div'>
             <Link to="/events" >Events</Link>
-            <Link to="/event/new" >New Event</Link>
         </div>
         <h2>Posts</h2>
         <div className='manager-div'>

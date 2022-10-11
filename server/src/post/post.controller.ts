@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { UserID } from 'src/middleware/auth.middlware';
 import { PostInterface } from './post.model';
 import { PostService } from './post.service';
 
@@ -7,13 +8,13 @@ export class PostController {
     constructor(private readonly postService: PostService) {}
 
     @Post()
-    async create(@Body() post: PostInterface): Promise<PostInterface> {
-        return this.postService.create(post);
+    async create(@UserID() userId: string, @Body() post: PostInterface): Promise<PostInterface> {
+        return this.postService.create(userId, post);
     }
 
     @Patch()
-    async updatePost(@Body() post: PostInterface): Promise<PostInterface> {
-        return this.postService.updatePost(post);
+    async updatePost(@UserID() userId: string, @Body() post: PostInterface): Promise<PostInterface> {
+        return this.postService.updatePost(userId, post);
     }
 
     @Delete(':id')

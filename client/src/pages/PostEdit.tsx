@@ -18,22 +18,58 @@ interface IProps {
   manager: boolean;
 }
 
-const PostNew = (props: IProps) => {
+const PostEdit = (props: IProps) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false)
   const [post, setPost] = useState<PostType>({title: "", content: "", date: (new Date()).toString(), userId: {nickname: ""}} as PostType);
   const cookies = new Cookies();
+  const { id } = useParams();
+
+  const getPost = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`http://localhost:5000/post/${id}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') }});
+      const data = await response.json();
+      if (data.error) {
+        toast.error(data.message);
+      } else {
+        setPost(data);
+      }
+    } catch (e) {
+      console.log(e);
+      toast.error('Internal server error');
+    }
+    setLoading(false);
+  }
 
   const handleChange = (e: any) => {
     setPost({...post, [e.target.name]: e.target.value});
   }
 
-
-  const savePost = async () => {
+  const updatePost = async () => {
     setLoading(true);
     try {
       const response = await fetch(`http://localhost:5000/post/`, { headers: { authorization: 'Bearer ' + cookies.get('userToken'), "Content-type": "application/json" },
-      method: 'POST', body: JSON.stringify({...post, date: new Date() })});
+      method: 'PATCH', body: JSON.stringify({...post, date: new Date() })});
+      const data = await response.json();
+      if (data.error) {
+        toast.error(data.message);
+      } else {
+        toast.success("post saved");
+        navigate('/posts');
+      }
+    } catch (e) {
+      console.log(e);
+      toast.error('Internal server error');
+    }
+    setLoading(false);
+  }
+
+  const deletePost = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`http://localhost:5000/post/${id}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') },
+      method: 'DELETE'});
       const data = await response.json();
       if (data.error) {
         toast.error(data.message);
@@ -49,6 +85,13 @@ const PostNew = (props: IProps) => {
   }
 
 
+  useEffect(() => {
+    if (props.manager) {
+      getPost();
+    }
+  },[props.manager]);
+
+
   if (loading) {
     return <Spinner />
   }
@@ -60,7 +103,7 @@ const PostNew = (props: IProps) => {
 
   return (
     <main>
-      <h1>New Post</h1>
+      <h1>Post</h1>
       <Card sx={{ width: '60%' }}>
           <CardContent sx={{textAlign: 'center', position: 'relative'}}>
             <TextField value={post.title} name="title" label="Title" onChange={handleChange}/>
@@ -68,13 +111,14 @@ const PostNew = (props: IProps) => {
               {dateToString(new Date())}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{position: 'absolute', top: '3px', left: '10px'}}>
-              {cookies.get('user').nickname}
+              {(post.userId as User).nickname}
             </Typography>
             <div>
             <TextareaAutosize style={{width: '100%', marginTop: '10px'}} minRows={5} value={post.content} onChange={handleChange} name="content"/>
             </div>
             <div style={{display: 'flex', gap: "10px", marginTop: '10px'}}>
-              <Button variant="contained" color="primary" onClick={savePost} >Save</Button>
+              <Button variant="contained" color="primary" onClick={updatePost} >Save</Button>
+              <Button variant="contained" color="error" onClick={deletePost} >Delete</Button>
             </div>
           </CardContent>
       </Card>
@@ -82,4 +126,4 @@ const PostNew = (props: IProps) => {
   )
 }
 
-export default PostNew
+export default PostEdit

@@ -17,6 +17,9 @@ import Shift from './pages/Shift';
 import ScheduleShift from './pages/ScheduleShift';
 import ScheduleShiftUser from './pages/ScheduleShiftUser';
 import Events from './pages/Events';
+import Posts from './pages/Posts';
+import PostEdit from './pages/PostEdit';
+import PostNew from './pages/PostNew';
 
 
 function App() {
@@ -43,6 +46,9 @@ function App() {
       <Route path="/schedule/:id/shifts" element={<ScheduleShift authenticated={authenticated}/>} />
       <Route path="/shift/schedule/:scheduleId/user/:userId" element={<ScheduleShiftUser manager={manager}/>} />
       <Route path="/events" element={<Events manager={manager}/>} />
+      <Route path="/posts" element={<Posts authenticated={authenticated}/>} />
+      <Route path="/post/:id" element={<PostEdit manager={manager}/>} />
+      <Route path="/post/new" element={<PostNew manager={manager}/>} />
     </Routes>
     </>
   );
