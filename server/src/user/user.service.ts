@@ -55,6 +55,21 @@ export class UserService {
         }
     }
 
+    async updateManyUsers(users: User[]) {
+        let users_temp: User[] = []
+        for (let i = 0; i < users.length; i++){
+            let userObj = {...users[i]}
+            if (userObj.password) {
+                const salt = await bcrypt.genSalt(10);
+                const hashedPassword = await bcrypt.hash(userObj.password, salt);
+                userObj.password = hashedPassword;
+            }
+            const updatedUser = await this.userModel.findByIdAndUpdate(userObj._id, userObj, { new: true });
+            users_temp.push(updatedUser);
+        }
+        return users_temp
+    }
+
     // TODO: Add security to role update request
     async updateUser(user: User, userId: string) {
         let userObj = {...user}
@@ -67,17 +82,17 @@ export class UserService {
         return updatedUser
     }
 
-    async deleteUser(userId: string) {
+    async deleteUser(userId: string): Promise<{ id: string}> {
         const user = await this.userModel.findById(userId);
         if (!user) {
             throw new NotFoundException('User not found');
         }
         await user.delete();
-        return user.id.toString();
+        return { id: user.id.toString() };
     }
 
     async getAll(){
-        const users = await this.userModel.find();
+        const users = await this.userModel.find().select('-password');
         return users;
     }
 

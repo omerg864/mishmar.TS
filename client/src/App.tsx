@@ -20,6 +20,7 @@ import Events from './pages/Events';
 import Posts from './pages/Posts';
 import PostEdit from './pages/PostEdit';
 import PostNew from './pages/PostNew';
+import Users from './pages/Users';
 
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
       <Route path="/posts" element={<Posts authenticated={authenticated}/>} />
       <Route path="/post/:id" element={<PostEdit manager={manager}/>} />
       <Route path="/post/new" element={<PostNew manager={manager}/>} />
+      <Route path="/users" element={<Users manager={manager}/>} />
     </Routes>
     </>
   );

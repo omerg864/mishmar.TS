@@ -9,11 +9,12 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 interface IProps {
     open: boolean;
-    closeModal: React.MouseEventHandler<HTMLButtonElement>;
-    confirmButton: React.MouseEventHandler<HTMLButtonElement>;
+    closeModal: () => void;
+    confirmButton: (e: any) => void;
     textContent: string;
     children: React.ReactNode;
     confirmButtonText: string;
+    title: string;
 }
 
 export default function Modal(props: IProps) {
@@ -21,7 +22,7 @@ export default function Modal(props: IProps) {
   return (
     <div>
       <Dialog open={props.open} onClose={props.closeModal}>
-        <DialogTitle>Subscribe</DialogTitle>
+        <DialogTitle>{props.title}</DialogTitle>
         <DialogContent>
           <DialogContentText>
             {props.textContent}
@@ -29,8 +30,8 @@ export default function Modal(props: IProps) {
           {props.children}
         </DialogContent>
         <DialogActions>
+        <Button onClick={props.confirmButton}>{props.confirmButtonText}</Button>
           <Button color="error" onClick={props.closeModal}>Cancel</Button>
-          <Button onClick={props.confirmButton}>{props.confirmButtonText}</Button>
         </DialogActions>
       </Dialog>
     </div>

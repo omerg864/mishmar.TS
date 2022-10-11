@@ -23,8 +23,13 @@ export class UserController {
         return await this.userService.updateUser(user, userId);
     }
 
+    @Patch('many')
+    async updateManyUsers(@Body() users: User[]) {
+        return await this.userService.updateManyUsers(users);
+    }
+
     @Delete(':id')
-    async deleteUser(@Param('id') id: string) {
+    async deleteUser(@Param('id') id: string): Promise<{ id: string}>  {
         return await this.userService.deleteUser(id);
     }
 

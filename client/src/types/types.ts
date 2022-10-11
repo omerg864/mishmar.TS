@@ -60,4 +60,9 @@ export interface User {
     _id: string;
     name: string;
     nickname: string;
+    email?: string;
+    username?: string;
+    role?: string[];
+    password?: string;
+    confirmPassword?: string;
 }
