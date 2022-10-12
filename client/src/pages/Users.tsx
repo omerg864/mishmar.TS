@@ -135,9 +135,9 @@ const Users = (props: IProps) => {
   }
 
   const modalChildren = (<>
-  <TextField name='password' sx={{marginTop: '10px'}} label={"Password"} value={modal.user.password} onChange={(e) => setModal({open: true, user: {...modal.user, password: e.target.value}})}/>
+  <TextField name='password' sx={{marginTop: '10px'}} type="password" label={"Password"} value={modal.user.password} onChange={(e) => setModal({open: true, user: {...modal.user, password: e.target.value}})}/>
   <div>
-  <TextField name='confirmPassword' sx={{marginTop: '10px'}} label={"Confirm Password"} value={modal.user.confirmPassword} onChange={(e) => setModal({open: true, user: {...modal.user, confirmPassword: e.target.value}})}/>
+  <TextField name='confirmPassword' sx={{marginTop: '10px'}} type="password" label={"Confirm Password"} value={modal.user.confirmPassword} onChange={(e) => setModal({open: true, user: {...modal.user, confirmPassword: e.target.value}})}/>
   </div>
   </>)
 

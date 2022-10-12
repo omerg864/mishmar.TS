@@ -77,6 +77,9 @@ const Header = (props: IProps) => {
       case 'Logout': 
         logout();
         break;
+      case 'Profile':
+        navigate('/profile');
+        break;
       default:
         break;
     }

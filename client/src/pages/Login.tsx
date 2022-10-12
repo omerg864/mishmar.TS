@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Spinner from '../components/Spinner';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {toast} from 'react-toastify';
 import Cookies from 'universal-cookie';
 import { Dispatch, SetStateAction } from "react";
@@ -62,6 +62,7 @@ const Login = (props: IProps) => {
             <form onSubmit={handleSubmit}>
             <TextField className='text_input' id="username" label="Username" name='username' required variant="outlined" onChange={(e) => setUserData({...userData, [e.target.name]: e.target.value})} />
             <TextField className='text_input' id="password" label="Password" name="password" type="password" required variant="outlined" onChange={(e) => setUserData({...userData, [e.target.name]: e.target.value})} />
+            <Link to="/password/reset/email">Forgot my password?</Link>
             <Button variant="contained" color="primary" type="submit" >Login</Button>
             </form>
         </div>
