@@ -21,6 +21,7 @@ import Posts from './pages/Posts';
 import PostEdit from './pages/PostEdit';
 import PostNew from './pages/PostNew';
 import Users from './pages/Users';
+import Quality from './pages/Quality';
 
 
 function App() {
@@ -51,6 +52,7 @@ function App() {
       <Route path="/post/:id" element={<PostEdit manager={manager}/>} />
       <Route path="/post/new" element={<PostNew manager={manager}/>} />
       <Route path="/users" element={<Users manager={manager}/>} />
+      <Route path="/users/quality" element={<Quality manager={manager}/>} />
     </Routes>
     </>
   );

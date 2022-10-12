@@ -24,6 +24,11 @@ export const UserScheme = new mongoose.Schema<User>({
         type: String,
         required: true,
     },
+    night: {
+        type: Number,
+        default: 0,
+        required: false,
+    },
     friday_noon: {
         type: Number,
         default: 0,
@@ -56,6 +61,7 @@ export interface User {
     username: string;
     email: string;
     password: string;
+    night: number;
     friday_noon: number;
     weekend_night: number;
     weekend_day: number;

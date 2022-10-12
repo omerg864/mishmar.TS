@@ -65,7 +65,7 @@ const Manager = (props: IProps) => {
         <h2>Users</h2>
         <div className='manager-div'>
             <Link to="/users" >Users</Link>
-            <Link to="/quality" >Quality</Link>
+            <Link to="/users/quality" >Quality</Link>
         </div>
         <h2>Events</h2>
         <div className='manager-div'>

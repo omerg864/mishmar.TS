@@ -66,3 +66,12 @@ export interface User {
     password?: string;
     confirmPassword?: string;
 }
+
+export interface UserQuality {
+    _id: string;
+    nickname: string;
+    night: number;
+    friday_noon: number;
+    weekend_night: number;
+    weekend_day: number;
+}
