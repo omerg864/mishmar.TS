@@ -1,3 +1,4 @@
+import { ScheduleScheme } from './../schedule/schedule.model';
 import { EventScheme } from './event.model';
 import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { EventController } from './event.controller';
@@ -7,7 +8,7 @@ import { UserScheme } from 'src/user/user.model';
 import { AuthMiddleware, SiteManagerMiddleware } from 'src/middleware/auth.middlware';
 
 @Module({
-  imports: [MongooseModule.forFeature([{name: 'Event', schema: EventScheme}, {name: 'User', schema: UserScheme}])],
+  imports: [MongooseModule.forFeature([{name: 'Event', schema: EventScheme}, {name: 'Schedule', schema: ScheduleScheme}, {name: 'User', schema: UserScheme}])],
   controllers: [EventController],
   providers: [EventService]
 })

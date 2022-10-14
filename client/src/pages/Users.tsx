@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Spinner from '../components/Spinner';
 import { toast } from 'react-toastify';
 import { User } from '../types/types';
@@ -27,6 +27,7 @@ const Users = (props: IProps) => {
   const [users, setUsers] = useState<User[]>([]);
   const [modal, setModal] = useState<{open: boolean, user: User}>({open: false, user: {} as User});
   const cookies = new Cookies();
+  const [height, setHeight] = useState(100);
 
   const getUsers = async (loading: boolean) => {
     if (loading) 
@@ -147,6 +148,13 @@ const Users = (props: IProps) => {
     }
   }, [props.manager]);
 
+
+  const changeRef = (el: any) => {
+    if (el){
+      setHeight(el.clientHeight as number);
+    }
+  }
+
   if (!props.manager) {
     return <></>
   }
@@ -162,8 +170,8 @@ const Users = (props: IProps) => {
        textContent={""} closeModal={() => setModal({open: false, user: {password: "", confirmPassword: ""} as User})} children={modalChildren} confirmButton={changePassword} />
         <h1>Users</h1>
         <Button variant="contained" color="primary" onClick={saveUsers}>Save</Button>
-        <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableContainer style={{minHeight: height}} component={Paper}>
+      <Table ref={changeRef} sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <StyledTableRow>
             <StyledTableCell align="center">Name</StyledTableCell>

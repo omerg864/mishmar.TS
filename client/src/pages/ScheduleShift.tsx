@@ -122,12 +122,10 @@ const ScheduleShift = (props: IProps) => {
             ))}
         </div>
         </div>
-        <TableContainer component={Paper}>
         {numberToArray(schedule.num_weeks).map((week, index1) => (
             <TableHead2 key={`week-${week}`} days={schedule.days[week]} 
             children={<TableBodyShift rows={rows} week={week} data={data} update={false} disabled={false}/>}/>
         ))}
-        </TableContainer>
     </main>
   )
 }

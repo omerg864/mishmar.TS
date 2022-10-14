@@ -78,15 +78,13 @@ const ScheduleUpdate = (props: IProps) => {
     }
 
   return (
-    <main>
+    <main style={{height: '130vh'}}>
         <h1>{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
         <Button variant="contained" color="primary" onClick={saveSchedule}>Save</Button>
         <FormControlLabel control={<Switch onChange={changePublish} checked={schedule.publish} />} label="Submit" />
-        <TableContainer component={Paper}>
         {numberToArray(schedule.num_weeks).map((week, index1) => (
           <TableHead2 key={`week-${week}`} days={schedule.days[week]} children={<TableBodySchedule week={week} data={schedule.weeks[week]} update={true} onChange={changeSchedule} />} />
         ))}
-    </TableContainer>
     </main>
   )
 }

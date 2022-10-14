@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { toast } from 'react-toastify';
 import Spinner from '../components/Spinner'
 import Cookies from 'universal-cookie';
@@ -30,6 +30,7 @@ const Structures = (props: IProps) => {
     //const [changes, setChanges] = useState<string[]>([]);
     const defaultValue = {title: '', description: '', shift: 0, index: 0, opening: false, pull: false, manager: false} as Structure
     const [newStructure, setNewStructure] = useState<Structure>(defaultValue);
+    const [height, setHeight] = useState(100);
 
       const newCheckboxChange = (event: any) => {
         const name: keyof Structure = event.target.name;
@@ -170,6 +171,12 @@ const Structures = (props: IProps) => {
       getStructures();
     }
 
+    const changeRef = (el: any) => {
+      if (el){
+        setHeight(el.clientHeight as number);
+      }
+    }
+
 
     if (!props.manager) {
         return <></>;
@@ -185,8 +192,8 @@ const Structures = (props: IProps) => {
         <div className='save-btn-container'>
         <Button variant="contained" color="primary" onClick={saveStructures}>Save</Button>
         </div>
-        <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableContainer style={{minHeight: height}} component={Paper}>
+      <Table ref={changeRef} sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <StyledTableRow>
             <StyledTableCell align="center">Shift</StyledTableCell>

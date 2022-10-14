@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
@@ -17,6 +17,7 @@ import ChipSelect from '../components/ChipSelect';
 import { SelectChangeEvent } from '@mui/material/Select';
 import DatePicker from '../components/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
+import { StyledTableCell, StyledTableRow } from '../components/StyledTable';
 
 
 
@@ -31,23 +32,7 @@ const Events = (props: IProps) => {
     const [users, setUsers] = useState<User[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const cookies = new Cookies();
-
-
-    const StyledTableCell = styled(TableCell)(({ theme }) => ({
-      [`&.${tableCellClasses.head}`]: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-      },
-      [`&.${tableCellClasses.body}`]: {
-        fontSize: 14,
-      },
-    }));
-    
-    const StyledTableRow = styled(TableRow)(({ theme }) => ({
-      '&:nth-of-type(odd)': {
-        backgroundColor: 'theme.palette.action.hover',
-      },
-    }));
+    const [height, setHeight] = useState(100);
 
 
     const newDateChange = (newValue: Dayjs | null) => {
@@ -187,6 +172,13 @@ const Events = (props: IProps) => {
           getEvents(true);
         }
       }, [props.manager]);
+    
+    
+      const changeRef = (el: any) => {
+        if (el){
+          setHeight(el.clientHeight as number);
+        }
+      }
 
 
     if (isLoading) {
@@ -203,8 +195,8 @@ const Events = (props: IProps) => {
       <div className='save-btn-container'>
         <Button variant="contained" color="primary" onClick={() => saveEvents(true)}>Save</Button>
         </div>
-      <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <TableContainer style={{minHeight: height}} component={Paper}>
+      <Table ref={changeRef} sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <StyledTableRow>
             <StyledTableCell align="center">Date</StyledTableCell>

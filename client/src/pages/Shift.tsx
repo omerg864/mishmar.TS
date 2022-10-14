@@ -1,14 +1,13 @@
 import React, { useState, useEffect} from 'react'
-import TableContainer from '@mui/material/TableContainer';
-import Paper from '@mui/material/Paper';
 import Spinner from '../components/Spinner';
 import { ScheduleUser, Shift as ShiftType } from '../types/types';
 import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
 import { addDays, dateToString, dateToStringShort, numberToArray } from '../functions/functions';
-import { Button } from '@mui/material';
+import { Button, TextField, Typography } from '@mui/material';
 import TableHead2 from '../components/TableHead';
 import TableBodyShift from '../components/TableBodyShift';
+import { TextareaAutosize } from '@mui/material';
 
 
 interface IProps {
@@ -32,7 +31,8 @@ const Shift = (props: IProps) => {
         try {
             const response = await fetch(`http://localhost:5000/schedule/last`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
             const data = await response.json();
-            await getShift(data._id);
+            getShift(data._id);
+            await getEvents(data._id);
             setSchedule({...data, date: new Date(data.date)});
         } catch (err) {
             console.log(err);
@@ -42,7 +42,6 @@ const Shift = (props: IProps) => {
       }
 
       const getGeneralSettings = async () => {
-        setIsLoading(true);
         try {
             const response = await fetch(`http://localhost:5000/settings`, { headers: { Authorization: 'Bearer ' + cookies.get('userToken') } });
             const data = await response.json();
@@ -55,7 +54,6 @@ const Shift = (props: IProps) => {
             console.log(err);
             toast.error("Internal server error");
         }
-        setIsLoading(false);
       }
 
       const getShift = async (id: string) => {
@@ -73,6 +71,23 @@ const Shift = (props: IProps) => {
         }
       }
 
+      const getEvents = async (id: string) => {
+        try {
+          const response = await fetch(`http://localhost:5000/event/schedule/${id}`, { headers: { Authorization: 'Bearer ' + cookies.get('userToken') } });
+          const data = await response.json();
+          if (data.error) {
+              toast.error(data.message);
+          } else {
+            for ( let i = 0; i < data.length; i++) {
+              toast.info(`לא לשכוח בתאריך ${dateToStringShort(new Date(data[i].date))} יש ${data[i].content}`, {autoClose: false});
+            }
+          }
+      } catch (err) {
+          console.log(err);
+          toast.error("Internal server error");
+      }
+      }
+
       const checkboxChange = (e: any) => {
         let weeks = [...shift.weeks]
         const [row, week, day] = e.target.name.split("-");
@@ -85,6 +100,10 @@ const Shift = (props: IProps) => {
         const [row, week, day] = e.target.name.split("-");
         weeks[parseInt(week)].notes[parseInt(day)] = e.target.value;
         setShift({...shift, weeks });
+      }
+
+      const shiftTextChange = (e: any) => {
+        setShift({...shift, [e.target.name]: e.target.value});
       }
 
       const submitShift = async () => {
@@ -127,12 +146,16 @@ const Shift = (props: IProps) => {
         <h1>{dateToString(schedule.date)} - {dateToString(addDays(schedule.date, schedule.num_weeks * 7 - 1))}</h1>
         {!submitting ? <h1>לא ניתן לשנות/להגיש משמרות</h1> :
         <Button variant="contained" color="primary" disabled={!submitting} onClick={submitShift}>Submit</Button>}
-        <TableContainer component={Paper}>
+        <div style={{display: 'flex', width: '100%', gap: '10px', textAlign: 'center', justifyContent: 'start', padding: '10px', boxSizing: 'border-box'}}>
+          <TextField label="Weekend Night" type="number" value={shift.weekend_night} name="weekend_night" disabled={!submitting} onChange={shiftTextChange} />
+          <TextField label="Weekend day" type="number" value={shift.weekend_day} name="weekend_day" disabled={!submitting} onChange={shiftTextChange} />
+          <Typography style={{marginTop: 'auto', marginBottom: 'auto'}}>Notes: </Typography>
+          <TextareaAutosize id="notes" minRows={3} name="notes" value={shift.notes} disabled={!submitting} onChange={shiftTextChange} />
+        </div>
         {numberToArray(schedule.num_weeks).map((week, index1) => (
           <TableHead2 key={`week-${week}`} days={schedule.days[week]} 
           children={<TableBodyShift rows={rows} week={week} data={shift.weeks} notesChange={notesChange} checkboxChange={checkboxChange} update={true} disabled={!submitting}/>}/>
         ))}
-    </TableContainer>
     </main>
   )
 }

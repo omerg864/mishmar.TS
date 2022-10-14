@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
@@ -25,6 +25,8 @@ const Quality = (props: IProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const cookies = new Cookies();
     const [users, setUsers] = useState<UserQuality[]>([]);
+    const tableRef = useRef<HTMLTableElement>(null);
+    const [height, setHeight] = useState(100);
 
     const getUsers = async () => {
         setIsLoading(true);
@@ -107,6 +109,12 @@ const Quality = (props: IProps) => {
         }
     }, [props.manager]);
 
+    const changeRef = (el: any) => {
+      if (el){
+        setHeight(el.clientHeight as number);
+      }
+    }
+
     if (!props.manager) {
         return <></>
     }
@@ -122,8 +130,8 @@ const Quality = (props: IProps) => {
         <Button variant="contained" color="primary" onClick={() => saveUsers(true)}>Save</Button>
         <Button variant="contained" color="error" onClick={resetQuality}>Reset</Button>
         </div>
-        <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableContainer style={{minHeight: height}} component={Paper}>
+      <Table ref={changeRef} sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <StyledTableRow>
             <StyledTableCell align="center">Nickname</StyledTableCell>

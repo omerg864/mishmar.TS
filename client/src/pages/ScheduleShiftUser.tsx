@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Spinner from '../components/Spinner';
 import TableHead from '../components/TableHead';
 import TableBodyShift from '../components/TableBodyShift';
@@ -139,12 +139,10 @@ const ScheduleShiftUser = (props: IProps) => {
         <h1>{user.nickname}</h1>
         <h1>{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
         <Button variant="contained" color="primary" onClick={submitShift}>Save</Button>
-        <TableContainer component={Paper}>
         {numberToArray(schedule.num_weeks).map((week, index1) => (
-          <TableHead2 key={`week-${week}`} days={schedule.days[week]} 
+          <TableHead2 key={`week-${week}`}  days={schedule.days[week]} 
           children={<TableBodyShift rows={rows} week={week} data={shift.weeks} notesChange={notesChange} checkboxChange={checkboxChange} update={true} disabled={false}/>}/>
         ))}
-    </TableContainer>
     </main>
   )
 }

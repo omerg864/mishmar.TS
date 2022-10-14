@@ -58,11 +58,9 @@ const ScheduleView = (props: IProps) => {
   return (
     <main>
         {schedule.num_weeks !== undefined && <><h1>{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
-        <TableContainer component={Paper}>
         {numberToArray(schedule.num_weeks).map((week, index1) => (
           <TableHead2 key={`week-${week}`} days={schedule.days[week]} children={<TableBodySchedule week={week} data={schedule.weeks[week]} update={false} />} />
-        ))}
-      </TableContainer> </> }
+        ))} </> }
     </main>
   )
 }

@@ -89,7 +89,7 @@ export class AdminManagerMiddleware implements NestMiddleware {
   }
 }
 
-export const UserID = createParamDecorator(
+export const UserID = createParamDecorator<string>(
   (_data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
     return request.userId; // extract token from request

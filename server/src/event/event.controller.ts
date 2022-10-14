@@ -1,3 +1,4 @@
+import { UserID } from 'src/middleware/auth.middlware';
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { User } from 'src/user/user.model';
 import { EventInterface } from './event.model';
@@ -12,6 +13,11 @@ export class EventController {
     @Get('all')
     async getAllEvents(): Promise<{events: EventInterface[], users: User[]}> {
         return this.eventService.getAll();
+    }
+
+    @Get('schedule/:scheduleId')
+    async getUserEventsSchedule(@Param('scheduleId') scheduleId: string, @UserID() userId: string): Promise<EventInterface[]> {
+        return await this.eventService.getUserEventsSchedule(scheduleId, userId);
     }
 
 
