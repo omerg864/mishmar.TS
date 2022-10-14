@@ -48,6 +48,23 @@ export class ScheduleService {
         return { ...schedules[0]["_doc"], days}
     }
 
+    async getLastData() : Promise<Schedule> {
+        let schedules = await this.scheduleModel.find().sort({ date: -1});
+        if (schedules.length === 0) {
+            throw new ConflictException('No schedules found')
+        }
+        let index = 0;
+        if (!schedules[index].publish) {
+            index = 1
+            if (schedules.length === 1) {
+                throw new ConflictException('No Published schedule found')
+            }
+        }
+        let days: Date[][] = this.calculateDays(schedules[index]);
+        let schedule = await this.populateSchedule(schedules[index]);
+        return { ...schedule, days}
+    }
+
     addDays = (date: Date, days: number): Date => {
         var result = new Date(date);
         result.setDate(result.getDate() + days);

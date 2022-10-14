@@ -60,6 +60,9 @@ const Header = (props: IProps) => {
       case 'SHIFT':
         navigate('/shift');
         break;
+      case 'SCHEDULE':
+        navigate('/schedule');
+        break;
       default:
         break;
     }

@@ -5,16 +5,11 @@ import Cookies from 'universal-cookie';
 import { toast } from 'react-toastify';
 import Spinner from '../components/Spinner'
 import { addDays, dateToString, dateToStringShort, numberToArray } from '../functions/functions';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
-import TextareaAutosize from '@mui/material/TextareaAutosize';
-import { Button } from '@mui/material';
+import { Button, FormControlLabel, Switch } from '@mui/material';
+import TableBodySchedule from '../components/TableBodySchedule';
+import TableHead2 from '../components/TableHead';
 
 interface IProps {
     manager: boolean;
@@ -26,22 +21,6 @@ const ScheduleUpdate = (props: IProps) => {
     const cookies = new Cookies();
     const [schedule, setSchedule] = useState<Schedule>({} as Schedule);
     const [isLoading, setIsLoading]  = useState<boolean>(false);
-
-    const StyledTableCell = styled(TableCell)(({ theme }) => ({
-        [`&.${tableCellClasses.head}`]: {
-          backgroundColor: theme.palette.common.black,
-          color: theme.palette.common.white,
-        },
-        [`&.${tableCellClasses.body}`]: {
-          fontSize: 14,
-        },
-      }));
-      
-      const StyledTableRow = styled(TableRow)(({ theme }) => ({
-        '&:nth-of-type(odd)': {
-          backgroundColor: 'theme.palette.action.hover',
-        },
-      }));
 
 
     const getSchedule = async () => {
@@ -61,6 +40,10 @@ const ScheduleUpdate = (props: IProps) => {
         let schedule_temp = {...schedule}
         schedule_temp.weeks[week][shift].days[day] = e.target.value;
         setSchedule(schedule_temp);
+    }
+
+    const changePublish = (e: any) => {
+        setSchedule({ ...schedule, publish: !schedule.publish });
     }
 
     const saveSchedule = async (e: any) => {
@@ -98,51 +81,10 @@ const ScheduleUpdate = (props: IProps) => {
     <main>
         <h1>{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
         <Button variant="contained" color="primary" onClick={saveSchedule}>Save</Button>
+        <FormControlLabel control={<Switch onChange={changePublish} checked={schedule.publish} />} label="Submit" />
         <TableContainer component={Paper}>
         {numberToArray(schedule.num_weeks).map((week, index1) => (
-      <Table sx={{ minWidth: 650 }} aria-label="simple table" key={index1}>
-        <TableHead>
-        <StyledTableRow>
-        <StyledTableCell align="center">תאריך</StyledTableCell>
-        {schedule.days[week].map((day, index) => {
-                return (
-                    <StyledTableCell  align="center" key={day}>{dateToStringShort(new Date(day))}</StyledTableCell>
-                )
-            })}
-        </StyledTableRow>
-          <StyledTableRow>
-            <StyledTableCell align="center"></StyledTableCell>
-            <StyledTableCell align="center">ראשון</StyledTableCell>
-            <StyledTableCell align="center">שני</StyledTableCell>
-            <StyledTableCell align="center">שלישי</StyledTableCell>
-            <StyledTableCell align="center">רביעי</StyledTableCell>
-            <StyledTableCell align="center">חמישי</StyledTableCell>
-            <StyledTableCell align="center">שישי</StyledTableCell>
-            <StyledTableCell align="center">שבת</StyledTableCell>
-          </StyledTableRow>
-        </TableHead>
-        <TableBody>
-            {schedule.weeks[week].map((shift, index2) => (
-                <TableRow
-                key={(shift.shift as Structure)._id}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                <TableCell align="center" scope="row"><p>{(shift.shift as Structure).title}</p><p>{(shift.shift as Structure).description}</p></TableCell>
-                {shift.days.map((day, index) => (
-                    <TableCell key={`${(shift.shift as Structure)._id}-${index}`} align="center" scope="row">
-                        <TextareaAutosize
-                    minRows={3}
-                    value={day}
-                    onChange={changeSchedule}
-                    name={`${week}-${index2}-${index}`}
-                    style={{ width: 200 }}
-                  />
-                  </TableCell>
-                ))}
-                </TableRow>
-            ))}
-        </TableBody>
-      </Table>
+          <TableHead2 key={`week-${week}`} days={schedule.days[week]} children={<TableBodySchedule week={week} data={schedule.weeks[week]} update={true} onChange={changeSchedule} />} />
         ))}
     </TableContainer>
     </main>

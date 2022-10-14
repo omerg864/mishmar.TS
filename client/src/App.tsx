@@ -24,6 +24,7 @@ import Users from './pages/Users';
 import Quality from './pages/Quality';
 import EmailPassword from './pages/EmailPassword';
 import Profile from './pages/Profile';
+import ScheduleView from './pages/ScheduleView';
 
 
 function App() {
@@ -57,6 +58,7 @@ function App() {
       <Route path="/users/quality" element={<Quality manager={manager}/>} />
       <Route path="/password/reset/email" element={<EmailPassword authenticated={authenticated}/>} />
       <Route path="/profile" element={<Profile authenticated={authenticated}/>} />
+      <Route path="/schedule" element={<ScheduleView authenticated={authenticated}/>} />
     </Routes>
     </>
   );

@@ -13,6 +13,11 @@ export class ScheduleController {
         return await this.scheduleService.getAll();
     }
 
+    @Get('last/data')
+    async getLastDataSchedule(): Promise<Schedule> {
+        return await this.scheduleService.getLastData();
+    }
+
     @Get('last')
     async getLastSchedule(): Promise<Schedule> {
         return await this.scheduleService.getLast();

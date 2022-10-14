@@ -44,6 +44,11 @@ export const UserScheme = new mongoose.Schema<User>({
         default: 0,
         required: false
     },
+    reset_token: {
+        type: String,
+        default: "",
+        required: false
+    },
     role: [
         { type: String,
         enum: ["ADMIN", "SITE_MANAGER", "SHIFT_MANAGER", "USER", "EXTRA"],
@@ -66,4 +71,5 @@ export interface User {
     weekend_night: number;
     weekend_day: number;
     role: string[];
+    reset_token?: string;
 }
