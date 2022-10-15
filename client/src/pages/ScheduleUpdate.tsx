@@ -25,7 +25,7 @@ const ScheduleUpdate = (props: IProps) => {
 
     const getSchedule = async () => {
         setIsLoading(true);
-        const response = await fetch('http://localhost:5000/schedule/' + id, { headers: { authorization: 'Bearer ' + cookies.get('userToken')}});
+        const response = await fetch('http://localhost:5000/api/schedules/' + id, { headers: { authorization: 'Bearer ' + cookies.get('userToken')}});
         const data = await response.json();
         if (data.error) {
             toast.error(data.message);
@@ -49,7 +49,7 @@ const ScheduleUpdate = (props: IProps) => {
     const saveSchedule = async (e: any) => {
         setIsLoading(true);
         try {
-            const response = await fetch('http://localhost:5000/schedule/', { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken')  },
+            const response = await fetch('http://localhost:5000/api/schedules/', { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken')  },
             method: 'PATCH', body: JSON.stringify(schedule) });
             const data = await response.json();
             if (data.error) {
@@ -78,7 +78,7 @@ const ScheduleUpdate = (props: IProps) => {
     }
 
   return (
-    <main style={{height: '130vh'}}>
+    <main>
         <h1>{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
         <Button variant="contained" color="primary" onClick={saveSchedule}>Save</Button>
         <FormControlLabel control={<Switch onChange={changePublish} checked={schedule.publish} />} label="Submit" />

@@ -26,7 +26,7 @@ const ScheduleNew = (props: IProps) => {
     const createSchedule = async (e:  React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
-        const response = await fetch(`http://localhost:5000/schedule`, 
+        const response = await fetch(`http://localhost:5000/api/schedules`, 
         {headers: {'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken')}
         ,method: 'POST', body: JSON.stringify({ date, num_weeks: numWeeks})});
         const data = await response.json();

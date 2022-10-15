@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserID } from 'src/middleware/auth.middlware';
@@ -20,7 +20,7 @@ export class ShiftService {
         return await this.shiftModel.find();
     }
 
-    async scheduleShifts(scheduleId: string): Promise<{weeks: ShiftScheduleWeek[], users: {nickname: string, id: string }[], noUsers: {nickname: string, id: string }[], minUsers: {nickname: string, id: string, morning: number[], noon: number[]  }[]}> {
+    async scheduleShifts(scheduleId: string): Promise<{weeks: ShiftScheduleWeek[],weeksNotes: string[], generalNotes: string,  users: {nickname: string, id: string }[], noUsers: {nickname: string, id: string }[], minUsers: {nickname: string, id: string, morning: number[], noon: number[]  }[]}> {
         const schedule = await this.scheduleModel.findById(scheduleId);
         if (!schedule) {
             throw new NotFoundException('Schedule not found');
@@ -32,12 +32,22 @@ export class ShiftService {
         let userMins: {id: string, nickname: string, morning: number[], noon: number[]}[] = [];
         let counters: {morning: number[], noon: number[]};
         let userIn: boolean;
+        let notesWeeks: string[] = [];
+        let generalNotes: string = "";
         for (let i = 0; i < shifts.length; i++) {
             userIn = false;
             let nickname = (shifts[i].userId as User).nickname;
             let id = (shifts[i].userId as User)._id.toString();
+            if (shifts[i].notes !== "") {
+                if (generalNotes === "") {
+                    generalNotes = `${nickname}: ${shifts[i].notes}`;
+                } else {
+                    generalNotes += `\n${nickname}: ${shifts[i].notes}`;
+                }
+            }
             counters = {morning: [], noon: []};
             for (let j = 0; j < shifts[i].weeks.length; j++) {
+                notesWeeks.push("");
                 weeks.push({
                     morning: ["", "", "", "", "", "", ""],
                     noon: ["", "", "", "", "", "", ""],
@@ -71,10 +81,17 @@ export class ShiftService {
                                     counters.noon[j]++;
                                 }
                             }
+                            if (params[h] === 'notes') {
+                                if (notesWeeks[j] === "") {
+                                    notesWeeks[j] = `יום ${k + 1} - ${nickname}: ${shifts[i].weeks[j][params[h]][k]}`;
+                                } else {
+                                    notesWeeks[j] += `\nיום ${k + 1} - ${nickname}: ${shifts[i].weeks[j][params[h]][k]}`;
+                                }
+                            }
                             if (weeks[j][params[h]][k] === "") {
                                 weeks[j][params[h]][k] = value;
                             } else {
-                                weeks[j][params[h]][k] += "/n" + value;
+                                weeks[j][params[h]][k] += "\n" + value;
                             }
                         }
                     }
@@ -95,15 +112,7 @@ export class ShiftService {
         })
         let noUsers = await this.userModel.find({ _id: {$nin: userids}}).select(["nickname", "id"]);
         noUsers = noUsers.map(user => {return {...user["_doc"], id: user._id.toString()}});
-        return {weeks, users, noUsers: (noUsers as {nickname: string, id: string }[]), minUsers: userMins};
-    }
-
-    async getShift(id: string): Promise<Shift> {
-        const shift = await this.shiftModel.findById(id);
-        if (!shift) {
-            throw new NotFoundException('Shift not found');
-        }
-        return shift;
+        return {weeks, users, weeksNotes: notesWeeks, generalNotes , noUsers: (noUsers as {nickname: string, id: string }[]), minUsers: userMins};
     }
 
     async createNewShift(userId: string, scheduleId: string): Promise<Shift> {
@@ -132,14 +141,18 @@ export class ShiftService {
         return shiftFound;
     }
 
-    async create(shift: Shift): Promise<Shift> {
-        return await this.shiftModel.create(shift);
-    }
-
-    async update(shift: Shift): Promise<Shift> {
+    async update(shift: Shift, userId: string): Promise<Shift> {
         const shiftFound = await this.shiftModel.findById(shift._id);
         if (!shiftFound) {
             throw new NotFoundException('Shift not found');
+        }
+        const userFound = await this.userModel.findById(userId);
+        console.log(userFound);
+        console.log(shift);
+        if (!userFound.role.includes('ADMIN') && !userFound.role.includes('SITE_MANAGER')) {
+            if (userId !== shift.userId.toString()) {
+                throw new UnauthorizedException('Cant change shift of this user');
+            }
         }
         return await this.shiftModel.findByIdAndUpdate(shift._id, shift, { new: true });
     }

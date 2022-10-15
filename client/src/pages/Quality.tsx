@@ -31,7 +31,7 @@ const Quality = (props: IProps) => {
     const getUsers = async () => {
         setIsLoading(true);
         try {
-          const response = await fetch(`http://localhost:5000/user/all`, { headers: { authorization: 'Bearer ' + cookies.get('userToken')}});
+          const response = await fetch(`http://localhost:5000/api/users/all`, { headers: { authorization: 'Bearer ' + cookies.get('userToken')}});
           const data = await response.json();
           if (data.error) {
             toast.error(data.message);
@@ -71,7 +71,7 @@ const Quality = (props: IProps) => {
         if (loading)
             setIsLoading(true);
         try {
-          const response = await fetch(`http://localhost:5000/user/many`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
+          const response = await fetch(`http://localhost:5000/api/users/many`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
           method: 'PATCH', body: JSON.stringify(users)});
           const data = await response.json();
           if (data.error) {

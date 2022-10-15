@@ -2,7 +2,7 @@ import { Body, Controller, Get, Patch } from '@nestjs/common';
 import { Settings } from './settings.model';
 import { SettingsService } from './settings.service';
 
-@Controller('settings')
+@Controller('api/settings')
 export class SettingsController {
 
     constructor(private readonly settingsService: SettingsService) {}

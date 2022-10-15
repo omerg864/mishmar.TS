@@ -17,13 +17,13 @@ const TableHead2 = (props: IProps) => {
 
   const changeRef = (el: any) => {
     if (el){
-      setHeight(el.clientHeight as number);
+      setHeight(el.clientHeight as number + 10);
     }
   }
 
 
   return (
-    <TableContainer style={{minHeight: height}} component={Paper}>
+    <TableContainer style={{minHeight: height, paddingBottom: '10px'}} component={Paper}>
     <Table ref={changeRef} sx={{ minWidth: 650 }} aria-label="simple table" >
         <TableHead>
         <StyledTableRow>

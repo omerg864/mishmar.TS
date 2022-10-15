@@ -5,7 +5,9 @@ main {
   justify-content: top;
   align-items: center;
   height: 100vh;
-  padding: 10px;
+  padding: 15px;
+  box-sizing: border-box;
+  margin-left: 10px;
 }
 
 .text_input {

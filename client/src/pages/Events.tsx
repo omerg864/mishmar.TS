@@ -88,7 +88,7 @@ const Events = (props: IProps) => {
     const createEvent = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(`http://localhost:5000/event/`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') },
+        const response = await fetch(`http://localhost:5000/api/events/`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') },
       method: 'POST', body: JSON.stringify(newEvent)});
         const data = await response.json();
         if (data.error) {
@@ -111,7 +111,7 @@ const Events = (props: IProps) => {
       setIsLoading(true);
       e.preventDefault();
       try {
-        const response = await fetch(`http://localhost:5000/event/${e.target.value}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') }, method: 'DELETE'});
+        const response = await fetch(`http://localhost:5000/api/events/${e.target.value}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') }, method: 'DELETE'});
         const data = await response.json();
         if (data.error) {
           toast.error(data.message);
@@ -130,7 +130,7 @@ const Events = (props: IProps) => {
       if (loading)
         setIsLoading(true);
       try {
-        const response = await fetch(`http://localhost:5000/event/many`, { headers: { 'Content-Type': 'application/json', Authorization : 'Bearer ' + cookies.get('userToken') }, 
+        const response = await fetch(`http://localhost:5000/api/events/many`, { headers: { 'Content-Type': 'application/json', Authorization : 'Bearer ' + cookies.get('userToken') }, 
       method: 'PATCH', body: JSON.stringify(events) });
       const data = await response.json();
         if (data.error) {
@@ -151,7 +151,7 @@ const Events = (props: IProps) => {
       if (loading)
         setIsLoading(true);
       try {
-        const response = await fetch('http://localhost:5000/event/all', { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}});
+        const response = await fetch('http://localhost:5000/api/events/all', { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}});
         const data = await response.json();
         if (data.error) {
           toast.error(data.message);

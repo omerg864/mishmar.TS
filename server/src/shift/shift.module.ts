@@ -15,11 +15,11 @@ import { AuthMiddleware, SiteManagerMiddleware } from 'src/middleware/auth.middl
 })
 export class ShiftModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'shift/all', method: RequestMethod.GET});
-    consumer.apply(AuthMiddleware).forRoutes({path: 'shift/user/:scheduleId', method: RequestMethod.GET});
-    consumer.apply(AuthMiddleware).forRoutes({path: 'shift/:id', method: RequestMethod.GET});
-    consumer.apply(AuthMiddleware).forRoutes({path: 'shift', method: RequestMethod.POST});
-    consumer.apply(AuthMiddleware).forRoutes({path: 'shift', method: RequestMethod.PATCH});
-    consumer.apply(AdminManagerMiddleware).forRoutes({path: 'shift/*', method: RequestMethod.DELETE});
+    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/shifts/all', method: RequestMethod.GET});
+    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/shifts/user/:userId/:scheduleId/manager', method: RequestMethod.GET});
+    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/shifts/schedule/:id', method: RequestMethod.GET});
+    consumer.apply(AuthMiddleware).forRoutes({path: 'api/shifts', method: RequestMethod.PATCH});
+    consumer.apply(AuthMiddleware).forRoutes({path: 'api/shifts/user/:scheduleId', method: RequestMethod.GET});
+    consumer.apply(AdminManagerMiddleware).forRoutes({path: 'api/shifts/*', method: RequestMethod.DELETE});
   }
 }

@@ -26,7 +26,7 @@ const Posts = (props: IProps) => {
   const getPosts = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/post/all`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
+      const response = await fetch(`http://localhost:5000/api/posts/all`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
       const data = await response.json();
       if (data.error) {
         toast.error(data.message);

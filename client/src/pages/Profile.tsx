@@ -27,7 +27,7 @@ const Profile = (props: IProps) => {
     e.preventDefault()
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/user`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
+      const response = await fetch(`http://localhost:5000/api/users`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
       method: 'PATCH', body: JSON.stringify(formData)});
       const data = await response.json();
       if (data.error) {
@@ -46,7 +46,7 @@ const Profile = (props: IProps) => {
   const updatePassword = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/user`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
+      const response = await fetch(`http://localhost:5000/api/users`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
       method: 'PATCH', body: JSON.stringify(passwordData)});
       const data = await response.json();
       if (data.error) {

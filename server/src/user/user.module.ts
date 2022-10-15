@@ -13,9 +13,11 @@ import { SettingsScheme } from 'src/settings/settings.model';
 })
 export class UserModule implements NestModule{
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).forRoutes({path: 'user', method: RequestMethod.PATCH});
-    consumer.apply(AuthMiddleware).forRoutes({path: 'user/auth', method: RequestMethod.GET});
-    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'user/:id', method: RequestMethod.DELETE});
-    consumer.apply(SiteManagerMiddleware).forRoutes('user/all');
+    consumer.apply(AuthMiddleware).forRoutes({path: 'api/users', method: RequestMethod.PATCH});
+    consumer.apply(AuthMiddleware).forRoutes({path: 'api/users/auth', method: RequestMethod.GET});
+    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/users/manager', method: RequestMethod.PATCH});
+    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/users/:id', method: RequestMethod.DELETE});
+    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/users/many', method: RequestMethod.PATCH});
+    consumer.apply(SiteManagerMiddleware).forRoutes('api/users/all');
   }
 }

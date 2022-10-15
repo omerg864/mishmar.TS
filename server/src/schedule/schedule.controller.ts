@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/commo
 import { Schedule } from './schedule.model';
 import { ScheduleService } from './schedule.service';
 
-@Controller('schedule')
+@Controller('api/schedules')
 export class ScheduleController {
 
     constructor(private readonly scheduleService: ScheduleService) {}

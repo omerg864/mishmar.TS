@@ -93,7 +93,7 @@ const Structures = (props: IProps) => {
     const getStructures = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:5000/structure/all', {headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}});
+            const response = await fetch('http://localhost:5000/api/structures/all', {headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}});
             const data = await response.json();
             if (data.error) {
                 toast.error(data.message);
@@ -114,7 +114,7 @@ const Structures = (props: IProps) => {
     const saveStructures = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`http://localhost:5000/structure/many`, 
+        const response = await fetch(`http://localhost:5000/api/structures/many`, 
         { headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + cookies.get('userToken')},
           method: 'PATCH', body: JSON.stringify(structures)
       })
@@ -135,7 +135,7 @@ const Structures = (props: IProps) => {
       setLoading(true);
       await saveStructures();
       try {
-        const response = await fetch(`http://localhost:5000/structure`,
+        const response = await fetch(`http://localhost:5000/api/structures`,
         { headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + cookies.get('userToken')}, 
         method: 'POST', body: JSON.stringify(newStructure)});
         const data = await response.json();
@@ -156,7 +156,7 @@ const Structures = (props: IProps) => {
     const deleteStructure = async (e: any) => {
       setLoading(true);
       try {
-        const response = await fetch(`http://localhost:5000/structure/${e.target.value}`, { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}, method: 'DELETE'});
+        const response = await fetch(`http://localhost:5000/api/structures/${e.target.value}`, { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}, method: 'DELETE'});
         const data = await response.json();
         if (data.error) {
           toast.error(data.message);

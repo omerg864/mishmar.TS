@@ -3,7 +3,7 @@ import { UserID } from 'src/middleware/auth.middlware';
 import { Shift, ShiftScheduleWeek } from './shift.model';
 import { ShiftService } from './shift.service';
 
-@Controller('shift')
+@Controller('api/shifts')
 export class ShiftController {
 
     constructor(private readonly shiftService: ShiftService) {}
@@ -15,7 +15,7 @@ export class ShiftController {
     }
 
     @Get('schedule/:id')
-    async scheduleShifts(@Param('id') id: string): Promise<{weeks: ShiftScheduleWeek[], users: {nickname: string, id: string}[], noUsers: {nickname: string, id: string }[], minUsers: {nickname: string, id: string, morning: number[], noon: number[] }[]}> {
+    async scheduleShifts(@Param('id') id: string): Promise<{weeks: ShiftScheduleWeek[],weeksNotes: string[], generalNotes: string, users: {nickname: string, id: string}[], noUsers: {nickname: string, id: string }[], minUsers: {nickname: string, id: string, morning: number[], noon: number[] }[]}> {
         return await this.shiftService.scheduleShifts(id);
     }
 
@@ -29,23 +29,13 @@ export class ShiftController {
         return this.shiftService.getUserScheduleShift(userId, scheduleId);
     }
 
-    @Get(':id')
-    async getShift(@Param('id') id: string): Promise<Shift> {
-        return this.shiftService.getShift(id);
-    }
-
-    @Post()
-    async addShift(@Body() shift: Shift): Promise<Shift> {
-        return this.shiftService.create(shift);
-    }
-
     @Delete(':id')
     async deleteShift(@Param('id') id: string): Promise<string> {
         return this.shiftService.delete(id);
     }
 
     @Patch()
-    async patchShift(@Body() shift: Shift): Promise<Shift> {
-        return this.shiftService.update(shift);
+    async patchShift(@Body() shift: Shift, @UserID() userId: string): Promise<Shift> {
+        return this.shiftService.update(shift, userId);
     }
 }

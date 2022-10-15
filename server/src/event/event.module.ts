@@ -14,9 +14,11 @@ import { AuthMiddleware, SiteManagerMiddleware } from 'src/middleware/auth.middl
 })
 export class EventModule implements NestModule{
   configure(consumer: MiddlewareConsumer){
-    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'event/*', method: RequestMethod.DELETE});
-    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'event', method: RequestMethod.PATCH});
-    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'event', method: RequestMethod.POST});
-    consumer.apply(AuthMiddleware).forRoutes({path: 'event/*', method: RequestMethod.GET});
+    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/events/*', method: RequestMethod.DELETE});
+    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/events', method: RequestMethod.PATCH});
+    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/events/many', method: RequestMethod.PATCH});
+    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/events', method: RequestMethod.POST});
+    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/events/:id', method: RequestMethod.GET});
+    consumer.apply(AuthMiddleware).forRoutes({path: 'api/events/schedule/*', method: RequestMethod.GET});
   }
 }

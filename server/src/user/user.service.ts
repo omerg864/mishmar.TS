@@ -119,9 +119,14 @@ export class UserService {
         }
     }
 
-    // TODO: Add security to role update request
     async updateUser(user: User, userId: string) {
         let userObj = {...user}
+        if (userObj.role) {
+            delete userObj.role;
+        }
+        if (userObj._id) {
+            delete userObj._id;
+        }
         if (user.password) {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(user.password, salt);

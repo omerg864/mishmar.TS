@@ -22,7 +22,7 @@ const ScheduleView = (props: IProps) => {
   const getLastSchedule = async () => {
     setIsLoading(true);
     try {
-        const response = await fetch(`http://localhost:5000/schedule/last/data`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
+        const response = await fetch(`http://localhost:5000/api/schedules/last/data`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
         const data = await response.json();
         if (data.error) {
           toast.error(data.message);

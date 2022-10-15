@@ -32,7 +32,7 @@ const PostNew = (props: IProps) => {
   const savePost = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/post/`, { headers: { authorization: 'Bearer ' + cookies.get('userToken'), "Content-type": "application/json" },
+      const response = await fetch(`http://localhost:5000/api/posts/`, { headers: { authorization: 'Bearer ' + cookies.get('userToken'), "Content-type": "application/json" },
       method: 'POST', body: JSON.stringify({...post, date: new Date() })});
       const data = await response.json();
       if (data.error) {

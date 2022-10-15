@@ -4,7 +4,7 @@ import { User } from 'src/user/user.model';
 import { EventInterface } from './event.model';
 import { EventService } from './event.service';
 
-@Controller('event')
+@Controller('api/events')
 export class EventController {
 
     constructor(private readonly eventService: EventService) { }

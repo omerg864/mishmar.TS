@@ -29,7 +29,7 @@ const Shift = (props: IProps) => {
       const getLastSchedule = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch(`http://localhost:5000/schedule/last`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
+            const response = await fetch(`http://localhost:5000/api/schedules/last`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
             const data = await response.json();
             getShift(data._id);
             await getEvents(data._id);
@@ -43,7 +43,7 @@ const Shift = (props: IProps) => {
 
       const getGeneralSettings = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/settings`, { headers: { Authorization: 'Bearer ' + cookies.get('userToken') } });
+            const response = await fetch(`http://localhost:5000/api/settings/general`, { headers: { Authorization: 'Bearer ' + cookies.get('userToken') } });
             const data = await response.json();
             if (data.error) {
                 toast.error(data.message);
@@ -58,7 +58,7 @@ const Shift = (props: IProps) => {
 
       const getShift = async (id: string) => {
         try {
-            const response = await fetch(`http://localhost:5000/shift/user/${id}`, { headers: { Authorization: 'Bearer ' + cookies.get('userToken') } });
+            const response = await fetch(`http://localhost:5000/api/shifts/user/${id}`, { headers: { Authorization: 'Bearer ' + cookies.get('userToken') } });
             const data = await response.json();
             if (data.error) {
                 toast.error(data.message);
@@ -73,7 +73,7 @@ const Shift = (props: IProps) => {
 
       const getEvents = async (id: string) => {
         try {
-          const response = await fetch(`http://localhost:5000/event/schedule/${id}`, { headers: { Authorization: 'Bearer ' + cookies.get('userToken') } });
+          const response = await fetch(`http://localhost:5000/api/events/schedule/${id}`, { headers: { Authorization: 'Bearer ' + cookies.get('userToken') } });
           const data = await response.json();
           if (data.error) {
               toast.error(data.message);
@@ -109,7 +109,7 @@ const Shift = (props: IProps) => {
       const submitShift = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch(`http://localhost:5000/shift`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') },
+            const response = await fetch(`http://localhost:5000/api/shifts`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') },
         method: 'PATCH', body: JSON.stringify(shift) });
             const data = await response.json();
             if (data.error) {

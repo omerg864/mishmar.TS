@@ -2,7 +2,7 @@ import { Structure } from './structure.model';
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { StructureService } from './structure.service';
 
-@Controller('structure')
+@Controller('api/structures')
 export class StructureController {
 
     constructor(private readonly structureService: StructureService) {}

@@ -13,9 +13,10 @@ import { UserScheme } from 'src/user/user.model';
 })
 export class PostModule implements NestModule {
   configure(consumer: MiddlewareConsumer){
-    consumer.apply(ShiftManagerMiddleware).forRoutes({path: 'post', method: RequestMethod.POST})
-    consumer.apply(ShiftManagerMiddleware).forRoutes({path: 'post/*', method: RequestMethod.DELETE})
-    consumer.apply(ShiftManagerMiddleware).forRoutes({path: 'post', method: RequestMethod.PATCH})
-    consumer.apply(AuthMiddleware).forRoutes({path: 'post/*', method: RequestMethod.GET})
+    consumer.apply(ShiftManagerMiddleware).forRoutes({path: 'api/posts', method: RequestMethod.POST})
+    consumer.apply(ShiftManagerMiddleware).forRoutes({path: 'api/posts/*', method: RequestMethod.DELETE})
+    consumer.apply(ShiftManagerMiddleware).forRoutes({path: 'api/posts', method: RequestMethod.PATCH})
+    consumer.apply(ShiftManagerMiddleware).forRoutes({path: 'api/posts/*', method: RequestMethod.GET})
+    consumer.apply(AuthMiddleware).forRoutes({path: 'api/posts/all', method: RequestMethod.GET})
   }
 }

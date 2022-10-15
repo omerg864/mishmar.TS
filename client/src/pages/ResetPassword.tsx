@@ -21,7 +21,7 @@ const ResetPassword = (props: IProps) => {
   const checkToken = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/user/resetPassword/${reset_token}`)
+      const response = await fetch(`http://localhost:5000/api/users/resetPassword/${reset_token}`)
       const data = await response.json();
       if (data.error) {
         toast.error(data.message);
@@ -46,7 +46,7 @@ const ResetPassword = (props: IProps) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/user/resetPassword/${reset_token}`, { headers: { 'Content-Type': 'application/json' }, method: 'POST', body: JSON.stringify(passwordData) });
+      const response = await fetch(`http://localhost:5000/api/users/resetPassword/${reset_token}`, { headers: { 'Content-Type': 'application/json' }, method: 'POST', body: JSON.stringify(passwordData) });
       const data = await response.json();
       if (data.error) {
         toast.error(data.message);

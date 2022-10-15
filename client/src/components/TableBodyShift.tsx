@@ -3,7 +3,7 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import { numberToArray } from '../functions/functions';
-import { Checkbox, TextareaAutosize } from '@mui/material';
+import { Checkbox, TextareaAutosize, Typography } from '@mui/material';
 
 interface IProps {
   rows: string[];
@@ -43,7 +43,13 @@ const TableBody2 = (props: IProps) => {
     <TableRow key={`${row}-${props.week}`}>
         <TableCell align="center">{row}</TableCell>
     {numberToArray(7).map(num => (
-            <TableCell  key={`${row}-${props.week}-${num}`} style={{padding: '1px'}} align="center">{props.data[props.week][row as keyof ShiftScheduleWeek][num]}</TableCell>
+            <TableCell  key={`${row}-${props.week}-${num}`} style={{padding: '1px'}} align="center">
+              <Typography>
+            <pre style={{ fontFamily: 'inherit' }}>
+            {props.data[props.week][row as keyof ShiftScheduleWeek][num]}
+            </pre>
+            </Typography>
+            </TableCell>
     ))}
     </TableRow>
     ))}

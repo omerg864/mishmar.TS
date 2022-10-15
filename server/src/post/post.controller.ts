@@ -3,7 +3,7 @@ import { UserID } from 'src/middleware/auth.middlware';
 import { PostInterface } from './post.model';
 import { PostService } from './post.service';
 
-@Controller('post')
+@Controller('api/posts')
 export class PostController {
     constructor(private readonly postService: PostService) {}
 

@@ -3,7 +3,7 @@ import Spinner from '../components/Spinner'
 import TableContainer from '@mui/material/TableContainer';
 import Paper from '@mui/material/Paper';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
-import { Button, Checkbox, TableHead } from '@mui/material';
+import { Button, Checkbox, TableHead, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import { toast } from 'react-toastify';
@@ -36,12 +36,14 @@ const ScheduleShift = (props: IProps) => {
     const [noUsers, setNoUsers] = useState([] as {nickname: string, id: string}[]);
     const [minUsers, setMinUsers] = useState([] as {nickname: string, id: string, noon: number[], morning: number[]}[]);
     const [schedule, setSchedule] = useState({num_weeks: 0, date: new Date(), days: [] as string[][], _id: '1'} as ScheduleUser);
+    const [weeksNotes, setWeeksNotes] = useState<string[]>([]);
+    const [generalNotes, setGeneralNotes] = useState<string>("");
     const cookies = new Cookies();
 
 
     const getData = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/shift/schedule/${id}`, {headers: { authorization: 'Bearer ' + cookies.get('userToken') }});
+            const response = await fetch(`http://localhost:5000/api/shifts/schedule/${id}`, {headers: { authorization: 'Bearer ' + cookies.get('userToken') }});
             const data = await response.json();
             if (data.error) {
                 toast.error(data.message);
@@ -50,6 +52,8 @@ const ScheduleShift = (props: IProps) => {
                 setUsers(data.users);
                 setNoUsers(data.noUsers);
                 setMinUsers(data.minUsers);
+                setWeeksNotes(data.weeksNotes);
+                setGeneralNotes(data.generalNotes);
             }
         } catch (e) {
             console.log(e);
@@ -59,7 +63,7 @@ const ScheduleShift = (props: IProps) => {
 
     const getSchedule = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/schedule/${id}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') }});
+            const response = await fetch(`http://localhost:5000/api/schedules/${id}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') }});
             const data = await response.json();
             if (data.error) {
                 toast.error(data.message);
@@ -122,9 +126,25 @@ const ScheduleShift = (props: IProps) => {
             ))}
         </div>
         </div>
+        <div style={{display: 'flex', width: '100%'}}>
+        <Typography>
+            <pre style={{ fontFamily: 'inherit' }}>
+                הערות כלליות:{"\n"}{generalNotes}
+            </pre>
+            </Typography>
+        </div>
         {numberToArray(schedule.num_weeks).map((week, index1) => (
+            <>
             <TableHead2 key={`week-${week}`} days={schedule.days[week]} 
             children={<TableBodyShift rows={rows} week={week} data={data} update={false} disabled={false}/>}/>
+            <div style={{display: 'flex', width: '100%'}}>
+            <Typography>
+            <pre style={{ fontFamily: 'inherit' }}>
+                הערות שבוע {week + 1}:{"\n"}{weeksNotes[week]}
+            </pre>
+            </Typography>
+            </div>
+            </>
         ))}
     </main>
   )

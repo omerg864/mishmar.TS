@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { toast} from 'react-toastify';
 import Spinner from '../components/Spinner'
 import Switch from '@mui/material/Switch';
-import { FormControlLabel } from '@mui/material';
+import { Box, Card, CardContent, FormControlLabel } from '@mui/material';
 import Cookies from 'universal-cookie';
 
 interface IProps {
@@ -19,7 +19,7 @@ const Manager = (props: IProps) => {
 
     const getSubmit = async () => {
         setLoading(true);
-        const response = await fetch('http://localhost:5000/settings/general')
+        const response = await fetch('http://localhost:5000/api/settings/general')
         const data = await response.json();
         if (data.error) {
             toast.error(data.message);
@@ -36,7 +36,7 @@ const Manager = (props: IProps) => {
     const changeSubmit = async (e: React.ChangeEvent<HTMLInputElement>) => {
         console.log(e.target.checked);
         setChecked(e.target.checked);
-        const response = await fetch('http://localhost:5000/settings', { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken'), "Content-type": "application/json"} ,method: 'PATCH', body: JSON.stringify({submit: e.target.checked})})
+        const response = await fetch('http://localhost:5000/api/settings', { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken'), "Content-type": "application/json"} ,method: 'PATCH', body: JSON.stringify({submit: e.target.checked})})
         const data = await response.json();
         if (data.error) {
             toast.error(data.message);
@@ -48,11 +48,17 @@ const Manager = (props: IProps) => {
     if(!props.manager) {
         return <></>;
     }
+
+    if (loading) {
+        return <Spinner />
+    }
     
   return (
     <main>
-      <div className='container'>
         <h1>Manager</h1>
+      <Box style={{width: '70%'}}>
+        <Card sx={{textAlign: 'center'}}>
+        <CardContent sx={{textAlign: 'center'}}>
         <div className='manager-div'>
         <FormControlLabel control={<Switch onChange={changeSubmit} checked={checked} />} label="Submit" />
         </div>
@@ -76,7 +82,9 @@ const Manager = (props: IProps) => {
             <Link to="/posts" >Posts</Link>
             <Link to="/post/new" >New Post</Link>
         </div>
-    </div>  
+        </CardContent>
+        </Card>
+    </Box>  
     </main>
   )
 }

@@ -3,7 +3,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/commo
 import { User } from './user.model';
 import { UserID } from 'src/middleware/auth.middlware';
 
-@Controller('user')
+@Controller('api/users')
 export class UserController {
 
     constructor(private readonly userService: UserService) {}
@@ -38,6 +38,11 @@ export class UserController {
         return await this.userService.updateUser(user, userId);
     }
 
+    @Patch('manager')
+    async updateUserManager(@Body() user: User) {
+        return await this.userService.updateUser(user, user._id);
+    }
+
     @Patch('many')
     async updateManyUsers(@Body() users: User[]) {
         return await this.userService.updateManyUsers(users);
@@ -56,10 +61,5 @@ export class UserController {
     @Get('auth')
     async authUser(@UserID() id: string): Promise<{user: boolean, manager: boolean}> {
         return await this.userService.authUser(id);
-    }
-
-    @Get(':id')
-    async getUser(@Param('id') id: string): Promise<User> {
-        return await this.userService.getUser(id);
     }
 }
