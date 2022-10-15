@@ -147,8 +147,6 @@ export class ShiftService {
             throw new NotFoundException('Shift not found');
         }
         const userFound = await this.userModel.findById(userId);
-        console.log(userFound);
-        console.log(shift);
         if (!userFound.role.includes('ADMIN') && !userFound.role.includes('SITE_MANAGER')) {
             if (userId !== shift.userId.toString()) {
                 throw new UnauthorizedException('Cant change shift of this user');

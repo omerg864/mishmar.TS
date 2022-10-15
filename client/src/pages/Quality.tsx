@@ -78,6 +78,8 @@ const Quality = (props: IProps) => {
             toast.error(data.message);
           } else {
             toast.success("Users saved");
+            const userID = cookies.get('user')._id;
+            cookies.set('user', users.find(user => user._id === userID));
           }
         } catch (e) {
           console.log(e);

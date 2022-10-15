@@ -28,7 +28,6 @@ const ScheduleView = (props: IProps) => {
           toast.error(data.message);
         } else {
           setSchedule(data);
-          console.log(data);
         }
     } catch (err) {
         console.log(err);

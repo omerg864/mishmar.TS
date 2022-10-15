@@ -52,15 +52,14 @@ const Header = (props: IProps) => {
   };
 
   const handleCloseNavMenu = (e: React.MouseEvent<Element>) => {
-    console.log((e.target as HTMLButtonElement).innerText)
-    switch((e.target as HTMLButtonElement).innerText){
-      case 'MANAGE BOARD':
+    switch((e.target as HTMLButtonElement).innerText.toLowerCase()){
+      case 'manage board':
         navigate('/management');
         break;
-      case 'SHIFT':
+      case 'shift':
         navigate('/shift');
         break;
-      case 'SCHEDULE':
+      case 'schedule':
         navigate('/schedule');
         break;
       default:

@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
 import { Schedule } from './schedule.model';
-import { ScheduleService } from './schedule.service';
+import { ScheduleService, Shift } from './schedule.service';
 
 @Controller('api/schedules')
 export class ScheduleController {
@@ -21,6 +21,11 @@ export class ScheduleController {
     @Get('last')
     async getLastSchedule(): Promise<Schedule> {
         return await this.scheduleService.getLast();
+    }
+
+    @Put('check')
+    async scheduleValid(@Body('weeks') weeks: Shift[][]): Promise<string[]> {
+        return await this.scheduleService.scheduleValid(weeks);
     }
 
     @Get(':id')

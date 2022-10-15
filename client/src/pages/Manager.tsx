@@ -34,7 +34,6 @@ const Manager = (props: IProps) => {
     }, []);
 
     const changeSubmit = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target.checked);
         setChecked(e.target.checked);
         const response = await fetch('/api/settings', { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken'), "Content-type": "application/json"} ,method: 'PATCH', body: JSON.stringify({submit: e.target.checked})})
         const data = await response.json();

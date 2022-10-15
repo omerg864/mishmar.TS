@@ -83,7 +83,7 @@ export class UserService {
         }
         userFound.reset_token = generatedToken;
         await userFound.save();
-        return sendMail(email, "Reset User Password", `To reset your password please go to:\n http://localhost:3000/password/reset/${generatedToken}`)
+        return sendMail(email, "Reset User Password", `To reset your password please go to:\n ${process.env.SITE_ADDRESS}/password/reset/${generatedToken}`)
     }
 
     async resetTokenPassword(reset_token: string, password: string): Promise<{success: boolean}> {

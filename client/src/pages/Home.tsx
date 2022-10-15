@@ -73,7 +73,7 @@ const Home = (props: IProps) => {
           </CardContent>
       </Card>
       {posts.map((post) => (
-        <Card className='posts-home'>
+        <Card key={post._id} className='posts-home'>
           <CardContent sx={{textAlign: 'center', position: 'relative'}}>
             <Typography gutterBottom variant="h5" component="div">
               {post.title}

@@ -5,7 +5,7 @@ import { Structure } from 'src/structure/structure.model';
 import { Schedule } from './schedule.model';
 import { Document } from 'mongoose';
 
-type Shift = { shift: string|Structure, days: string[]}
+export type Shift = { shift: string|Structure, days: string[]}
 
 @Injectable()
 export class ScheduleService {
@@ -83,13 +83,94 @@ export class ScheduleService {
         return days_tmp;
     }
 
+    arrayDuplicates = (arr: string[]): string[] => {
+        return arr.filter((item, index) => arr.indexOf(item) != index)
+    }
+
+    toShiftNamesArray = (shifts: Shift[], day: number): string[] => {
+        let names: string[] = []
+        for (let i = 0; i < shifts.length; i++) {
+            names.push(...shifts[i].days[day].split('\n').filter(x => x.length > 0));
+        }
+        return names;
+    }
+
+    compareTwoArrays(arr1: string[], arr2: string[]) {
+        let names: string[] = []
+        for (let i = 0; i < arr1.length; i++) {
+            if (!arr2.every((x: string) => x !== arr1[i])) {
+                names.push(arr1[i]);
+            }
+        }
+        return names;
+    }
+
+    async scheduleValid(weeks: Shift[][]): Promise<string[]> {
+        let notifications: Set<string> = new Set();
+        for(let i = 0; i < weeks.length; i++) {
+            // i - week number
+            let morningShifts = weeks[i].filter(shift => (shift.shift as Structure).shift === 0);
+            let noonShifts = weeks[i].filter(shift => (shift.shift as Structure).shift === 1);
+            let nightShifts = weeks[i].filter(shift => (shift.shift as Structure).shift === 2);
+            for (let j = 0; j < 7; j++) {
+                // j - day number
+                let morningNames = this.toShiftNamesArray(morningShifts, j);
+                let noonNames = this.toShiftNamesArray(noonShifts, j);
+                let nightNames = this.toShiftNamesArray(nightShifts, j);
+                let duplicates = this.arrayDuplicates(morningNames)
+                for (let k = 0; k < duplicates.length; k++) {
+                    // k - duplicate name index
+                    notifications.add(`ביום ${j + 1} בשבוע ה-${i + 1} ${duplicates[k]} באותה משמרת בוקר כמה פעמים`);
+                }
+                duplicates = this.arrayDuplicates(noonNames)
+                for (let k = 0; k < duplicates.length; k++) {
+                    // k - duplicate name index
+                    notifications.add(`ביום ${j + 1} בשבוע ה-${i + 1} ${duplicates[k]} באותה משמרת צהריים כמה פעמים`);
+                }
+                duplicates = this.arrayDuplicates(nightNames)
+                for (let k = 0; k < duplicates.length; k++) {
+                    // k - duplicate name index
+                    notifications.add(`ביום ${j + 1} בשבוע ה-${i + 1} ${duplicates[k]} באותה משמרת לילה כמה פעמים`);
+                }
+                duplicates = this.compareTwoArrays(morningNames, noonNames);
+                for (let k = 0; k < duplicates.length; k++) {
+                    // k - duplicate name index
+                    notifications.add(`ביום ${j + 1} בשבוע ה-${i + 1} ${duplicates[k]} במשמרת בוקר ואז צהריים`);
+                }
+                duplicates = this.compareTwoArrays(nightNames, nightNames);
+                for (let k = 0; k < duplicates.length; k++) {
+                    // k - duplicate name index
+                    notifications.add(`ביום ${j + 1} בשבוע ה-${i + 1} ${duplicates[k]} במשמרת צהריים ואז לילה`);
+                }
+                if ( j !== 6) {
+                    morningNames = this.toShiftNamesArray(morningShifts, j + 1);
+                    duplicates = this.compareTwoArrays(nightNames, morningNames);
+                    for (let k = 0; k < duplicates.length; k++) {
+                        // k - duplicate name index
+                        notifications.add(`ביום ${j + 1} בשבוע ה-${i + 1} ${duplicates[k]} במשמרת לילה ואז בוקר`);
+                    }
+                } else {
+                    if (i !== weeks.length - 1) {
+                        morningShifts = weeks[i + 1].filter(shift => (shift.shift as Structure).shift === 0);
+                        morningNames = this.toShiftNamesArray(morningShifts, 0);
+                        duplicates = this.compareTwoArrays(nightNames, morningNames);
+                        for (let k = 0; k < duplicates.length; k++) {
+                            // k - duplicate name index
+                            notifications.add(`ביום ${j + 1} בשבוע ה-${i + 1} ${duplicates[k]} במשמרת לילה ואז בוקר`);
+                        }
+                    }
+                }
+            }
+        }
+        return [...notifications];
+    }
+
     async getSchedule(id: string): Promise<Schedule> {
         let schedule: Schedule = await this.scheduleModel.findById(id);
         if (!schedule) {
             throw new NotFoundException('Schedule not found');
         }
         schedule = await this.populateSchedule(schedule);
-        console.log(schedule);
         let days: Date[][] = this.calculateDays(schedule);
         return {...schedule, days };
     }
