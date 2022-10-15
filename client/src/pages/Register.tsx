@@ -22,7 +22,7 @@ const Register = (props: IProps) => {
             return;
         }
         setIsLoading(true);
-        const response = await fetch(`http://localhost:5000/api/users/register`, { headers: {"Content-type": "application/json"} ,method: 'POST', body: JSON.stringify({user: formData, pin_code: formData.pin_code})})
+        const response = await fetch(`/api/users/register`, { headers: {"Content-type": "application/json"} ,method: 'POST', body: JSON.stringify({user: formData, pin_code: formData.pin_code})})
         const data = await response.json();
         if (data.error) {
             toast.error(data.message);

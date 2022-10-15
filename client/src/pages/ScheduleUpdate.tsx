@@ -25,7 +25,7 @@ const ScheduleUpdate = (props: IProps) => {
 
     const getSchedule = async () => {
         setIsLoading(true);
-        const response = await fetch('http://localhost:5000/api/schedules/' + id, { headers: { authorization: 'Bearer ' + cookies.get('userToken')}});
+        const response = await fetch('/api/schedules/' + id, { headers: { authorization: 'Bearer ' + cookies.get('userToken')}});
         const data = await response.json();
         if (data.error) {
             toast.error(data.message);
@@ -49,7 +49,7 @@ const ScheduleUpdate = (props: IProps) => {
     const saveSchedule = async (e: any) => {
         setIsLoading(true);
         try {
-            const response = await fetch('http://localhost:5000/api/schedules/', { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken')  },
+            const response = await fetch('/api/schedules/', { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken')  },
             method: 'PATCH', body: JSON.stringify(schedule) });
             const data = await response.json();
             if (data.error) {

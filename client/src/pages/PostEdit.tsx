@@ -28,7 +28,7 @@ const PostEdit = (props: IProps) => {
   const getPost = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/posts/${id}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') }});
+      const response = await fetch(`/api/posts/${id}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') }});
       const data = await response.json();
       if (data.error) {
         toast.error(data.message);
@@ -49,7 +49,7 @@ const PostEdit = (props: IProps) => {
   const updatePost = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/posts/`, { headers: { authorization: 'Bearer ' + cookies.get('userToken'), "Content-type": "application/json" },
+      const response = await fetch(`/api/posts/`, { headers: { authorization: 'Bearer ' + cookies.get('userToken'), "Content-type": "application/json" },
       method: 'PATCH', body: JSON.stringify({...post, date: new Date() })});
       const data = await response.json();
       if (data.error) {
@@ -68,7 +68,7 @@ const PostEdit = (props: IProps) => {
   const deletePost = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/posts/${id}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') },
+      const response = await fetch(`/api/posts/${id}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') },
       method: 'DELETE'});
       const data = await response.json();
       if (data.error) {

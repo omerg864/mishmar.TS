@@ -19,7 +19,7 @@ const Manager = (props: IProps) => {
 
     const getSubmit = async () => {
         setLoading(true);
-        const response = await fetch('http://localhost:5000/api/settings/general')
+        const response = await fetch('/api/settings/general')
         const data = await response.json();
         if (data.error) {
             toast.error(data.message);
@@ -36,7 +36,7 @@ const Manager = (props: IProps) => {
     const changeSubmit = async (e: React.ChangeEvent<HTMLInputElement>) => {
         console.log(e.target.checked);
         setChecked(e.target.checked);
-        const response = await fetch('http://localhost:5000/api/settings', { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken'), "Content-type": "application/json"} ,method: 'PATCH', body: JSON.stringify({submit: e.target.checked})})
+        const response = await fetch('/api/settings', { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken'), "Content-type": "application/json"} ,method: 'PATCH', body: JSON.stringify({submit: e.target.checked})})
         const data = await response.json();
         if (data.error) {
             toast.error(data.message);

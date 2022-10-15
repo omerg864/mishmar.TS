@@ -99,7 +99,7 @@ const Header = (props: IProps) => {
 
   const getSettings = async () => {
     setIsLoading(true);
-    const response = await fetch('http://localhost:5000/api/settings/general')
+    const response = await fetch('/api/settings/general')
     const data = await response.json();
     if (data.error) {
       toast.error(data.message);
@@ -111,7 +111,7 @@ const Header = (props: IProps) => {
 
   const authUser = async () => {
     setAuthLoading(true);
-    const response = await fetch('http://localhost:5000/api/users/auth', { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}})
+    const response = await fetch('/api/users/auth', { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}})
     const data = await response.json();
     if (!data.error) {
       props.setAuthenticated(true);

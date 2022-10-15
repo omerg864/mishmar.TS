@@ -22,7 +22,7 @@ const Schedules = (props: IProps) => {
     const getSchedules = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:5000/api/schedules/all`, { headers: {authorization: 'Bearer ' + cookies.get('userToken')}});
+            const response = await fetch(`/api/schedules/all`, { headers: {authorization: 'Bearer ' + cookies.get('userToken')}});
             const data = await response.json();
             setSchedules(data);
         } catch (err) {

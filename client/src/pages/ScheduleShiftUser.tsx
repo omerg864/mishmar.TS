@@ -38,7 +38,7 @@ const ScheduleShiftUser = (props: IProps) => {
 
     const getSchedule = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/schedules/${scheduleId}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') }});
+            const response = await fetch(`/api/schedules/${scheduleId}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') }});
             const data = await response.json();
             if (data.error) {
                 toast.error(data.message);
@@ -54,7 +54,7 @@ const ScheduleShiftUser = (props: IProps) => {
 
     const getUser = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/users/${userId}`, { headers: { authorization: `Bearer ${cookies.get('userToken')}`}})
+            const response = await fetch(`/api/users/${userId}`, { headers: { authorization: `Bearer ${cookies.get('userToken')}`}})
             const data = await response.json();
             if (data.error) {
                 toast.error(data.message);
@@ -70,7 +70,7 @@ const ScheduleShiftUser = (props: IProps) => {
 
     const getShift = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/shifts/user/${userId}/${scheduleId}/manager`, { headers: { Authorization: 'Bearer ' + cookies.get('userToken') } });
+            const response = await fetch(`/api/shifts/user/${userId}/${scheduleId}/manager`, { headers: { Authorization: 'Bearer ' + cookies.get('userToken') } });
             const data = await response.json();
             if (data.error) {
                 toast.error(data.message);
@@ -86,7 +86,7 @@ const ScheduleShiftUser = (props: IProps) => {
       const submitShift = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch(`http://localhost:5000/api/shifts`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') },
+            const response = await fetch(`/api/shifts`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') },
         method: 'PATCH', body: JSON.stringify(shift) });
             const data = await response.json();
             if (data.error) {

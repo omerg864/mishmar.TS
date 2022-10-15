@@ -33,7 +33,7 @@ const Users = (props: IProps) => {
     if (loading) 
       setIsLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/users/all`, { headers: { authorization: 'Bearer ' + cookies.get('userToken')}});
+      const response = await fetch(`/api/users/all`, { headers: { authorization: 'Bearer ' + cookies.get('userToken')}});
       const data = await response.json();
       if (data.error) {
         toast.error(data.message);
@@ -51,7 +51,7 @@ const Users = (props: IProps) => {
   const saveUsers = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/users/many`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
+      const response = await fetch(`/api/users/many`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
       method: 'PATCH', body: JSON.stringify(users)});
       const data = await response.json();
       if (data.error) {
@@ -73,7 +73,7 @@ const Users = (props: IProps) => {
   const changePassword = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/users/manager`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
+      const response = await fetch(`/api/users/manager`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
       method: 'PATCH', body: JSON.stringify(modal.user)});
       const data = await response.json();
       if (data.error) {
@@ -119,7 +119,7 @@ const Users = (props: IProps) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/users/${e.target.value}`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
+      const response = await fetch(`/api/users/${e.target.value}`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
       method: 'DELETE'});
       const data = await response.json();
       if (data.error) {

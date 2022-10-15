@@ -26,7 +26,7 @@ const Login = (props: IProps) => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
-        const response = await fetch(`http://localhost:5000/api/users/login`, { headers: {"Content-type": "application/json"} ,method: 'POST', body: JSON.stringify(userData)})
+        const response = await fetch(`/api/users/login`, { headers: {"Content-type": "application/json"} ,method: 'POST', body: JSON.stringify(userData)})
         const data = await response.json();
         if (data.error) {
             toast.error(data.message);
