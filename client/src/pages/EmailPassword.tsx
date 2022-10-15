@@ -18,7 +18,14 @@ const EmailPassword = (props: IProps) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      
+      const response = await fetch(`http://localhost:5000/user/forgot`, { headers: { 'Content-Type': 'application/json'}, method: 'POST', body: JSON.stringify({email})});
+      const data = await response.json();
+      if (data.error) {
+        toast.error(data.message);
+      } else {
+        toast.success("Please check your email address");
+        navigate("/");
+      }
     } catch (e) {
       console.log(e);
       toast.error('Please enter a valid email address');

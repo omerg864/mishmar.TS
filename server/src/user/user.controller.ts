@@ -18,6 +18,21 @@ export class UserController {
         return await this.userService.register(user, pinCode);
     }
 
+    @Post('forgot')
+    async forgotPasswordEmail(@Body('email') email: string): Promise<{ error?: Error, response?: string}> {
+        return await this.userService.forgotPasswordEmail(email);
+    }
+
+    @Post('resetPassword/:token')
+    async resetTokenPassword(@Body('password') password: string, @Param('token') reset_token: string): Promise<{ success: boolean }> {
+        return await this.userService.resetTokenPassword(reset_token, password);
+    }
+
+    @Get('resetPassword/:token')
+    async resetTokenCheck(@Param('token') reset_token: string): Promise<{ success: boolean }> {
+        return await this.userService.resetTokenCheck(reset_token);
+    }
+
     @Patch()
     async updateUser(@Body() user: User, @UserID() userId: string) {
         return await this.userService.updateUser(user, userId);

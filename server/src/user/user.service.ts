@@ -5,6 +5,8 @@ import { Model } from 'mongoose';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
 import { Settings } from 'src/settings/settings.model';
+import { sendMail } from 'src/functions/functions';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class UserService {
@@ -17,7 +19,7 @@ export class UserService {
 
 
     async login(username: string, password: string) {
-        const user = await this.userModel.findOne({ username });
+        const user = await this.userModel.findOne({ username }).select('-reset_token');
         if (!user) {
             throw new NotFoundException('User not found');
         }
@@ -64,10 +66,57 @@ export class UserService {
                 const hashedPassword = await bcrypt.hash(userObj.password, salt);
                 userObj.password = hashedPassword;
             }
-            const updatedUser = await this.userModel.findByIdAndUpdate(userObj._id, userObj, { new: true });
+            const updatedUser = await this.userModel.findByIdAndUpdate(userObj._id, userObj, { new: true }).select(['-password', '-reset_token']);
             users_temp.push(updatedUser);
         }
         return users_temp
+    }
+
+    async forgotPasswordEmail(email: string): Promise<{ error?: Error, response?: string}> {
+        const userFound = await this.userModel.findOne({ email: { $regex : new RegExp(email, "i") } });
+        if (!userFound) {
+            throw new NotFoundException(`User with email ${email} not found`);
+        }
+        var generatedToken = crypto.randomBytes(26).toString('hex');
+        while (await this.userModel.findOne({reset_token: generatedToken})) {
+            generatedToken = crypto.randomBytes(26).toString('hex');
+        }
+        userFound.reset_token = generatedToken;
+        await userFound.save();
+        return sendMail(email, "Reset User Password", `To reset your password please go to:\n http://localhost:3000/password/reset/${generatedToken}`)
+    }
+
+    async resetTokenPassword(reset_token: string, password: string): Promise<{success: boolean}> {
+        const userFound = await this.userModel.findOne({ reset_token });
+        if (!userFound) {
+            throw new NotFoundException(`User token not valid`);
+        }
+        if (password) {
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+            userFound.password = hashedPassword;
+            var generatedToken = crypto.randomBytes(26).toString('hex');
+            while (await this.userModel.findOne({reset_token: generatedToken})) {
+                generatedToken = crypto.randomBytes(26).toString('hex');
+            }
+            userFound.reset_token = generatedToken;
+            await userFound.save();
+            return {
+                success: true
+            }
+        } else {
+            throw new ConflictException('No Password Provided');
+        }
+    }
+
+    async resetTokenCheck(reset_token: string): Promise<{success: boolean}> {
+        const userFound = await this.userModel.findOne({ reset_token });
+        if (!userFound) {
+            throw new NotFoundException(`User token not valid`);
+        }
+        return {
+            success: true
+        }
     }
 
     // TODO: Add security to role update request
@@ -78,7 +127,7 @@ export class UserService {
             const hashedPassword = await bcrypt.hash(user.password, salt);
             userObj["password"] = hashedPassword;
         }
-        const updatedUser = await this.userModel.findByIdAndUpdate(userId, userObj, { new: true });
+        const updatedUser = await this.userModel.findByIdAndUpdate(userId, userObj, { new: true }).select(['-password', '-reset_token']);
         return updatedUser
     }
 
@@ -92,12 +141,12 @@ export class UserService {
     }
 
     async getAll(){
-        const users = await this.userModel.find().select('-password');
+        const users = await this.userModel.find().select(['-password', '-reset_token']);
         return users;
     }
 
     async getUser(id: string): Promise<User> {
-        const user = await this.userModel.findById(id).select('-password');
+        const user = await this.userModel.findById(id).select(['-password', '-reset_token']);
         if (!user) {
             throw new NotFoundException('User not found');
         }

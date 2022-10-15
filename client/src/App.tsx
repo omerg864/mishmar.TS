@@ -25,6 +25,7 @@ import Quality from './pages/Quality';
 import EmailPassword from './pages/EmailPassword';
 import Profile from './pages/Profile';
 import ScheduleView from './pages/ScheduleView';
+import ResetPassword from './pages/ResetPassword';
 
 
 function App() {
@@ -39,7 +40,7 @@ function App() {
     <Header authenticated={authenticated} setAuthenticated={setAuthenticated} manager={manager} setManager={setManager}/>
     <ToastContainer theme="colored"/>
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Home authenticated={authenticated} />} />
       <Route path="/login" element={<Login authenticated={authenticated} setAuthenticated={setAuthenticated} setManager={setManager}/>} />
       <Route path="/register" element={<Register authenticated={authenticated} />} />
       <Route path="/management" element={<Manager manager={manager}/>} />
@@ -57,6 +58,7 @@ function App() {
       <Route path="/users" element={<Users manager={manager}/>} />
       <Route path="/users/quality" element={<Quality manager={manager}/>} />
       <Route path="/password/reset/email" element={<EmailPassword authenticated={authenticated}/>} />
+      <Route path="/password/reset/:reset_token" element={<ResetPassword authenticated={authenticated}/>} />
       <Route path="/profile" element={<Profile authenticated={authenticated}/>} />
       <Route path="/schedule" element={<ScheduleView authenticated={authenticated}/>} />
     </Routes>
