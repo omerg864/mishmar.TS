@@ -24,7 +24,7 @@ export class ScheduleController {
     }
 
     @Put('check')
-    async scheduleValid(@Body('weeks') weeks: Shift[][]): Promise<string[]> {
+    async scheduleValid(@Body() weeks: Shift[][]): Promise<string[]> {
         return await this.scheduleService.scheduleValid(weeks);
     }
 
