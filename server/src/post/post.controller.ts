@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { UserID } from 'src/middleware/auth.middlware';
 import { PostInterface } from './post.model';
 import { PostService } from './post.service';
@@ -23,8 +23,8 @@ export class PostController {
     }
 
     @Get('all')
-    async getAllPosts(): Promise<PostInterface[]> {
-        return this.postService.getAll();
+    async getAllPosts(@Query() query: { page?: number }): Promise<{ posts: PostInterface[], pages: number}> {
+        return this.postService.getAll(query);
     }
 
     @Get(':id')

@@ -5,9 +5,9 @@ import Cookies from 'universal-cookie';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import { CardActionArea } from '@mui/material';
+import { CardActionArea, Pagination } from '@mui/material';
 import { PostType, User } from '../types/types';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { dateToString } from '../functions/functions';
 
 
@@ -17,8 +17,10 @@ interface IProps {
 
 const Posts = (props: IProps) => {
 
-  const [posts, setPosts] = useState<PostType[]>([])
-  const [loading, setLoading] = useState(false)
+  const [posts, setPosts] = useState<PostType[]>([]);
+  const [pages, setPages] = useState<number>(1);
+  const [loading, setLoading] = useState(false);
+  let [searchParams, setSearchParams] = useSearchParams();
   const cookies = new Cookies();
   const navigate = useNavigate();
 
@@ -26,12 +28,14 @@ const Posts = (props: IProps) => {
   const getPosts = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/posts/all`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
+      let page = searchParams.get('page') ? searchParams.get('page') : 1;
+      const response = await fetch(`/api/posts/all?page=${page}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
       const data = await response.json();
       if (data.error) {
         toast.error(data.message);
       } else {
-        setPosts(data)
+        setPosts(data.posts);
+        setPages(data.pages);
       }
     } catch (err) {
       console.log(err);
@@ -44,11 +48,15 @@ const Posts = (props: IProps) => {
     navigate(`/post/${id}`)
   }
 
+  const paginationClick = (e: any, value: number) => {
+    setSearchParams(`?page=${value}`);
+  }
+
   useEffect(() => {
     if (props.authenticated) {
       getPosts();
     }
-  }, [props.authenticated]);
+  }, [props.authenticated, searchParams]);
   
   if (loading) {
     return <Spinner />
@@ -63,7 +71,7 @@ const Posts = (props: IProps) => {
     <main>
       <h1>Posts</h1>
       {posts.map((post) => (
-        <Card sx={{ width: '60%' }}>
+        <Card key={post._id} sx={{ width: '60%' }}>
         <CardActionArea onClick={() => goToPost(post._id as string)}>
           <CardContent sx={{textAlign: 'center', position: 'relative'}}>
             <Typography gutterBottom variant="h5" component="div">
@@ -82,6 +90,7 @@ const Posts = (props: IProps) => {
         </CardActionArea>
       </Card>
       ))}
+      <Pagination sx={{marginTop: '15px'}} page={searchParams.get('page') ? parseInt(searchParams.get('page') as string) : 1} onChange={paginationClick} count={pages} variant="outlined" color="primary" />
     </main>
   )
 }

@@ -20,9 +20,16 @@ export class PostService {
         return postFound;
     }
 
-    async getAll(): Promise<PostInterface[]>{
-        const posts = await this.postModel.find().populate('userId', ["nickname"]);
-        return posts;
+    async getAll(query: {page?: number}): Promise<{posts: PostInterface[], pages: number}>{
+        if (!query.page) {
+            query.page = 0;
+        } else {
+            query.page = query.page - 1;
+        }
+        const postsCount = await this.postModel.find().count();
+        const pages = postsCount > 0 ? Math.ceil(postsCount / 3) : 1;
+        const posts = await this.postModel.find().populate('userId', ["nickname"]).skip(query.page * 3).limit(3);
+        return {posts, pages};
     }
 
     async deletePost(id: string): Promise<string> {

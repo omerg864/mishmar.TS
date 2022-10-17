@@ -20,12 +20,12 @@ const Home = (props: IProps) => {
   const getPosts = async () =>{
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/posts/all`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
+      const response = await fetch(`/api/posts/all?page=1`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
       const data = await response.json();
       if (data.error) {
         toast.error(data.message);
       } else {
-        setPosts(data)
+        setPosts(data.posts)
       }
     } catch (err) {
       console.log(err);
