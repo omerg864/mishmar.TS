@@ -12,12 +12,13 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
-import { TextField } from '@mui/material';
+import { Pagination, TextField } from '@mui/material';
 import ChipSelect from '../components/ChipSelect';
 import { SelectChangeEvent } from '@mui/material/Select';
 import DatePicker from '../components/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import { StyledTableCell, StyledTableRow } from '../components/StyledTable';
+import { useSearchParams } from 'react-router-dom';
 
 
 
@@ -33,6 +34,8 @@ const Events = (props: IProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const cookies = new Cookies();
     const [height, setHeight] = useState(100);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [pages, setPages] = useState<number>(1);
 
 
     const newDateChange = (newValue: Dayjs | null) => {
@@ -169,13 +172,15 @@ const Events = (props: IProps) => {
       if (loading)
         setIsLoading(true);
       try {
-        const response = await fetch('/api/events/all', { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}});
+        let page = searchParams.get('page') ? searchParams.get('page') : 1;
+        const response = await fetch(`/api/events/all?page=${page}`, { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}});
         const data = await response.json();
         if (data.error) {
           toast.error(data.message);
         } else {
           setEvents(data.events);
           setUsers(data.users);
+          setPages(data.pages);
         }
       } catch (e) {
         console.log(e);
@@ -189,7 +194,7 @@ const Events = (props: IProps) => {
         if (props.manager) {
           getEvents(true);
         }
-      }, [props.manager]);
+      }, [props.manager, searchParams]);
     
     
       const changeRef = (el: any) => {
@@ -198,6 +203,9 @@ const Events = (props: IProps) => {
         }
       }
 
+    const paginationClick = (e: any, value: number) => {
+        setSearchParams(`?page=${value}`);
+    }
 
     if (isLoading) {
       return <Spinner/>;
@@ -262,6 +270,7 @@ const Events = (props: IProps) => {
         </TableBody>
       </Table>
     </TableContainer>
+    <Pagination sx={{marginTop: '15px'}} page={searchParams.get('page') ? parseInt(searchParams.get('page') as string) : 1} onChange={paginationClick} count={pages} variant="outlined" color="primary" />
     </main>
   )
 }

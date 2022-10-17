@@ -21,7 +21,7 @@ export class PostService {
     }
 
     async getAll(query: {page?: number}): Promise<{posts: PostInterface[], pages: number}>{
-        if (!query.page) {
+        if (!query.page || query.page <= 0) {
             query.page = 0;
         } else {
             query.page = query.page - 1;

@@ -30,7 +30,7 @@ export class ScheduleService {
     }
 
     async getViewSchedule(query: {page?: number}): Promise<{schedule: Schedule, pages: number}> {
-        if (!query.page) {
+        if (!query.page || query.page <= 0) {
             query.page = 0;
         } else {
             query.page -= 1;
@@ -58,7 +58,7 @@ export class ScheduleService {
 
 
     async getAll(query: {page?: number}): Promise<{schedules: Schedule[], pages: number}> {
-        if (!query.page) {
+        if (!query.page || query.page <= 0) {
             query.page = 0;
         } else {
             query.page -= 1;

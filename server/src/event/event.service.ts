@@ -10,10 +10,17 @@ export class EventService {
 
     constructor(@InjectModel('Event') private readonly eventModel: Model<EventInterface>, @InjectModel('Schedule') private readonly ScheduleModel: Model<Schedule>, @InjectModel('User') private readonly userModel: Model<User>) {}
 
-    async getAll(): Promise<{events: EventInterface[], users: User[]}> {
-        const events = await this.eventModel.find().sort( { date: -1});
+    async getAll(query: {page?: number}): Promise<{events: EventInterface[], users: User[], pages: number}> {
+        if (!query.page || query.page <= 0 ) {
+            query.page = 0
+        } else {
+            query.page -= 1;
+        }
+        const eventCount = await this.eventModel.find().count();
+        const pages = eventCount > 0 ? Math.ceil(eventCount / 4) : 1;
+        const events = await this.eventModel.find().sort( { date: -1}).skip(query.page * 4).limit(4);
         const users = await this.userModel.find();
-        return {events, users};
+        return {events, users, pages};
     }
 
     addDays = (date: Date, days: number): Date => {

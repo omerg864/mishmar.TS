@@ -16,7 +16,7 @@ interface IProps {
 const Schedules = (props: IProps) => {
 
     const [schedules, setSchedules] = useState<Schedule[]>([]);
-    const [pages, setPages] = useState<number>(0);
+    const [pages, setPages] = useState<number>(1);
     const [loading, setLoading] = useState<boolean>(false);
     const cookies = new Cookies();
     const navigate = useNavigate();
@@ -25,7 +25,8 @@ const Schedules = (props: IProps) => {
     const getSchedules = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`/api/schedules/auth/all`, { headers: {authorization: 'Bearer ' + cookies.get('userToken')}});
+            let page = searchParams.get('page') ? searchParams.get('page') : 1;
+            const response = await fetch(`/api/schedules/auth/all?page=${page}`, { headers: {authorization: 'Bearer ' + cookies.get('userToken')}});
             const data = await response.json();
             if (data.error) {
                 toast.error(data.error);
@@ -48,8 +49,10 @@ const Schedules = (props: IProps) => {
     }
 
     useEffect(() => {
-        getSchedules();
-    }, []);
+        if (props.manager) {
+            getSchedules();
+        }
+    }, [props.manager, searchParams]);
 
     const paginationClick = (e: any, value: number) => {
         setSearchParams(`?page=${value}`);
