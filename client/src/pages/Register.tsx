@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import {toast} from 'react-toastify';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { password_regex, email_regex } from '../types/regularExpressions'
+import PasswordRules from '../components/PasswordRules'
 
 interface IProps {
     authenticated: boolean;
@@ -19,6 +21,14 @@ const Register = (props: IProps) => {
         e.preventDefault();
         if (formData.password !== formData.confirmPassword) {
             toast.error('Passwords do not match');
+            return;
+        }
+        if (!password_regex.test(formData.password)) {
+            toast.error('please enter a valid password');
+            return;
+        }
+        if (!email_regex.test(formData.email)) {
+            toast.error('please enter a valid email');
             return;
         }
         setIsLoading(true);
@@ -53,6 +63,7 @@ const Register = (props: IProps) => {
             <TextField className='text_input' id="username" label="Username" name='username' required variant="outlined" onChange={handleChange} />
             <TextField className='text_input' id="email" label="Email" name='email' type="email" required variant="outlined" onChange={handleChange} />
             <TextField className='text_input' id="password" label="Password" name="password" type="password" required variant="outlined" onChange={handleChange} />
+            <PasswordRules />
             <TextField className='text_input' id="confirmPassword" label="Confirm Password" name="confirmPassword" type="password" required variant="outlined" onChange={handleChange} />
             <TextField className='text_input' id="pin_code" label="Register Code" name='pin_code' required variant="outlined" onChange={handleChange} />
             <Button variant="contained" color="primary" type="submit" >Register</Button>

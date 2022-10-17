@@ -106,7 +106,7 @@ const PostEdit = (props: IProps) => {
       <h1>Post</h1>
       <Card sx={{ width: '60%' }}>
           <CardContent sx={{textAlign: 'center', position: 'relative'}}>
-            <TextField value={post.title} name="title" label="Title" onChange={handleChange}/>
+            <TextField required value={post.title} name="title" label="Title" onChange={handleChange}/>
             <Typography variant="body2" color="text.secondary" sx={{position: 'absolute', top: '3px', right: '10px'}}>
               {dateToString(new Date())}
             </Typography>

@@ -55,7 +55,7 @@ const ScheduleNew = (props: IProps) => {
         <form className='form-new' onSubmit={createSchedule}>
             <Calendar calendarType="Hebrew" onChange={setDate} defaultValue={date}/>
             <h2>{dateToString(date)}</h2>
-            <TextField  id="num_weeks" type="number" name='num_weeks' value={numWeeks} label="Number of weeks" onChange={e => setNumWeeks(+e.target.value)} />
+            <TextField  id="num_weeks" type="number" required inputProps={{min: '1'}} name='num_weeks' value={numWeeks} label="Number of weeks" onChange={e => setNumWeeks(+e.target.value)} />
             <Button variant="contained" color="primary" type="submit">Create Schedule</Button>
         </form>
     </main>

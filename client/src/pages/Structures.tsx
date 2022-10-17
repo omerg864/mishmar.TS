@@ -112,6 +112,12 @@ const Structures = (props: IProps) => {
     }, []);
 
     const saveStructures = async () => {
+      for ( let i = 0; i < structures.length; i++) {
+        if ( structures[i].title === "") {
+          toast.error("Please enter a title for all structures");
+          return;
+        }
+      }
       setLoading(true);
       try {
         const response = await fetch(`/api/structures/many`, 
@@ -132,6 +138,10 @@ const Structures = (props: IProps) => {
     }
 
     const creteStructure = async () => {
+      if (newStructure.title === "") {
+        toast.error("Please enter a title");
+        return;
+      }
       setLoading(true);
       await saveStructures();
       try {
@@ -222,8 +232,8 @@ const Structures = (props: IProps) => {
                     <MenuItem value={3}>Other</MenuItem>
                 </Select>
                 </TableCell>
-              <TableCell align="center"><TextField type="number" name={`index`} value={newStructure.index} label="Index" onChange={newInputChange} /></TableCell>
-              <TableCell align="center"><TextField name={`title`} value={newStructure.title} label="Title" onChange={newInputChange}/></TableCell>
+              <TableCell align="center"><TextField type="number" required inputProps={{min: '0'}} name={`index`} value={newStructure.index} label="Index" onChange={newInputChange} /></TableCell>
+              <TableCell align="center"><TextField name={`title`} required value={newStructure.title} label="Title" onChange={newInputChange}/></TableCell>
               <TableCell align="center"><TextField name={`description`} value={newStructure.description} label="Description" onChange={newInputChange}/></TableCell>
               <TableCell align="center"><Checkbox name={`opening`} checked={newStructure.opening} onChange={newCheckboxChange} /></TableCell>
               <TableCell align="center"><Checkbox name={`manager`} checked={newStructure.manager} onChange={newCheckboxChange} /></TableCell>
@@ -247,8 +257,8 @@ const Structures = (props: IProps) => {
                     <MenuItem value={`3&&${structure._id}`}>Other</MenuItem>
                 </Select>
                 </TableCell>
-              <TableCell align="center"><TextField type="number" name={`index&&${structure._id}`} value={structure.index} label="Index" onChange={inputChange} /></TableCell>
-              <TableCell align="center"><TextField name={`title&&${structure._id}`} value={structure.title} label="Title" onChange={inputChange}/></TableCell>
+              <TableCell align="center"><TextField required inputProps={{min: '0'}} type="number" name={`index&&${structure._id}`} value={structure.index} label="Index" onChange={inputChange} /></TableCell>
+              <TableCell align="center"><TextField required name={`title&&${structure._id}`} value={structure.title} label="Title" onChange={inputChange}/></TableCell>
               <TableCell align="center"><TextField name={`description&&${structure._id}`} value={structure.description} label="Description" onChange={inputChange}/></TableCell>
               <TableCell align="center"><Checkbox name={`opening&&${structure._id}`} checked={structure.opening} onChange={checkboxChange} /></TableCell>
               <TableCell align="center"><Checkbox name={`manager&&${structure._id}`} checked={structure.manager} onChange={checkboxChange} /></TableCell>

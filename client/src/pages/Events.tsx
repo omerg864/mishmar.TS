@@ -86,6 +86,14 @@ const Events = (props: IProps) => {
     };
 
     const createEvent = async () => {
+      if (newEvent.users.length === 0) {
+        toast.error("please add users");
+        return;
+      }
+      if (newEvent.content === "") {
+        toast.error("please add content");
+        return;
+      }
       setIsLoading(true);
       try {
         const response = await fetch(`/api/events/`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') },
@@ -127,6 +135,16 @@ const Events = (props: IProps) => {
     }
 
     const saveEvents = async (loading: boolean) => {
+      for ( let i = 0; i < events.length; i++ ) {
+        if ( events[i].content === ""){
+          toast.error("please add content to all events");
+          return;
+        }
+        if ( events[i].users.length === 0 ) {
+          toast.error("please add users to all events");
+          return;
+        }
+      }
       if (loading)
         setIsLoading(true);
       try {
@@ -213,7 +231,7 @@ const Events = (props: IProps) => {
               <DatePicker value={dayjs(newEvent.date)} onChange={newDateChange}/>
               </TableCell>
               <TableCell align="center" scope="row">
-              <TextField label="Content" value={newEvent.content} name={`content`} onChange={newTextChange}/>
+              <TextField required label="Content" value={newEvent.content} name={`content`} onChange={newTextChange}/>
               </TableCell>
               <TableCell align="center" scope="row">
                 <ChipSelect names={users} onChange={newSelectChange} name={`newEvent`} inputLabel={`Users`} values={(newEvent.users) as string[]} />
@@ -231,7 +249,7 @@ const Events = (props: IProps) => {
                 <DatePicker value={dayjs(event.date)} onChange={dateChange} id={event._id}/>
                 </TableCell>
               <TableCell align="center" scope="row">
-                <TextField label="Content" value={event.content} name={`content&&${event._id}`} onChange={textChange}/>
+                <TextField required label="Content" value={event.content} name={`content&&${event._id}`} onChange={textChange}/>
                 </TableCell>
               <TableCell align="center" scope="row">
                 <ChipSelect names={users} onChange={handleChange} name={`${event._id}`} inputLabel={`Users`} values={(event.users) as string[]} />

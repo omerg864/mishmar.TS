@@ -4,6 +4,8 @@ import Cookies from 'universal-cookie'
 import { toast } from 'react-toastify'
 import Modal from '../components/Modal'
 import Spinner from '../components/Spinner'
+import { email_regex, password_regex } from '../types/regularExpressions'
+import PasswordRules from '../components/PasswordRules'
 
 
 interface IProps {
@@ -24,7 +26,11 @@ const Profile = (props: IProps) => {
 
 
   const handleSubmit = async (e: any) => {
-    e.preventDefault()
+    e.preventDefault();
+    if (!email_regex.test(formData.email)) {
+      toast.error('please enter a valid email');
+      return;
+    }
     setLoading(true);
     try {
       const response = await fetch(`/api/users`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
@@ -44,6 +50,22 @@ const Profile = (props: IProps) => {
   }
 
   const updatePassword = async () => {
+    if (passwordData.password === ""){
+      toast.error('Password is required');
+      return;
+    }
+    if (passwordData.confirmPassword === ""){
+      toast.error('Please enter password again');
+      return;
+    }
+    if (!password_regex.test(passwordData.password)){
+      toast.error('Please enter a valid password');
+      return;
+    }
+    if (passwordData.password !== passwordData.confirmPassword) {
+      toast.error('Password do not match');
+      return;
+    }
     setLoading(true);
     try {
       const response = await fetch(`/api/users`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
@@ -68,9 +90,10 @@ const Profile = (props: IProps) => {
   }
 
   const modalChildren = (<>
-    <TextField name='password' sx={{marginTop: '10px'}} type="password" label={"Password"} value={passwordData.password} onChange={(e) => setPasswordData({...passwordData, password: e.target.value})}/>
+    <TextField name='password' required sx={{marginTop: '10px'}} type="password" label={"Password"} value={passwordData.password} onChange={(e) => setPasswordData({...passwordData, password: e.target.value})}/>
+    <PasswordRules />
     <div>
-    <TextField name='confirmPassword' sx={{marginTop: '10px'}} type="password" label={"Confirm Password"} value={passwordData.confirmPassword} onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}/>
+    <TextField name='confirmPassword' required sx={{marginTop: '10px'}} type="password" label={"Confirm Password"} value={passwordData.confirmPassword} onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}/>
     </div>
     </>)
 

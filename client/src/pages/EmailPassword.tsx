@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import Spinner from '../components/Spinner'
 import { Button, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { email_regex } from '../types/regularExpressions'
 
 interface IProps {
   authenticated: boolean;
@@ -16,6 +17,10 @@ const EmailPassword = (props: IProps) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!email_regex.test(email)){
+      toast.error("Please enter a valid email");
+      return;
+    }
     setIsLoading(true);
     try {
       const response = await fetch(`/api/users/forgot`, { headers: { 'Content-Type': 'application/json'}, method: 'POST', body: JSON.stringify({email})});

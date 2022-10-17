@@ -40,7 +40,7 @@ export class UserController {
 
     @Patch('manager')
     async updateUserManager(@Body() user: User) {
-        return await this.userService.updateUser(user, user._id);
+        return await this.userService.updateUser(user, user._id.toString());
     }
 
     @Patch('many')
@@ -61,5 +61,10 @@ export class UserController {
     @Get('auth')
     async authUser(@UserID() id: string): Promise<{user: boolean, manager: boolean}> {
         return await this.userService.authUser(id);
+    }
+
+    @Get('get/:id')
+    async getUser(@Param('id') userId: string) {
+        return await this.userService.getUser(userId);
     }
 }

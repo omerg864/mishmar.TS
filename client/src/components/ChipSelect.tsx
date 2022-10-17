@@ -46,6 +46,7 @@ export default function ChipSelect(props: IProps) {
       <FormControl sx={{ m: 1, width: 300 }}>
         <InputLabel id="demo-multiple-chip-label">{props.inputLabel}</InputLabel>
         <Select
+          required
           labelId="demo-multiple-chip-label"
           id="demo-multiple-chip"
           multiple

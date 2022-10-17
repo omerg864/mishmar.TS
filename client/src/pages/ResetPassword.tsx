@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 import { Button, TextField } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import PasswordRules from '../components/PasswordRules'
+import { password_regex } from '../types/regularExpressions'
 
 interface IProps {
   authenticated: boolean;
@@ -44,6 +46,14 @@ const ResetPassword = (props: IProps) => {
 
   const changePassword = async (e: any) => {
     e.preventDefault();
+    if (passwordData.password !== passwordData.confirmPassword) {
+      toast.error('passwords do not match');
+      return;
+    }
+    if (!password_regex.test(passwordData.password)) {
+      toast.error('please enter a valid password');
+      return;
+    }
     setIsLoading(true);
     try {
       const response = await fetch(`/api/users/resetPassword/${reset_token}`, { headers: { 'Content-Type': 'application/json' }, method: 'POST', body: JSON.stringify(passwordData) });
@@ -75,9 +85,10 @@ const ResetPassword = (props: IProps) => {
     <main>
       {token && <> <h1>Reset Password</h1>
       <form onSubmit={changePassword}>
-      <TextField name='password' sx={{marginTop: '10px'}} type="password" label={"Password"} value={passwordData.password} onChange={(e) => setPasswordData({...passwordData, password: e.target.value})}/>
+      <TextField name='password' required sx={{marginTop: '10px'}} type="password" label={"Password"} value={passwordData.password} onChange={(e) => setPasswordData({...passwordData, password: e.target.value})}/>
+      <PasswordRules />
     <div style={{marginTop: '10px'}}>
-    <TextField name='confirmPassword' sx={{marginTop: '10px'}} type="password" label={"Confirm Password"} value={passwordData.confirmPassword} onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}/>
+    <TextField name='confirmPassword' required sx={{marginTop: '10px'}} type="password" label={"Confirm Password"} value={passwordData.confirmPassword} onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}/>
     </div>
     <Button style={{marginTop: '10px'}} variant="contained" color="primary" type="submit">Change Password</Button>
     </form></>}

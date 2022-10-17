@@ -25,7 +25,6 @@ const Quality = (props: IProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const cookies = new Cookies();
     const [users, setUsers] = useState<UserQuality[]>([]);
-    const tableRef = useRef<HTMLTableElement>(null);
     const [height, setHeight] = useState(100);
 
     const getUsers = async () => {
@@ -67,7 +66,21 @@ const Quality = (props: IProps) => {
         setUsers(users_temp);
     }
 
-    const saveUsers = async (loading: boolean) => {
+    const arrayDuplicates = (arr: string[]): string[] => {
+      return arr.filter((item, index) => arr.indexOf(item) != index)
+    }
+
+    const saveUsers = async (e: any, loading: boolean) => {
+      e.preventDefault();
+      let users_nickname: string[] = [];
+      for (let i = 0; i < users.length; i++) {
+        users_nickname.push(users[i].nickname);
+      }
+      users_nickname = arrayDuplicates(users_nickname);
+      if (users_nickname.length > 0) {
+        toast.error("Nickname must be unique");
+        return;
+      }
         if (loading)
             setIsLoading(true);
         try {
@@ -89,7 +102,7 @@ const Quality = (props: IProps) => {
             setIsLoading(false);
     }
 
-    const resetQuality = async () => {
+    const resetQuality = async (e: any) => {
         setIsLoading(true);
         let temp_users = [...users];
         temp_users = temp_users.map(user => {
@@ -100,7 +113,7 @@ const Quality = (props: IProps) => {
             return user;
         })
         setUsers(temp_users);
-        await saveUsers(false);
+        await saveUsers(e, false);
         setIsLoading(false);
     }
 
@@ -128,9 +141,10 @@ const Quality = (props: IProps) => {
   return (
     <main>
         <h1>Users Quality</h1>
+        <form onSubmit={(e) => saveUsers(e, true)}>
         <div style={{display: 'flex', justifyContent: "space-between", width: "100%", padding: "10px", boxSizing: "border-box"}}>
-        <Button variant="contained" color="primary" onClick={() => saveUsers(true)}>Save</Button>
-        <Button variant="contained" color="error" onClick={resetQuality}>Reset</Button>
+        <Button variant="contained" color="primary" type="submit" >Save</Button>
+        <Button variant="contained" color="error" onClick={(e) => resetQuality(e)}>Reset</Button>
         </div>
         <TableContainer style={{minHeight: height}} component={Paper}>
       <Table ref={changeRef} sx={{ minWidth: 650 }} aria-label="simple table">
@@ -149,16 +163,17 @@ const Quality = (props: IProps) => {
               key={user._id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-            <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} onChange={handleTextChange} value={user.nickname} name={`nickname&&${user._id}`} label="Nickname"/></TableCell>
-              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} onChange={handleNumberChange} type="number" value={user.night} name={`night&&${user._id}`} label="Night"/></TableCell>
-              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} onChange={handleNumberChange} type="number" value={user.friday_noon} name={`friday_noon&&${user._id}`} label="Friday Noon"/></TableCell>
-              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} onChange={handleNumberChange} type="number" value={user.weekend_night} name={`weekend_night&&${user._id}`} label="Weekend Night"/></TableCell>
-              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} onChange={handleNumberChange} type="number" value={user.weekend_day} name={`weekend_day&&${user._id}`} label="Weekend Day"/></TableCell>
+            <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} onChange={handleTextChange} required value={user.nickname} name={`nickname&&${user._id}`} label="Nickname"/></TableCell>
+              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} inputProps={{min: '0'}} onChange={handleNumberChange} required type="number" value={user.night} name={`night&&${user._id}`} label="Night"/></TableCell>
+              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} inputProps={{min: '0'}} onChange={handleNumberChange} required type="number" value={user.friday_noon} name={`friday_noon&&${user._id}`} label="Friday Noon"/></TableCell>
+              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} inputProps={{min: '0'}} onChange={handleNumberChange} required type="number" value={user.weekend_night} name={`weekend_night&&${user._id}`} label="Weekend Night"/></TableCell>
+              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} inputProps={{min: '0'}} onChange={handleNumberChange} required type="number" value={user.weekend_day} name={`weekend_day&&${user._id}`} label="Weekend Day"/></TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
+    </form>
     </main>
   )
 }

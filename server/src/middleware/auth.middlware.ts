@@ -39,7 +39,7 @@ export class AuthMiddleware implements NestMiddleware {
 
   async use(req, res: Response, next: NextFunction) {
     const user: User = await checkUser(req.headers, this.userModel);
-    req.userId = user.id.toString();
+    req.userId = user._id.toString();
     next();
   }
 }
@@ -54,7 +54,7 @@ export class SiteManagerMiddleware implements NestMiddleware {
     if (!userFound.role.includes('SITE_MANAGER') && !userFound.role.includes('ADMIN')){
       throw new UnauthorizedException('Only a site manager can make this changes')
     }
-    req.userId = userFound.id.toString();
+    req.userId = userFound._id.toString();
     next();
   }
 }
@@ -69,7 +69,7 @@ export class ShiftManagerMiddleware implements NestMiddleware {
     if (!userFound.role.includes('SHIFT_MANAGER') && !userFound.role.includes('ADMIN')){
       throw new UnauthorizedException('Only a site manager can make this changes')
     }
-    req.userId = userFound.id.toString();
+    req.userId = userFound._id.toString();
     next();
   }
 }
@@ -84,7 +84,7 @@ export class AdminManagerMiddleware implements NestMiddleware {
     if (!userFound.role.includes('ADMIN')){
       throw new UnauthorizedException('Only a site manager can make this changes')
     }
-    req.userId = userFound.id.toString();
+    req.userId = userFound._id.toString();
     next();
   }
 }

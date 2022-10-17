@@ -107,6 +107,10 @@ const Shift = (props: IProps) => {
       }
 
       const submitShift = async () => {
+        if (!submitting) {
+          toast.error('cant submit anymore');
+          return;
+        }
         setIsLoading(true);
         try {
             const response = await fetch(`/api/shifts`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') },

@@ -54,7 +54,7 @@ const ScheduleShiftUser = (props: IProps) => {
 
     const getUser = async () => {
         try {
-            const response = await fetch(`/api/users/${userId}`, { headers: { authorization: `Bearer ${cookies.get('userToken')}`}})
+            const response = await fetch(`/api/users/get/${userId}`, { headers: { authorization: `Bearer ${cookies.get('userToken')}`}})
             const data = await response.json();
             if (data.error) {
                 toast.error(data.message);

@@ -15,6 +15,8 @@ import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
 import { StyledTableCell, StyledTableRow } from '../components/StyledTable';
 import Modal from '../components/Modal';
+import PasswordRules from '../components/PasswordRules';
+import { email_regex, password_regex } from '../types/regularExpressions';
 
 
 interface IProps {
@@ -48,7 +50,43 @@ const Users = (props: IProps) => {
       setIsLoading(false);
   }
 
-  const saveUsers = async () => {
+  const arrayDuplicates = (arr: string[]): string[] => {
+    return arr.filter((item, index) => arr.indexOf(item) != index)
+  }
+
+  const saveUsers = async (e: any) => {
+    e.preventDefault();
+    let users_nickname: string[] = [];
+      for (let i = 0; i < users.length; i++) {
+        users_nickname.push(users[i].nickname);
+      }
+      users_nickname = arrayDuplicates(users_nickname);
+    if (users_nickname.length > 0) {
+      toast.error("Nickname must be unique");
+      return;
+    }
+    users_nickname = [];
+      for (let i = 0; i < users.length; i++) {
+        users_nickname.push(users[i].username as string);
+      }
+      users_nickname = arrayDuplicates(users_nickname);
+    if (users_nickname.length > 0) {
+      toast.error("Username must be unique");
+      return;
+    }
+    users_nickname = [];
+      for (let i = 0; i < users.length; i++) {
+        users_nickname.push(users[i].email as string);
+        if( !email_regex.test(users[i].email as string)) {
+          toast.error('Please enter a valid email address');
+          return;
+        }
+      }
+      users_nickname = arrayDuplicates(users_nickname);
+    if (users_nickname.length > 0) {
+      toast.error("Email must be unique");
+      return;
+    }
     setIsLoading(true);
     try {
       const response = await fetch(`/api/users/many`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
@@ -73,6 +111,18 @@ const Users = (props: IProps) => {
   }
 
   const changePassword = async () => {
+    if (modal.user.password === '') {
+      toast.error("Please enter a password");
+      return;
+    }
+    if (modal.user.password !== modal.user.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;  
+    }
+    if (!password_regex.test(modal.user.password as string)) {
+      toast.error("Please enter a valid password");
+      return;
+    }
     setIsLoading(true);
     try {
       const response = await fetch(`/api/users/manager`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
@@ -138,9 +188,10 @@ const Users = (props: IProps) => {
   }
 
   const modalChildren = (<>
-  <TextField name='password' sx={{marginTop: '10px'}} type="password" label={"Password"} value={modal.user.password} onChange={(e) => setModal({open: true, user: {...modal.user, password: e.target.value}})}/>
+  <TextField name='password' required sx={{marginTop: '10px'}} type="password" label={"Password"} value={modal.user.password} onChange={(e) => setModal({open: true, user: {...modal.user, password: e.target.value}})}/>
+  <PasswordRules />
   <div>
-  <TextField name='confirmPassword' sx={{marginTop: '10px'}} type="password" label={"Confirm Password"} value={modal.user.confirmPassword} onChange={(e) => setModal({open: true, user: {...modal.user, confirmPassword: e.target.value}})}/>
+  <TextField name='confirmPassword' required sx={{marginTop: '10px'}} type="password" label={"Confirm Password"} value={modal.user.confirmPassword} onChange={(e) => setModal({open: true, user: {...modal.user, confirmPassword: e.target.value}})}/>
   </div>
   </>)
 
@@ -171,7 +222,8 @@ const Users = (props: IProps) => {
       <Modal open={modal.open} title={"Change Password"} confirmButtonText={"Change Password"}
        textContent={""} closeModal={() => setModal({open: false, user: {password: "", confirmPassword: ""} as User})} children={modalChildren} confirmButton={changePassword} />
         <h1>Users</h1>
-        <Button variant="contained" color="primary" onClick={saveUsers}>Save</Button>
+        <form onSubmit={saveUsers}>
+        <Button variant="contained" color="primary" type="submit">Save</Button>
         <TableContainer style={{minHeight: height}} component={Paper}>
       <Table ref={changeRef} sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
@@ -192,10 +244,10 @@ const Users = (props: IProps) => {
               key={user._id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} onChange={handleTextChange} value={user.name} name={`name&&${user._id}`} label="Full Name"/></TableCell>
-              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} onChange={handleTextChange} value={user.nickname} name={`nickname&&${user._id}`} label="Nickname"/></TableCell>
-              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} onChange={handleTextChange} value={user.email} type="email" name={`email&&${user._id}`} label="Email"/></TableCell>
-              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} onChange={handleTextChange} value={user.username} name={`username&&${user._id}`} label="Username"/></TableCell>
+              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} required onChange={handleTextChange} value={user.name} name={`name&&${user._id}`} label="Full Name"/></TableCell>
+              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} required onChange={handleTextChange} value={user.nickname} name={`nickname&&${user._id}`} label="Nickname"/></TableCell>
+              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} required onChange={handleTextChange} value={user.email} type="email" name={`email&&${user._id}`} label="Email"/></TableCell>
+              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} required onChange={handleTextChange} value={user.username} name={`username&&${user._id}`} label="Username"/></TableCell>
               <TableCell align="center" scope="row"><Checkbox name={`SITE_MANAGER&&${user._id}`} onChange={handleCheckBoxChange} checked={user.role?.includes("SITE_MANAGER")}/></TableCell>
               <TableCell align="center" scope="row"><Checkbox name={`SHIFT_MANAGER&&${user._id}`} onChange={handleCheckBoxChange} checked={user.role?.includes("SHIFT_MANAGER")}/></TableCell>
               <TableCell align="center" scope="row">
@@ -209,6 +261,7 @@ const Users = (props: IProps) => {
         </TableBody>
       </Table>
     </TableContainer>
+    </form>
     </main>
   )
 }

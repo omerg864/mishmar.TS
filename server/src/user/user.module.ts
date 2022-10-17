@@ -17,6 +17,7 @@ export class UserModule implements NestModule{
     consumer.apply(AuthMiddleware).forRoutes({path: 'api/users/auth', method: RequestMethod.GET});
     consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/users/manager', method: RequestMethod.PATCH});
     consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/users/:id', method: RequestMethod.DELETE});
+    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/users/get/:id', method: RequestMethod.GET});
     consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/users/many', method: RequestMethod.PATCH});
     consumer.apply(SiteManagerMiddleware).forRoutes('api/users/all');
   }

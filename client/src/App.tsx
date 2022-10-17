@@ -39,7 +39,7 @@ function App() {
   return (
     <>
     <Header authenticated={authenticated} setAuthenticated={setAuthenticated} manager={manager} setManager={setManager}/>
-    <ToastContainer theme="colored"/>
+    <ToastContainer rtl={true} theme="colored"/>
     <Routes>
       <Route path="/" element={<Home authenticated={authenticated} />} />
       <Route path="/login" element={<Login authenticated={authenticated} setAuthenticated={setAuthenticated} setManager={setManager}/>} />

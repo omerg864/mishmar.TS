@@ -60,7 +60,7 @@ export const UserScheme = new mongoose.Schema<User>({
 
 export interface User {
     id?: string;
-    _id: string;
+    _id: string| mongoose.Schema.Types.ObjectId;
     name: string;
     nickname: string;
     username: string;
