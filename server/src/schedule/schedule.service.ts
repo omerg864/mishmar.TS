@@ -1,9 +1,10 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException, Query } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Structure } from 'src/structure/structure.model';
 import { Schedule } from './schedule.model';
 import { Document } from 'mongoose';
+import { findIndex } from 'rxjs';
 
 export type Shift = { shift: string|Structure, days: string[]}
 
@@ -28,15 +29,44 @@ export class ScheduleService {
         return schedule_temp;
     }
 
-
-    async getAll(): Promise<Schedule[]> {
-        let schedules =  await this.scheduleModel.find().sort( { date: -1});
-        let schedules_temp: Schedule[] = [];
-        for (let j = 0; j < schedules.length; j++) {
-            let schedule_temp: Schedule = await this.populateSchedule(schedules[j]);
-            schedules_temp.push(schedule_temp);
+    async getViewSchedule(query: {page?: number}): Promise<{schedule: Schedule, pages: number}> {
+        if (!query.page) {
+            query.page = 0;
+        } else {
+            query.page -= 1;
         }
-        return schedules_temp;
+        let all_schedules =  await this.scheduleModel.find().sort( { date: -1})
+        if (all_schedules.length === 0) {
+            throw new NotFoundException('No schedules found')
+        }
+        let index = 0;
+        if (!all_schedules[index].publish) {
+            index = 1
+            if (all_schedules.length === 1) {
+                throw new ConflictException('No Published schedule found')
+            }
+        }
+        let pages = all_schedules.length - index;
+        let schedule_found =  (await this.scheduleModel.find().sort( { date: -1}).skip(query.page + index).limit(1))[0]
+        if (!schedule_found) {
+            throw new NotFoundException('No Schedules found');
+        }
+        let days: Date[][] = this.calculateDays(schedule_found);
+        let schedule = await this.populateSchedule(schedule_found);
+        return {schedule: {...schedule, days}, pages};
+    }
+
+
+    async getAll(query: {page?: number}): Promise<{schedules: Schedule[], pages: number}> {
+        if (!query.page) {
+            query.page = 0;
+        } else {
+            query.page -= 1;
+        }
+        let scheduleCount =  await this.scheduleModel.find().count();
+        const pages = scheduleCount > 0 ? Math.ceil(scheduleCount / 5) : 1;
+        let schedules =  await this.scheduleModel.find().sort( { date: -1}).skip(query.page * 5).limit(5).select('-weeks');
+        return {schedules, pages};
     }
 
     async getLast() : Promise<Schedule> {

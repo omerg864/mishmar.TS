@@ -1,11 +1,12 @@
-import { Button, Card } from '@mui/material';
+import { Button, Card, Pagination } from '@mui/material';
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import Spinner from '../components/Spinner';
 import { addDays, dateToString } from '../functions/functions';
 import { Schedule } from '../types/types';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 
 interface IProps {
@@ -15,16 +16,23 @@ interface IProps {
 const Schedules = (props: IProps) => {
 
     const [schedules, setSchedules] = useState<Schedule[]>([]);
+    const [pages, setPages] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
     const cookies = new Cookies();
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const getSchedules = async () => {
         setLoading(true);
         try {
             const response = await fetch(`/api/schedules/auth/all`, { headers: {authorization: 'Bearer ' + cookies.get('userToken')}});
             const data = await response.json();
-            setSchedules(data);
+            if (data.error) {
+                toast.error(data.error);
+            } else {
+                setSchedules(data.schedules);
+                setPages(data.pages);
+            }
         } catch (err) {
             console.log(err);
         }
@@ -42,6 +50,10 @@ const Schedules = (props: IProps) => {
     useEffect(() => {
         getSchedules();
     }, []);
+
+    const paginationClick = (e: any, value: number) => {
+        setSearchParams(`?page=${value}`);
+      }
 
     if (loading) {
         return <Spinner />;
@@ -65,6 +77,7 @@ const Schedules = (props: IProps) => {
                 </Card>
             ))}
         </div>
+        <Pagination sx={{marginTop: '15px'}} page={searchParams.get('page') ? parseInt(searchParams.get('page') as string) : 1} onChange={paginationClick} count={pages} variant="outlined" color="primary" />
     </main>
   )
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
 import { Schedule } from './schedule.model';
 import { ScheduleService, Shift } from './schedule.service';
 
@@ -9,8 +9,13 @@ export class ScheduleController {
 
 
     @Get('auth/all')
-    async getAllSchedules(): Promise<Schedule[]> {
-        return await this.scheduleService.getAll();
+    async getAllSchedules(@Query() query: {page?: number}): Promise<{schedules: Schedule[], pages: number}> {
+        return await this.scheduleService.getAll(query);
+    }
+
+    @Get('auth/view')
+    async getViewSchedule(@Query() query: {page?: number}): Promise<{schedule: Schedule, pages: number}> {
+        return await this.scheduleService.getViewSchedule(query);
     }
 
     @Get('auth/last/data')

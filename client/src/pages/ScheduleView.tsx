@@ -1,4 +1,4 @@
-import { Button, Paper, Table, TableContainer } from '@mui/material'
+import { Button, Pagination, Paper, Table, TableContainer } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import Spinner from '../components/Spinner'
 import TableBodySchedule from '../components/TableBodySchedule'
@@ -7,7 +7,7 @@ import { addDays, dateToString, numberToArray } from '../functions/functions'
 import { Schedule } from '../types/types'
 import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 
 
 interface IProps {
@@ -17,24 +17,30 @@ interface IProps {
 const ScheduleView = (props: IProps) => {
 
   const [isLoading, setIsLoading] = useState(false);
-  const [schedule, setSchedule] = useState({} as Schedule);
+  const [schedule, setSchedule] = useState<Schedule>({num_weeks: 0, days: [], weeks: [], date: new Date(), publish: true, id: "", _id: ""});
   const cookies = new Cookies();
   const [height, setHeight] = useState(100);
   const { id } = useParams(); 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [pages, setPages] = useState(1);
 
-  const getLastSchedule = async () => {
+  const getSchedule = async () => {
     setIsLoading(true);
     try {
-        let url = `/api/schedules/auth/last/data`;
+        let url = "";
         if (id) {
           url = `/api/schedules/${id}`;
+        } else {
+          let page = searchParams.get('page') ? parseInt(searchParams.get('page') as string) : 1;
+          url = `/api/schedules/auth/view?page=${page}`;
         }
         const response = await fetch(url, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
         const data = await response.json();
         if (data.error) {
           toast.error(data.message);
         } else {
-          setSchedule(data);
+          setSchedule(data.schedule);
+          setPages(data.pages);
         }
     } catch (err) {
         console.log(err);
@@ -43,12 +49,16 @@ const ScheduleView = (props: IProps) => {
     setIsLoading(false);
   }
 
+  const paginationClick = (e: any, value: number) => {
+    setSearchParams(`?page=${value}`);
+  }
+
 
   useEffect(() => {
     if (props.authenticated) {
-      getLastSchedule();
+      getSchedule();
     }
-  },[props.authenticated] );
+  },[props.authenticated, searchParams] );
 
 
   if (isLoading) {
@@ -68,18 +78,19 @@ const ScheduleView = (props: IProps) => {
 
   return (
     <main>
-        {schedule.num_weeks !== undefined && <>
+        {schedule.num_weeks !== 0 && <>
         <h1>{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
         <TableContainer style={{minHeight: height, paddingBottom: '10px'}} component={Paper}>
         <div style={{display: 'flex'}}>
         {numberToArray(schedule.num_weeks).map((week, index1) => (
           <Table ref={changeRef} key={`week-${week}`}>
-          <TableHeadSchedule days={schedule.days[week]} children={<TableBodySchedule week={week} data={schedule.weeks[week]} update={false} />} />
+          <TableHeadSchedule days={schedule.days[index1]} children={<TableBodySchedule week={week} data={schedule.weeks[index1]} update={false} />} />
           </Table>
         ))} 
         </div>
         </TableContainer>
         </> }
+        {!id && <Pagination sx={{marginTop: '15px'}} page={searchParams.get('page') ? parseInt(searchParams.get('page') as string) : 1} onChange={paginationClick} count={pages} variant="outlined" color="primary" />}
     </main>
   )
 }
