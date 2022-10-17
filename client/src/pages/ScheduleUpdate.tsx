@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import { Schedule, ShiftWeek, Structure } from '../types/types';
 import Cookies from 'universal-cookie';
 import { toast } from 'react-toastify';
@@ -18,6 +18,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import DatasetIcon from '@mui/icons-material/Dataset';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+import { useNavigate } from 'react-router-dom';
 
 interface IProps {
     manager: boolean;
@@ -30,6 +31,7 @@ const ScheduleUpdate = (props: IProps) => {
     const [schedule, setSchedule] = useState<Schedule>({} as Schedule);
     const [isLoading, setIsLoading]  = useState<boolean>(false);
     const [buttonOpen, setButtonOpen] = useState<boolean>(false);
+    const navigate = useNavigate();
 
 
     const getSchedule = async () => {
@@ -74,6 +76,62 @@ const ScheduleUpdate = (props: IProps) => {
         setIsLoading(false);
     }
 
+    const deleteSchedule = async () => {
+        setButtonOpen(false);
+        setIsLoading(true);
+        try {
+            const response = await fetch(`/api/schedules/${id}`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken')  },
+            method: 'DELETE' });
+            const data = await response.json();
+            if (data.error) {
+                toast.error(data.message);
+            } else {
+                toast.success("Deleted Successfully");
+                navigate('/schedules');
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error("Internal server error");
+        }
+        setIsLoading(false);
+    }
+
+    const resetScheduleWeeks = () => {
+        let weeks_temp = [...schedule.weeks];
+        for( let i = 0; i < weeks_temp.length; i++ ) {
+            // i - week number
+            for ( let j = 0; j < weeks_temp[i].length; j++ ) {
+                // j - shift number
+                for ( let k = 0; k < weeks_temp[i][j].days.length; k++ ) {
+                    // k - day number
+                    weeks_temp[i][j].days[k] = ""
+                }
+            }
+        }
+        setSchedule({...schedule, weeks: weeks_temp});
+        return weeks_temp;
+    }
+
+    const resetSchedule = async () => {
+        setButtonOpen(false);
+        setIsLoading(true);
+        try {
+            let weeks = resetScheduleWeeks();
+            const response = await fetch('/api/schedules/', { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken')  },
+            method: 'PATCH', body: JSON.stringify({...schedule, weeks}) });
+            const data = await response.json();
+            if (data.error) {
+                toast.error(data.message);
+            } else {
+                toast.success("Saved Successfully");
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error("Internal server error");
+        }
+        setIsLoading(false);
+    }
+
     const checkSchedule = async () => {
         setButtonOpen(false);
         setIsLoading(true);
@@ -99,6 +157,11 @@ const ScheduleUpdate = (props: IProps) => {
         setIsLoading(false);
     }
 
+    const scheduleView = async () => {
+        await saveSchedule();
+        navigate(`/schedule/${id}/view`)
+    }
+
     useEffect(() => {
         getSchedule();
     }, []);
@@ -113,13 +176,13 @@ const ScheduleUpdate = (props: IProps) => {
     }
 
     const actions = [
-        { icon: <SaveIcon />, name: 'Save', onClick: saveSchedule},
-        { icon: <CheckIcon />, name: 'Check', onClick: checkSchedule },
-        { icon: <UploadFileIcon />, name: 'Upload Excel', onClick: () =>  {return;} },
-        { icon: <DatasetIcon />, name: 'Ready Schedule', onClick: () =>  {return;} },
-        { icon: <TableChartIcon />, name: 'Shifts Table', onClick: () =>  {return;} },
-        { icon: <RestartAltIcon />, name: 'Reset', onClick: () =>  {return;} },
-        { icon: <DeleteIcon />, name: 'Delete', onClick: () =>  {return;} },
+        { icon: <SaveIcon color='success' />, name: 'שמירה', onClick: saveSchedule},
+        { icon: <CheckIcon color="info" />, name: 'בדיקה', onClick: checkSchedule },
+        { icon: <UploadFileIcon htmlColor="#9A8B4F" />, name: 'העלאה', onClick: () =>  {return;} },
+        { icon: <DatasetIcon htmlColor='#45B8AC' />, name: 'תצוגה', onClick: scheduleView },
+        { icon: <TableChartIcon htmlColor="#009B77" />, name: 'טבלת משמרות', onClick: () =>  {return;} },
+        { icon: <RestartAltIcon color='error' />, name: 'איפוס', onClick: resetSchedule },
+        { icon: <DeleteIcon color='error' />, name: 'מחיקה', onClick: deleteSchedule },
       ];
 
   return (
@@ -128,7 +191,7 @@ const ScheduleUpdate = (props: IProps) => {
     <main>
         <h1>{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
         <FormControlLabel control={<Switch onChange={changePublish} checked={schedule.publish} />} label="Submit" />
-        {numberToArray(schedule.num_weeks).map((week, index1) => (
+        {numberToArray(schedule.num_weeks).map((week) => (
           <TableHead2 key={`week-${week}`} days={schedule.days[week]} children={<TableBodySchedule week={week} data={schedule.weeks[week]} update={true} onChange={changeSchedule} />} />
         ))}
     </main>

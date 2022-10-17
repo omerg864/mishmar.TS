@@ -54,32 +54,37 @@ const Manager = (props: IProps) => {
     
   return (
     <main>
-        <h1>Manager</h1>
+        <h1>לוח מנהל</h1>
       <Box style={{width: '70%'}}>
         <Card sx={{textAlign: 'center'}}>
         <CardContent sx={{textAlign: 'center'}}>
-        <div className='manager-div'>
+        <div className='manager-div'>        
+        <div>
         <FormControlLabel control={<Switch onChange={changeSubmit} checked={checked} />} label="Submit" />
+        <div>
+        <Link to="/settings" >הגדרות</Link>
         </div>
-        <h2>Schedule</h2>
-        <div className='manager-div'>
-            <Link to="/schedules" >Schedules</Link>
-            <Link to="/schedule/new" >New Schedule</Link>
-            <Link to="/structure" >Structure</Link>
         </div>
-        <h2>Users</h2>
-        <div className='manager-div'>
-            <Link to="/users" >Users</Link>
-            <Link to="/users/quality" >Quality</Link>
         </div>
-        <h2>Events</h2>
+        <h2>סידורים</h2>
         <div className='manager-div'>
-            <Link to="/events" >Events</Link>
+            <Link to="/schedules" >סידורים</Link>
+            <Link to="/schedule/new" >סידור חדש</Link>
+            <Link to="/structure" >מבנה סידור</Link>
         </div>
-        <h2>Posts</h2>
+        <h2>משתמשים</h2>
         <div className='manager-div'>
-            <Link to="/posts" >Posts</Link>
-            <Link to="/post/new" >New Post</Link>
+            <Link to="/users" >משתמשים</Link>
+            <Link to="/users/quality" >איכויות</Link>
+        </div>
+        <h2>אירועים</h2>
+        <div className='manager-div'>
+            <Link to="/events" >אירועים</Link>
+        </div>
+        <h2>פוסטים</h2>
+        <div className='manager-div'>
+            <Link to="/posts" >פוסטים</Link>
+            <Link to="/post/new" >פוסט חדש</Link>
         </div>
         </CardContent>
         </Card>

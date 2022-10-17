@@ -137,7 +137,7 @@ export class ScheduleService {
                     // k - duplicate name index
                     notifications.add(`ביום ${j + 1} בשבוע ה-${i + 1} ${duplicates[k]} במשמרת בוקר ואז צהריים`);
                 }
-                duplicates = this.compareTwoArrays(nightNames, nightNames);
+                duplicates = this.compareTwoArrays(noonNames, nightNames);
                 for (let k = 0; k < duplicates.length; k++) {
                     // k - duplicate name index
                     notifications.add(`ביום ${j + 1} בשבוע ה-${i + 1} ${duplicates[k]} במשמרת צהריים ואז לילה`);
@@ -199,12 +199,12 @@ export class ScheduleService {
         
     }
 
-    async delete(id: string): Promise<string> {
+    async delete(id: string): Promise<{id: string}> {
         const schedule = await this.scheduleModel.findById(id);
         if (!schedule) {
             throw new NotFoundException('Schedule not found');
         }
         await schedule.remove();
-        return schedule._id.toString();
+        return {id: schedule._id.toString()};
     }
 }

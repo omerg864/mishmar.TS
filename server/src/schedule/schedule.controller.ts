@@ -8,17 +8,17 @@ export class ScheduleController {
     constructor(private readonly scheduleService: ScheduleService) {}
 
 
-    @Get('all')
+    @Get('auth/all')
     async getAllSchedules(): Promise<Schedule[]> {
         return await this.scheduleService.getAll();
     }
 
-    @Get('last/data')
+    @Get('auth/last/data')
     async getLastDataSchedule(): Promise<Schedule> {
         return await this.scheduleService.getLastData();
     }
 
-    @Get('last')
+    @Get('auth/last')
     async getLastSchedule(): Promise<Schedule> {
         return await this.scheduleService.getLast();
     }
@@ -39,7 +39,7 @@ export class ScheduleController {
     }
 
     @Delete(':id')
-    async deleteSchedule(@Param('id') id: string): Promise<string> {
+    async deleteSchedule(@Param('id') id: string): Promise<{id: string}> {
         return await this.scheduleService.delete(id);
     }
 

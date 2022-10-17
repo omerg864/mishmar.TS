@@ -26,6 +26,7 @@ import EmailPassword from './pages/EmailPassword';
 import Profile from './pages/Profile';
 import ScheduleView from './pages/ScheduleView';
 import ResetPassword from './pages/ResetPassword';
+import Settings from './pages/Settings';
 
 
 function App() {
@@ -49,7 +50,8 @@ function App() {
       <Route path="/schedule/:id/update" element={<ScheduleUpdate manager={manager}/>} />
       <Route path="/structure" element={<Structures manager={manager}/>} />
       <Route path="/shift" element={<Shift authenticated={authenticated}/>} />
-      <Route path="/schedule/:id/shifts" element={<ScheduleShift authenticated={authenticated}/>} />
+      <Route path="/schedule/:id/shifts" element={<ScheduleShift manager={manager}/>} />
+      <Route path="/schedule/:id/view" element={<ScheduleView authenticated={authenticated}/>} />
       <Route path="/shift/schedule/:scheduleId/user/:userId" element={<ScheduleShiftUser manager={manager}/>} />
       <Route path="/events" element={<Events manager={manager}/>} />
       <Route path="/posts" element={<Posts authenticated={authenticated}/>} />
@@ -61,6 +63,7 @@ function App() {
       <Route path="/password/reset/:reset_token" element={<ResetPassword authenticated={authenticated}/>} />
       <Route path="/profile" element={<Profile authenticated={authenticated}/>} />
       <Route path="/schedule" element={<ScheduleView authenticated={authenticated}/>} />
+      <Route path="/settings" element={<Settings manager={manager}/>} />
     </Routes>
     </>
   );

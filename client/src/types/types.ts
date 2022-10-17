@@ -75,3 +75,12 @@ export interface UserQuality {
     weekend_night: number;
     weekend_day: number;
 }
+
+export interface Settings {
+    submit: boolean;
+    pin_code: string;
+    officer: string;
+    title: string;
+    max_seq_nights: number;
+    max_seq_noon: number;
+}

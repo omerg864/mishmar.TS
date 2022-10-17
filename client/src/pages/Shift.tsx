@@ -29,7 +29,7 @@ const Shift = (props: IProps) => {
       const getLastSchedule = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch(`/api/schedules/last`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
+            const response = await fetch(`/api/schedules/auth/last`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
             const data = await response.json();
             getShift(data._id);
             await getEvents(data._id);

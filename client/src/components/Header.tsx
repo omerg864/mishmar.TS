@@ -98,12 +98,17 @@ const Header = (props: IProps) => {
 
   const getSettings = async () => {
     setIsLoading(true);
-    const response = await fetch('/api/settings/general')
-    const data = await response.json();
-    if (data.error) {
-      toast.error(data.message);
-    } else {
-      setTitle(data.title);
+    try {
+      const response = await fetch('/api/settings/general')
+      const data = await response.json();
+      if (data.error) {
+        toast.error(data.message);
+      } else {
+        setTitle(data.title);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Internal server error");
     }
     setIsLoading(false);
   }

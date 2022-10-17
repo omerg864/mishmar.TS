@@ -14,7 +14,7 @@ import TableBodyShift from '../components/TableBodyShift';
 
 
 interface IProps {
-    authenticated: boolean;
+    manager: boolean;
 }
 
 interface ShiftScheduleWeek {
@@ -85,13 +85,13 @@ const ScheduleShift = (props: IProps) => {
 
 
     useEffect(() => {
-        if(props.authenticated) {
+        if(props.manager) {
             getRequests();
         }
-    }, [props.authenticated]);
+    }, [props.manager]);
 
 
-    if (!props.authenticated) {
+    if (!props.manager) {
         return <></>;
     }
 
