@@ -9,12 +9,5 @@
         "src": "./client/build",    
         "use": "@vercel/static"
       }
-    ],
-  
-    "rewrites": [
-      {
-        "source": "/(.*)",
-        "destination": "/server/src/main.ts"
-      }
     ]
   }
