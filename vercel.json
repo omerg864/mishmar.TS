@@ -10,8 +10,6 @@
         "use": "@vercel/static"
       }
     ],
-
-    "buildCommand": "cd client && npm run build",
   
     "rewrites": [
       {
