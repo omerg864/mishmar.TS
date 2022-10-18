@@ -16,6 +16,7 @@ import Checkbox from '@mui/material/Checkbox';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { StyledTableCell, StyledTableRow } from '../components/StyledTable'
+import OptionsModal from '../components/OptionsModal';
 
 
 interface IProps {
@@ -26,6 +27,7 @@ const Structures = (props: IProps) => {
     const [loading, setLoading] = useState<boolean>(false);
     const cookies = new Cookies();
     const [structures, setStructures] = useState<Structure[]>([]);
+    const [modalOpen, setModalOpen] = useState<boolean>(false);
     //const [savedStractures, setSavedStractures] = useState<Structure[]>([]);
     //const [changes, setChanges] = useState<string[]>([]);
     const defaultValue = {title: '', description: '', shift: 0, index: 0, opening: false, pull: false, manager: false} as Structure
@@ -135,19 +137,21 @@ const Structures = (props: IProps) => {
       setLoading(false);
     }
 
-    const creteStructure = async () => {
+    const createStructure = async (e: React.MouseEvent<HTMLButtonElement>) => {
       if (newStructure.title === "") {
         toast.error("Please enter a title");
         return;
       }
+      let scheduleAdd = (e.target as HTMLButtonElement).value === 'true';
+      closeModal();
       setLoading(true);
       await saveStructures();
       try {
         const response = await fetch(`/api/structures`,
         { headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + cookies.get('userToken')}, 
-        method: 'POST', body: JSON.stringify(newStructure)});
+        method: 'POST', body: JSON.stringify({structure: newStructure, scheduleAdd})});
         const data = await response.json();
-        if (data.error) {
+        if (data.statusCode || data.error) {
           toast.error(data.message);
         } else {
           toast.success("Created successfully");
@@ -179,10 +183,17 @@ const Structures = (props: IProps) => {
       getStructures();
     }
 
-    const changeRef = (el: any) => {
+    const changeRef = (el: HTMLTableElement) => {
       if (el){
         setHeight(el.clientHeight as number);
       }
+    }
+
+    const closeModal = () => {
+      setModalOpen(false);
+    }
+    const openModal = () => {
+      setModalOpen(true);
     }
 
 
@@ -196,6 +207,8 @@ const Structures = (props: IProps) => {
 
   return (
     <main>
+      <OptionsModal open={modalOpen} children={<></>} textContent={"Do you want to add the new Structure to the last Schedule?"}
+       title="Create Structure" confirmButtonText='Yes' closeModal={closeModal} confirmButton={createStructure} noButtonText="No" noButton={createStructure}/>
         <h1>Structure</h1>
         <div className='save-btn-container'>
         <Button variant="contained" color="primary" onClick={saveStructures}>Save</Button>
@@ -236,7 +249,7 @@ const Structures = (props: IProps) => {
               <TableCell align="center"><Checkbox name={`opening`} checked={newStructure.opening} onChange={newCheckboxChange} /></TableCell>
               <TableCell align="center"><Checkbox name={`manager`} checked={newStructure.manager} onChange={newCheckboxChange} /></TableCell>
               <TableCell align="center"><Checkbox name={`pull`} checked={newStructure.pull} onChange={newCheckboxChange} /></TableCell>
-              <TableCell align="center"><Button variant="contained" color="primary" onClick={creteStructure}>Create</Button></TableCell>
+              <TableCell align="center"><Button variant="contained" color="primary" onClick={openModal}>Create</Button></TableCell>
             </TableRow>
           {structures.map((structure) => (
             <TableRow

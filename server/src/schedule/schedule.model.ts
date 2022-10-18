@@ -22,7 +22,6 @@ export const ScheduleScheme = new mongoose.Schema<Schedule>({
             days: [
                 {
                     type: String,
-                    required: true,
                     default: ""
                 }
             ]

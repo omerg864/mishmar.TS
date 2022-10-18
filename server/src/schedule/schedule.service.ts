@@ -46,7 +46,7 @@ export class ScheduleService {
                 }
             }
             week_tmp.sort(this.sortStructures);
-            weeks_tmp.push( week_tmp);
+            weeks_tmp.push(week_tmp);
         }
         schedule_temp.weeks = weeks_tmp;
         return schedule_temp;

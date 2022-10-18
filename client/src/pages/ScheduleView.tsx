@@ -39,8 +39,12 @@ const ScheduleView = (props: IProps) => {
         if (data.error) {
           toast.error(data.message);
         } else {
+          if (!id){
           setSchedule(data.schedule);
           setPages(data.pages);
+          } else {
+            setSchedule(data);
+          }
         }
     } catch (err) {
         console.log(err);

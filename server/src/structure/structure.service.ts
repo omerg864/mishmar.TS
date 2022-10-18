@@ -8,8 +8,18 @@ import { Schedule } from 'src/schedule/schedule.model';
 export class StructureService {
     constructor(@InjectModel('Structure') private readonly structureModel: Model<Structure>, @InjectModel('Schedule') private readonly scheduleModel: Model<Schedule>) {}
 
-    async createStructure(structure: Structure): Promise<Structure>{
-        return this.structureModel.create(structure);
+    async createStructure(structure: Structure, scheduleAdd: boolean): Promise<Structure>{
+        let newStructure =  await this.structureModel.create(structure);
+        if (scheduleAdd){
+            let schedule = (await this.scheduleModel.find().sort({ date: -1}).limit(1))[0];
+            let weeks = [...schedule.weeks];
+            for (let i = 0; i < weeks.length; i++){ 
+                weeks[i].push({ shift: newStructure._id.toString(), days: ["", "", "", "", "", "", ""]})
+            }
+            schedule.weeks = weeks;
+            await schedule.save();
+        }
+        return newStructure;
     }
 
     async updateManyStructures(structures: Structure[]): Promise<Structure[]> {
