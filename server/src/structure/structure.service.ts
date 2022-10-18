@@ -2,10 +2,11 @@ import { Structure } from './structure.model';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { Schedule } from 'src/schedule/schedule.model';
 
 @Injectable()
 export class StructureService {
-    constructor(@InjectModel('Structure') private readonly structureModel: Model<Structure>) {}
+    constructor(@InjectModel('Structure') private readonly structureModel: Model<Structure>, @InjectModel('Schedule') private readonly scheduleModel: Model<Schedule>) {}
 
     async createStructure(structure: Structure): Promise<Structure>{
         return this.structureModel.create(structure);
@@ -33,11 +34,11 @@ export class StructureService {
             throw new NotFoundException('Structure not found');
         }
         await structure.remove();
-        return {id :structure.id.toString()};
+        return {id :structure._id.toString()};
     }
 
     async getAll(): Promise<Structure[]> {
-        return this.structureModel.find();
+        return this.structureModel.find().sort({ shift: 1, index: 1});
     }
 
     async getStructure(id: string): Promise<Structure> {

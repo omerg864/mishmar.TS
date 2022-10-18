@@ -5,6 +5,7 @@ import { Structure } from 'src/structure/structure.model';
 import { Schedule } from './schedule.model';
 import { Document } from 'mongoose';
 import { findIndex } from 'rxjs';
+import { addDays } from 'src/functions/functions';
 
 export type Shift = { shift: string|Structure, days: string[]}
 
@@ -14,6 +15,25 @@ export class ScheduleService {
     constructor(@InjectModel('Schedule') private readonly scheduleModel: Model<Schedule>, @InjectModel('Structure') private readonly structureModel: Model<Structure>) {}
 
 
+    sortStructures = (a: Shift, b: Shift) => {
+        const first = a.shift as Structure;
+        const second = b.shift as Structure;
+        if (first.shift > second.shift) {
+            return 1;
+        } else if (first.shift < second.shift) {
+            return -1;
+        } else {
+            if (first.index > second.index) {
+                return 1;
+            } else if (first.index < second.index) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
+
     async populateSchedule(schedule: Schedule): Promise<Schedule> {
         let schedule_temp: Schedule = {...schedule["_doc"]}
         let weeks_tmp: Shift[][] = [];
@@ -21,8 +41,11 @@ export class ScheduleService {
             let week_tmp: Shift[] = [];
             for( let j = 0; j < schedule.weeks[i].length; j++ ) {
                 let structureModel = await this.structureModel.findById( schedule.weeks[i][j].shift );
-                week_tmp.push({ shift: structureModel, days: schedule.weeks[i][j].days});
+                if (structureModel) {
+                    week_tmp.push({ shift: structureModel, days: schedule.weeks[i][j].days});
+                }
             }
+            week_tmp.sort(this.sortStructures);
             weeks_tmp.push( week_tmp);
         }
         schedule_temp.weeks = weeks_tmp;
@@ -95,19 +118,13 @@ export class ScheduleService {
         return { ...schedule, days}
     }
 
-    addDays = (date: Date, days: number): Date => {
-        var result = new Date(date);
-        result.setDate(result.getDate() + days);
-        return result;
-    }
-
     calculateDays(schedule: Schedule): Date[][] {
         let days_tmp: Date[][] = [];
         let firstDate =  new Date(schedule.date);
         for(let j = 0; j < schedule.num_weeks; j++) {
             days_tmp[j] = [];
             for (let i = j * 7; i < (j + 1) * 7 ; i++) {
-                days_tmp[j].push(this.addDays(firstDate, i));
+                days_tmp[j].push(addDays(firstDate, i));
             }
         }
         return days_tmp;
