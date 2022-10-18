@@ -67,6 +67,17 @@ export interface User {
     confirmPassword?: string;
 }
 
+
+export interface UserStrings {
+    _id: string;
+    name: string;
+    nickname: string;
+    email?: string;
+    username?: string;
+    password?: string;
+    confirmPassword?: string;
+}
+
 export interface UserQuality {
     _id: string;
     nickname: string;
@@ -83,4 +94,9 @@ export interface Settings {
     title: string;
     max_seq_nights: number;
     max_seq_noon: number;
+}
+
+export interface Passwords {
+    password: string;
+    confirmPassword: string;
 }

@@ -5,7 +5,7 @@ import TableBodyShift from '../components/TableBodyShift';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
-import { ScheduleUser, Shift } from '../types/types';
+import { ScheduleUser, Shift, User } from '../types/types';
 import { addDays, dateToString, numberToArray } from '../functions/functions';
 import { Button, Paper, TableContainer } from '@mui/material';
 import TableHead2 from '../components/TableHead';
@@ -23,10 +23,10 @@ const rows = ["morning", "noon", "night", "pull", "reinforcement"]
 type ShiftWeek = {morning: boolean[], noon: boolean[], night: boolean[], pull: boolean[], reinforcement: boolean[]};
 
 const ScheduleShiftUser = (props: IProps) => {
-    const [user, setUser] = useState({nickname: ""});
-    const [isLoading, setIsLoading] = useState(false);
-    const [schedule, setSchedule] = useState({num_weeks: 0, date: new Date(), days: [] as string[][], _id: '1'} as ScheduleUser);
-    const [shift, setShift] = useState(defaultValue as Shift);
+    const [user, setUser] = useState<User>({nickname: "", _id: "", name: ""});
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [schedule, setSchedule] = useState<ScheduleUser>({num_weeks: 0, date: new Date(), days: [] as string[][], _id: '1'});
+    const [shift, setShift] = useState<Shift>(defaultValue);
     const { scheduleId, userId } = useParams();
     const cookies = new Cookies();
 
@@ -101,14 +101,14 @@ const ScheduleShiftUser = (props: IProps) => {
         setIsLoading(false);
       }
 
-      const checkboxChange = (e: any) => {
+      const checkboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let weeks = [...shift.weeks]
         const [row, week, day] = e.target.name.split("-");
         weeks[parseInt(week)][row as keyof ShiftWeek][parseInt(day)] = !weeks[parseInt(week)][row as keyof ShiftWeek][parseInt(day)];
         setShift({...shift, weeks });
       }
 
-      const notesChange = (e: any) => {
+      const notesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         let weeks = [...shift.weeks]
         const [row, week, day] = e.target.name.split("-");
         weeks[parseInt(week)].notes[parseInt(day)] = e.target.value;

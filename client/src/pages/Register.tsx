@@ -13,8 +13,8 @@ interface IProps {
 
 const Register = (props: IProps) => {
 
-    const [isLoading, setIsLoading] = useState(false);
-    const [formData, setFormData] = useState({ name: '', username: '', password: '', confirmPassword: '', email: '', pin_code: ''});
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [formData, setFormData] = useState<{ name: string, username: string, password: string, confirmPassword: string, email: string, pin_code: string}>({ name: '', username: '', password: '', confirmPassword: '', email: '', pin_code: ''});
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

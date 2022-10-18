@@ -19,7 +19,7 @@ const Posts = (props: IProps) => {
 
   const [posts, setPosts] = useState<PostType[]>([]);
   const [pages, setPages] = useState<number>(1);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   let [searchParams, setSearchParams] = useSearchParams();
   const cookies = new Cookies();
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ const Posts = (props: IProps) => {
     navigate(`/post/${id}`)
   }
 
-  const paginationClick = (e: any, value: number) => {
+  const paginationClick = (e: React.ChangeEvent<unknown>, value: number) => {
     setSearchParams(`?page=${value}`);
   }
 

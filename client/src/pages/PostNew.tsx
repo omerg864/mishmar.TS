@@ -20,11 +20,11 @@ interface IProps {
 
 const PostNew = (props: IProps) => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
   const [post, setPost] = useState<PostType>({title: "", content: "", date: (new Date()).toString(), userId: {nickname: ""}} as PostType);
   const cookies = new Cookies();
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
     setPost({...post, [e.target.name]: e.target.value});
   }
 

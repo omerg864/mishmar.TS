@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, ElementType, HtmlHTMLAttributes } from 'react'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
@@ -31,9 +31,9 @@ const Events = (props: IProps) => {
     const [events, setEvents] = useState<EventType[]>([]);
     const [newEvent, setNewEvent] = useState<EventType>({content: "", users: [], date: (new Date()).toString()});
     const [users, setUsers] = useState<User[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const cookies = new Cookies();
-    const [height, setHeight] = useState(100);
+    const [height, setHeight] = useState<number>(100);
     const [searchParams, setSearchParams] = useSearchParams();
     const [pages, setPages] = useState<number>(1);
 
@@ -42,7 +42,7 @@ const Events = (props: IProps) => {
       setNewEvent({...newEvent, date: newValue ? newValue.toString() : ""});
     }
 
-    const newTextChange = (e: any) => {
+    const newTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setNewEvent({...newEvent, [e.target.name as keyof EventType]: e.target.value});
     }
 
@@ -63,12 +63,12 @@ const Events = (props: IProps) => {
       setEvents(events_temp);
     }
 
-    const textChange = (e: any) => {
+    const textChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       let [ key, id ] = e.target.name.split("&&");
       let events_temp = [...events];
       events_temp = events_temp.map(event => {
         if (event._id === id) {
-          event[key as keyof EventType] = e.target.value;
+          event.content = e.target.value;
         }
         return event;
       })
@@ -118,11 +118,11 @@ const Events = (props: IProps) => {
     }
 
 
-    const deleteEvent = async (e: any) => {
+    const deleteEvent = async (e: React.MouseEvent<HTMLButtonElement>) => {
       setIsLoading(true);
       e.preventDefault();
       try {
-        const response = await fetch(`/api/events/${e.target.value}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') }, method: 'DELETE'});
+        const response = await fetch(`/api/events/${(e.target as HTMLButtonElement).value}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') }, method: 'DELETE'});
         const data = await response.json();
         if (data.error) {
           toast.error(data.message);
@@ -197,13 +197,13 @@ const Events = (props: IProps) => {
       }, [props.manager, searchParams]);
     
     
-      const changeRef = (el: any) => {
+      const changeRef = (el: HTMLTableElement) => {
         if (el){
           setHeight(el.clientHeight as number);
         }
       }
 
-    const paginationClick = (e: any, value: number) => {
+    const paginationClick = (e: React.ChangeEvent<unknown>, value: number) => {
         setSearchParams(`?page=${value}`);
     }
 

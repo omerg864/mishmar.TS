@@ -46,14 +46,14 @@ const ScheduleUpdate = (props: IProps) => {
         setIsLoading(false);
     }
 
-    const changeSchedule = (e: any) => {
+    const changeSchedule = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const [ week, shift, day ] = e.target.name.split('-');
         let schedule_temp = {...schedule}
-        schedule_temp.weeks[week][shift].days[day] = e.target.value;
+        schedule_temp.weeks[parseInt(week)][parseInt(shift)].days[parseInt(day)] = e.target.value;
         setSchedule(schedule_temp);
     }
 
-    const changePublish = (e: any) => {
+    const changePublish = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSchedule({ ...schedule, publish: !schedule.publish });
     }
 

@@ -13,9 +13,9 @@ interface IProps {
 
 const TableHead2 = (props: IProps) => {
 
-  const [height, setHeight] = useState(100);
+  const [height, setHeight] = useState<number>(100);
 
-  const changeRef = (el: any) => {
+  const changeRef = (el: HTMLTableElement) => {
     if (el){
       setHeight(el.clientHeight as number + 10);
     }

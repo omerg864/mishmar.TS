@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react'
+import React, { ReactFragment, useEffect, useState} from 'react'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify';
 import { Button, TextField } from '@mui/material';
@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import PasswordRules from '../components/PasswordRules'
 import { password_regex } from '../types/regularExpressions'
+import { Passwords } from '../types/types';
 
 interface IProps {
   authenticated: boolean;
@@ -13,9 +14,9 @@ interface IProps {
 
 const ResetPassword = (props: IProps) => {
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [passwordData, setPasswordData] = useState({ password: "", confirmPassword: ""});
-  const [token, setToken] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [passwordData, setPasswordData] = useState<Passwords>({ password: "", confirmPassword: ""});
+  const [token, setToken] = useState<boolean>(false);
   const { reset_token } = useParams();
   const navigate = useNavigate();
 
@@ -44,7 +45,7 @@ const ResetPassword = (props: IProps) => {
   }, [props.authenticated]);
 
 
-  const changePassword = async (e: any) => {
+  const changePassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (passwordData.password !== passwordData.confirmPassword) {
       toast.error('passwords do not match');

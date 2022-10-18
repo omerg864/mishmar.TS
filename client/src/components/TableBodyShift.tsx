@@ -33,8 +33,6 @@ interface ShiftScheduleWeek2 {
   notes: string[];
 }
 
-type ShiftWeek = {morning: boolean[], noon: boolean[], night: boolean[], pull: boolean[], reinforcement: boolean[]};
-
 const TableBody2 = (props: IProps) => {
   return (
     <>

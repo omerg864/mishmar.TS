@@ -13,7 +13,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
-import Select from '@mui/material/Select';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { StyledTableCell, StyledTableRow } from '../components/StyledTable'
 
@@ -30,29 +30,27 @@ const Structures = (props: IProps) => {
     //const [changes, setChanges] = useState<string[]>([]);
     const defaultValue = {title: '', description: '', shift: 0, index: 0, opening: false, pull: false, manager: false} as Structure
     const [newStructure, setNewStructure] = useState<Structure>(defaultValue);
-    const [height, setHeight] = useState(100);
+    const [height, setHeight] = useState<number>(100);
 
-      const newCheckboxChange = (event: any) => {
-        const name: keyof Structure = event.target.name;
-        setNewStructure({...newStructure, [name]: !newStructure[name]});
+      const newCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const name: string = event.target.name;
+        setNewStructure({...newStructure, [name]: !newStructure[(name as keyof Structure)]});
     }
 
-    const newInputChange = (event: any) => {
-        event.preventDefault();
-        const name: keyof Structure = event.target.name;
-        setNewStructure({...newStructure, [name]: event.target.value});
+    const newInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setNewStructure({...newStructure, [event.target.name]: event.target.value});
     }
 
-    const newHandleSelectChange = (event: any) => {
-        setNewStructure({...newStructure, shift: event.target.value});
+    const newHandleSelectChange = (event: SelectChangeEvent<number>) => {
+        setNewStructure({...newStructure, shift: +event.target.value});
     }
 
-      const checkboxChange = (event: any) => {
+      const checkboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const id = event.target.name.split("&&")[1];
-        const name: keyof Structure = event.target.name.split("&")[0];
+        const name: string = event.target.name.split("&")[0];
         let structures_tmp = [...structures];
         let st = structures.find(s => s._id === id) as Structure;
-        let structure:Structure = {...st, [name] : !st[name]};
+        let structure:Structure = {...st, [name] : !st[(name as keyof Structure)]};
         structures_tmp = structures_tmp.map(s => {
             if (s._id === id) {
                 return structure;
@@ -62,7 +60,7 @@ const Structures = (props: IProps) => {
         setStructures(structures_tmp);
     }
 
-    const inputChange = (event: any) => {
+    const inputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const id = event.target.name.split("&&")[1];
         const name = event.target.name.split("&")[0];
         let structures_tmp = [...structures]
@@ -76,9 +74,9 @@ const Structures = (props: IProps) => {
         setStructures(structures_tmp);
     }
 
-    const handleSelectChange = (event: any) => {
+    const handleSelectChange = (event: SelectChangeEvent<string>) => {
         const id = event.target.value.split("&&")[1];
-        const value = event.target.value.split("&&")[0] as number;
+        const value = +event.target.value.split("&&")[0];
         let structures_tmp = [...structures]
         let structure:Structure = {...structures.find(s => s._id === id) as Structure, shift: value};
         structures_tmp = structures_tmp.map(s => {
@@ -163,10 +161,10 @@ const Structures = (props: IProps) => {
       getStructures();
     }
 
-    const deleteStructure = async (e: any) => {
+    const deleteStructure = async (e: React.MouseEvent<HTMLButtonElement>) => {
       setLoading(true);
       try {
-        const response = await fetch(`/api/structures/${e.target.value}`, { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}, method: 'DELETE'});
+        const response = await fetch(`/api/structures/${(e.target as HTMLButtonElement).value}`, { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}, method: 'DELETE'});
         const data = await response.json();
         if (data.error) {
           toast.error(data.message);

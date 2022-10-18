@@ -30,12 +30,12 @@ const rows = ["morning", "noon", "night", "reinforcement", "notes"];
 
 const ScheduleShift = (props: IProps) => {
     const { id } = useParams();
-    const [loading, setLoading] = useState(true);
-    const [data, setData] = useState([] as ShiftScheduleWeek[]);
-    const [users, setUsers] = useState([] as {nickname: string, id: string}[]);
-    const [noUsers, setNoUsers] = useState([] as {nickname: string, id: string}[]);
-    const [minUsers, setMinUsers] = useState([] as {nickname: string, id: string, noon: number[], morning: number[]}[]);
-    const [schedule, setSchedule] = useState({num_weeks: 0, date: new Date(), days: [] as string[][], _id: '1'} as ScheduleUser);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [data, setData] = useState<ShiftScheduleWeek[]>([]);
+    const [users, setUsers] = useState<{nickname: string, id: string}[]>([]);
+    const [noUsers, setNoUsers] = useState<{nickname: string, id: string}[]>([]);
+    const [minUsers, setMinUsers] = useState<{nickname: string, id: string, noon: number[], morning: number[]}[]>([]);
+    const [schedule, setSchedule] = useState<ScheduleUser>({num_weeks: 0, date: new Date(), days: [] as string[][], _id: '1'});
     const [weeksNotes, setWeeksNotes] = useState<string[]>([]);
     const [generalNotes, setGeneralNotes] = useState<string>("");
     const cookies = new Cookies();

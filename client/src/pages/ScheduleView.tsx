@@ -16,10 +16,10 @@ interface IProps {
 
 const ScheduleView = (props: IProps) => {
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [schedule, setSchedule] = useState<Schedule>({num_weeks: 0, days: [], weeks: [], date: new Date(), publish: true, id: "", _id: ""});
   const cookies = new Cookies();
-  const [height, setHeight] = useState(100);
+  const [height, setHeight] = useState<number>(100);
   const { id } = useParams(); 
   const [searchParams, setSearchParams] = useSearchParams();
   const [pages, setPages] = useState(1);
@@ -49,7 +49,7 @@ const ScheduleView = (props: IProps) => {
     setIsLoading(false);
   }
 
-  const paginationClick = (e: any, value: number) => {
+  const paginationClick = (e: React.ChangeEvent<unknown>, value: number) => {
     setSearchParams(`?page=${value}`);
   }
 
@@ -69,7 +69,7 @@ const ScheduleView = (props: IProps) => {
     return <></>;
   }
 
-  const changeRef = (el: any) => {
+  const changeRef = (el: HTMLTableElement) => {
     if (el){
       if (el.clientHeight as number + 10 > height)
         setHeight(el.clientHeight as number + 10);

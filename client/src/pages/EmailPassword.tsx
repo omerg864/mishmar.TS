@@ -11,8 +11,8 @@ interface IProps {
 
 const EmailPassword = (props: IProps) => {
 
-  const [isLoading, setIsLoading] =useState(false);
-  const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

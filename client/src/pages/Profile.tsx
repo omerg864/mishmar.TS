@@ -6,6 +6,7 @@ import Modal from '../components/Modal'
 import Spinner from '../components/Spinner'
 import { email_regex, password_regex } from '../types/regularExpressions'
 import PasswordRules from '../components/PasswordRules'
+import { Passwords } from '../types/types'
 
 
 interface IProps {
@@ -14,18 +15,18 @@ interface IProps {
 
 const Profile = (props: IProps) => {
   const cookies = new Cookies();
-  const [formData, setFormData] = useState({ username: cookies.get('user').username, email: cookies.get('user').email, name: cookies.get('user').name})
-  const [passwordData, setPasswordData] = useState({ password:"", confirmPassword: ''});
-  const [loading, setLoading] = useState(false)
-  const [modal, setModal] = useState(false)
+  const [formData, setFormData] = useState<{username: string, email: string, name: string}>({ username: cookies.get('user').username, email: cookies.get('user').email, name: cookies.get('user').name})
+  const [passwordData, setPasswordData] = useState<Passwords>({ password:"", confirmPassword: ''});
+  const [loading, setLoading] = useState<boolean>(false)
+  const [modal, setModal] = useState<boolean>(false)
 
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({...formData, [e.target.name]: e.target.value })
   }
 
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!email_regex.test(formData.email)) {
       toast.error('please enter a valid email');

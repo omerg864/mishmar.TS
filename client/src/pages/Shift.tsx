@@ -20,10 +20,10 @@ type ShiftWeek = {morning: boolean[], noon: boolean[], night: boolean[], pull: b
 
 const Shift = (props: IProps) => {
 
-    const [submitting, setSubmitting] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [schedule, setSchedule] = useState({num_weeks: 0, date: new Date(), days: [] as string[][], _id: '1'} as ScheduleUser);
-    const [shift, setShift] = useState(defaultValue as ShiftType);
+    const [submitting, setSubmitting] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [schedule, setSchedule] = useState<ScheduleUser>({num_weeks: 0, date: new Date(), days: [] as string[][], _id: '1'});
+    const [shift, setShift] = useState<ShiftType>(defaultValue);
     const cookies = new Cookies();
 
       const getLastSchedule = async () => {
@@ -88,21 +88,21 @@ const Shift = (props: IProps) => {
       }
       }
 
-      const checkboxChange = (e: any) => {
+      const checkboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let weeks = [...shift.weeks]
         const [row, week, day] = e.target.name.split("-");
         weeks[parseInt(week)][row as keyof ShiftWeek][parseInt(day)] = !weeks[parseInt(week)][row as keyof ShiftWeek][parseInt(day)];
         setShift({...shift, weeks });
       }
 
-      const notesChange = (e: any) => {
+      const notesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         let weeks = [...shift.weeks]
         const [row, week, day] = e.target.name.split("-");
         weeks[parseInt(week)].notes[parseInt(day)] = e.target.value;
         setShift({...shift, weeks });
       }
 
-      const shiftTextChange = (e: any) => {
+      const shiftTextChange = (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
         setShift({...shift, [e.target.name]: e.target.value});
       }
 

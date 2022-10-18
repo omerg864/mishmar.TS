@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Spinner from '../components/Spinner';
 import { toast } from 'react-toastify';
-import { User } from '../types/types';
+import { User, UserStrings } from '../types/types';
 import Cookies from 'universal-cookie';
 import Button from '@mui/material/Button';
 import Table from '@mui/material/Table';
@@ -25,11 +25,11 @@ interface IProps {
 
 const Users = (props: IProps) => {
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [users, setUsers] = useState<User[]>([]);
   const [modal, setModal] = useState<{open: boolean, user: User}>({open: false, user: {} as User});
   const cookies = new Cookies();
-  const [height, setHeight] = useState(100);
+  const [height, setHeight] = useState<number>(100);
 
   const getUsers = async (loading: boolean) => {
     if (loading) 
@@ -54,7 +54,7 @@ const Users = (props: IProps) => {
     return arr.filter((item, index) => arr.indexOf(item) != index)
   }
 
-  const saveUsers = async (e: any) => {
+  const saveUsers = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let users_nickname: string[] = [];
       for (let i = 0; i < users.length; i++) {
@@ -106,8 +106,8 @@ const Users = (props: IProps) => {
     setIsLoading(false);
   }
 
-  const openModal = (e: any) => {
-    setModal({open: true, user: {...((users.find(user => user._id === e.target.value) as User)), password: "", confirmPassword: ""}});
+  const openModal = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setModal({open: true, user: {...((users.find(user => user._id === (e.target as HTMLButtonElement).value) as User)), password: "", confirmPassword: ""}});
   }
 
   const changePassword = async () => {
@@ -141,18 +141,18 @@ const Users = (props: IProps) => {
     setIsLoading(false);
   }
 
-  const handleTextChange = (e: any) => {
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const [ name, id ] = e.target.name.split("&&");
     let users_temp = users.map(user => {
       if (user._id === id) {
-        user[name as keyof User] = e.target.value;
+        user[name as keyof UserStrings] = e.target.value;
       }
       return user;
     })
     setUsers(users_temp);
   }
 
-  const handleCheckBoxChange = (e: any) => {
+  const handleCheckBoxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const [ name, id ] = e.target.name.split("&&");
     let users_temp = users.map(user => {
       if (user._id === id) {
@@ -167,11 +167,11 @@ const Users = (props: IProps) => {
     setUsers(users_temp);
   }
 
-  const deleteUser = async (e: any) => {
+  const deleteUser = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/users/${e.target.value}`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
+      const response = await fetch(`/api/users/${(e.target as HTMLButtonElement).value}`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
       method: 'DELETE'});
       const data = await response.json();
       if (data.error) {
@@ -202,7 +202,7 @@ const Users = (props: IProps) => {
   }, [props.manager]);
 
 
-  const changeRef = (el: any) => {
+  const changeRef = (el: HTMLTableElement) => {
     if (el){
       setHeight(el.clientHeight as number);
     }

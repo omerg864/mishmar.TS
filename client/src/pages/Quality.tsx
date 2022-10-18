@@ -22,10 +22,10 @@ interface IProps {
 
 const Quality = (props: IProps) => {
 
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const cookies = new Cookies();
     const [users, setUsers] = useState<UserQuality[]>([]);
-    const [height, setHeight] = useState(100);
+    const [height, setHeight] = useState<number>(100);
 
     const getUsers = async () => {
         setIsLoading(true);
@@ -44,7 +44,7 @@ const Quality = (props: IProps) => {
         setIsLoading(false);
     }
 
-    const handleNumberChange = (e: any) => {
+    const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const [ name, id ] = e.target.name.split("&&");
         let users_temp = users.map(user => {
           if (user._id === id) {
@@ -55,7 +55,7 @@ const Quality = (props: IProps) => {
         setUsers(users_temp);
     }
 
-    const handleTextChange = (e: any) => {
+    const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const [ name, id ] = e.target.name.split("&&");
         let users_temp = users.map(user => {
           if (user._id === id) {
@@ -70,8 +70,8 @@ const Quality = (props: IProps) => {
       return arr.filter((item, index) => arr.indexOf(item) != index)
     }
 
-    const saveUsers = async (e: any, loading: boolean) => {
-      e.preventDefault();
+    const saveUsers = async (loading: boolean, e?: React.FormEvent<HTMLFormElement>) => {
+      e?.preventDefault();
       let users_nickname: string[] = [];
       for (let i = 0; i < users.length; i++) {
         users_nickname.push(users[i].nickname);
@@ -102,7 +102,7 @@ const Quality = (props: IProps) => {
             setIsLoading(false);
     }
 
-    const resetQuality = async (e: any) => {
+    const resetQuality = async (e: React.MouseEvent<HTMLButtonElement>) => {
         setIsLoading(true);
         let temp_users = [...users];
         temp_users = temp_users.map(user => {
@@ -113,7 +113,7 @@ const Quality = (props: IProps) => {
             return user;
         })
         setUsers(temp_users);
-        await saveUsers(e, false);
+        await saveUsers(false);
         setIsLoading(false);
     }
 
@@ -124,7 +124,7 @@ const Quality = (props: IProps) => {
         }
     }, [props.manager]);
 
-    const changeRef = (el: any) => {
+    const changeRef = (el: HTMLTableElement) => {
       if (el){
         setHeight(el.clientHeight as number);
       }
@@ -141,7 +141,7 @@ const Quality = (props: IProps) => {
   return (
     <main>
         <h1>Users Quality</h1>
-        <form onSubmit={(e) => saveUsers(e, true)}>
+        <form onSubmit={(e) => saveUsers(true, e)}>
         <div style={{display: 'flex', justifyContent: "space-between", width: "100%", padding: "10px", boxSizing: "border-box"}}>
         <Button variant="contained" color="primary" type="submit" >Save</Button>
         <Button variant="contained" color="error" onClick={(e) => resetQuality(e)}>Reset</Button>

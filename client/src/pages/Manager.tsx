@@ -13,8 +13,8 @@ interface IProps {
 const Manager = (props: IProps) => {
 
     const navigate = useNavigate();
-    const [checked, setChecked] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [checked, setChecked] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
     const cookies = new Cookies();
 
     const getSubmit = async () => {

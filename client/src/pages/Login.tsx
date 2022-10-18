@@ -17,8 +17,8 @@ interface IProps {
 
 const Login = (props: IProps) => {
 
-    const [userData, setUserData] = useState({ username: '', password: '' });
-    const [isLoading, setIsLoading] = useState(false);
+    const [userData, setUserData] = useState<{username: string, password: string}>({ username: '', password: '' });
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const navigate = useNavigate();
     const cookies = new Cookies();
 

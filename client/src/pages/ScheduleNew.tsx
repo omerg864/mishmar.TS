@@ -16,7 +16,7 @@ interface IProps {
 
 const ScheduleNew = (props: IProps) => {
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState<boolean>(false);
     const [date, setDate] = useState<Date>(new Date());
     const [numWeeks, setNumWeeks] = useState<number>(2);
     const cookies = new Cookies();

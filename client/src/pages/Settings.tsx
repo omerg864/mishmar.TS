@@ -33,7 +33,7 @@ const SettingsPage = (props: IProps) => {
         setIsLoading(false);
     }
 
-    const saveSettings = async (e: any) => {
+    const saveSettings = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
         try {
@@ -52,7 +52,7 @@ const SettingsPage = (props: IProps) => {
         setIsLoading(false);
     }
 
-    const handleChange = (e: any) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSettings({...settings, [e.target.name]: e.target.value })
       }
 

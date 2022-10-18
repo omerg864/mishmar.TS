@@ -13,7 +13,7 @@ interface IProps {
 const Home = (props: IProps) => {
 
   const cookies = new Cookies();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [posts, setPosts] = useState<PostType[]>([]);
 
 

@@ -54,7 +54,7 @@ const Schedules = (props: IProps) => {
         }
     }, [props.manager, searchParams]);
 
-    const paginationClick = (e: any, value: number) => {
+    const paginationClick = (e: React.ChangeEvent<unknown>, value: number) => {
         setSearchParams(`?page=${value}`);
       }
 
