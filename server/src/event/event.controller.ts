@@ -1,6 +1,6 @@
-import { UserID } from 'src/middleware/auth.middlware';
+import { UserID } from '../middleware/auth.middlware';
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
-import { User } from 'src/user/user.model';
+import { User } from '../user/user.model';
 import { EventInterface } from './event.model';
 import { EventService } from './event.service';
 

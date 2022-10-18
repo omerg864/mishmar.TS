@@ -2,7 +2,7 @@ import { Structure } from './structure.model';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { Schedule } from 'src/schedule/schedule.model';
+import { Schedule } from '../schedule/schedule.model';
 
 @Injectable()
 export class StructureService {

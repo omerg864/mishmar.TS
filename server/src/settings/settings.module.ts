@@ -1,10 +1,10 @@
-import { UserScheme } from 'src/user/user.model';
+import { UserScheme } from '../user/user.model';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { SettingsController } from './settings.controller';
 import { SettingsService } from './settings.service';
 import { SettingsScheme } from './settings.model';
-import { AuthMiddleware, SiteManagerMiddleware } from 'src/middleware/auth.middlware';
+import { AuthMiddleware, SiteManagerMiddleware } from '../middleware/auth.middlware';
 
 @Module({
   imports: [MongooseModule.forFeature([{name: 'Settings', schema: SettingsScheme}, {name: 'User', schema: UserScheme}])],

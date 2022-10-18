@@ -4,7 +4,7 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod, Delete } from '@
 import { PostController } from './post.controller';
 import { PostService } from './post.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserScheme } from 'src/user/user.model';
+import { UserScheme } from '../user/user.model';
 
 @Module({
   imports: [MongooseModule.forFeature([{name: 'Post', schema: PostScheme}, {name: 'User', schema: UserScheme}])],

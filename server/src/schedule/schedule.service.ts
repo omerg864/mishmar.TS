@@ -1,11 +1,11 @@
 import { ConflictException, Injectable, NotFoundException, Query } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Structure } from 'src/structure/structure.model';
+import { Structure } from '../structure/structure.model';
 import { Schedule } from './schedule.model';
 import { Document } from 'mongoose';
 import { findIndex } from 'rxjs';
-import { addDays } from 'src/functions/functions';
+import { addDays } from '../functions/functions';
 
 export type Shift = { shift: string|Structure, days: string[]}
 

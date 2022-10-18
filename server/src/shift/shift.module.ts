@@ -5,8 +5,8 @@ import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/c
 import { ShiftController } from './shift.controller';
 import { ShiftService } from './shift.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserScheme } from 'src/user/user.model';
-import { AuthMiddleware, SiteManagerMiddleware } from 'src/middleware/auth.middlware';
+import { UserScheme } from '../user/user.model';
+import { AuthMiddleware, SiteManagerMiddleware } from '../middleware/auth.middlware';
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: 'Shift', schema: ShiftScheme}, {name: 'Schedule', schema: ScheduleScheme}, {name: 'User', schema: UserScheme}])],

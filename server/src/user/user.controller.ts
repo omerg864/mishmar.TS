@@ -1,7 +1,7 @@
 import { UserService } from './user.service';
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { User } from './user.model';
-import { UserID } from 'src/middleware/auth.middlware';
+import { UserID } from '../middleware/auth.middlware';
 
 @Controller('api/users')
 export class UserController {

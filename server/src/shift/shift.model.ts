@@ -1,5 +1,5 @@
 import * as mongoose from "mongoose";
-import { User } from "src/user/user.model";
+import { User } from "../user/user.model";
 
 
 export const ShiftScheme = new mongoose.Schema<Shift>({

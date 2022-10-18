@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
-import { UserID } from 'src/middleware/auth.middlware';
+import { UserID } from '../middleware/auth.middlware';
 import { Shift, ShiftScheduleWeek } from './shift.model';
 import { ShiftService } from './shift.service';
 

@@ -4,8 +4,8 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod, Delete } from '@
 import { ScheduleController } from './schedule.controller';
 import { ScheduleService } from './schedule.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserScheme } from 'src/user/user.model';
-import { AuthMiddleware, SiteManagerMiddleware } from 'src/middleware/auth.middlware';
+import { UserScheme } from '../user/user.model';
+import { AuthMiddleware, SiteManagerMiddleware } from '../middleware/auth.middlware';
 
 @Module({
   imports: [MongooseModule.forFeature([{name: 'Schedule', schema: ScheduleScheme}, { name: 'User', schema: UserScheme}, { name: 'Structure', schema: StructureScheme}])],

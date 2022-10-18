@@ -4,8 +4,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
-import { Settings } from 'src/settings/settings.model';
-import { sendMail } from 'src/functions/functions';
+import { Settings } from '../settings/settings.model';
+import { sendMail } from '../functions/functions';
 import * as crypto from 'crypto';
 
 @Injectable()

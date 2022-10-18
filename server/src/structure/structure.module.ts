@@ -4,8 +4,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { StructureController } from './structure.controller';
 import { StructureService } from './structure.service';
-import { UserScheme } from 'src/user/user.model';
-import { SiteManagerMiddleware } from 'src/middleware/auth.middlware';
+import { UserScheme } from '../user/user.model';
+import { SiteManagerMiddleware } from '../middleware/auth.middlware';
 
 @Module({
   imports: [MongooseModule.forFeature([{name: 'Structure', schema: StructureScheme}, {name: 'Schedule', schema: ScheduleScheme}, {name: 'User', schema: UserScheme}])],

@@ -3,8 +3,8 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 import { UserService } from './user.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserScheme } from './user.model';
-import { AuthMiddleware, SiteManagerMiddleware } from 'src/middleware/auth.middlware';
-import { SettingsScheme } from 'src/settings/settings.model';
+import { AuthMiddleware, SiteManagerMiddleware } from '../middleware/auth.middlware';
+import { SettingsScheme } from '../settings/settings.model';
 
 @Module({
   imports: [MongooseModule.forFeature([{name: 'User',  schema: UserScheme}, {name: 'Settings', schema: SettingsScheme}])],

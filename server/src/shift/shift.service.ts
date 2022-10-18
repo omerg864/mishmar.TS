@@ -1,9 +1,8 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { UserID } from 'src/middleware/auth.middlware';
-import { Schedule } from 'src/schedule/schedule.model';
-import { User } from 'src/user/user.model';
+import { Schedule } from '../schedule/schedule.model';
+import { User } from '../user/user.model';
 import { Shift, ShiftScheduleWeek } from './shift.model';
 
 

@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { addDays } from 'src/functions/functions';
-import { Schedule } from 'src/schedule/schedule.model';
-import { User } from 'src/user/user.model';
+import { addDays } from '../functions/functions';
+import { Schedule } from '../schedule/schedule.model';
+import { User } from '../user/user.model';
 import { EventInterface } from './event.model';
 
 @Injectable()

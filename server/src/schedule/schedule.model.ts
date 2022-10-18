@@ -1,5 +1,5 @@
 import * as mongoose from "mongoose";
-import { Structure } from "src/structure/structure.model";
+import { Structure } from "../structure/structure.model";
 
 
 export const ScheduleScheme = new mongoose.Schema<Schedule>({
