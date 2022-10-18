@@ -9,5 +9,18 @@
         "src": "./client/build",    
         "use": "@vercel/static"
       }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "./server/src/main.ts",
+            "methods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ]
+        }
     ]
   }
