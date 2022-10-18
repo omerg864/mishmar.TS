@@ -19,8 +19,8 @@ let PostModule = class PostModule {
         consumer.apply(auth_middlware_1.ShiftManagerMiddleware).forRoutes({ path: 'api/posts', method: common_1.RequestMethod.POST });
         consumer.apply(auth_middlware_1.ShiftManagerMiddleware).forRoutes({ path: 'api/posts/*', method: common_1.RequestMethod.DELETE });
         consumer.apply(auth_middlware_1.ShiftManagerMiddleware).forRoutes({ path: 'api/posts', method: common_1.RequestMethod.PATCH });
-        consumer.apply(auth_middlware_1.ShiftManagerMiddleware).forRoutes({ path: 'api/posts/*', method: common_1.RequestMethod.GET });
-        consumer.apply(auth_middlware_1.AuthMiddleware).forRoutes({ path: 'api/posts/all', method: common_1.RequestMethod.GET });
+        consumer.apply(auth_middlware_1.ShiftManagerMiddleware).forRoutes({ path: 'api/posts/:id', method: common_1.RequestMethod.GET });
+        consumer.apply(auth_middlware_1.AuthMiddleware).forRoutes({ path: 'api/posts/auth/all', method: common_1.RequestMethod.GET });
     }
 };
 PostModule = __decorate([

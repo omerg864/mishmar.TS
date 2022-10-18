@@ -29,7 +29,7 @@ const Posts = (props: IProps) => {
     setLoading(true);
     try {
       let page = searchParams.get('page') ? searchParams.get('page') : 1;
-      const response = await fetch(`/api/posts/all?page=${page}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
+      const response = await fetch(`/api/posts/auth/all?page=${page}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
       const data = await response.json();
       if (data.error) {
         toast.error(data.message);

@@ -20,7 +20,7 @@ const Home = (props: IProps) => {
   const getPosts = async () =>{
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/posts/all?page=1`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
+      const response = await fetch(`/api/posts/auth/all?page=1`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
       const data = await response.json();
       if (data.error) {
         toast.error(data.message);
@@ -52,7 +52,7 @@ const Home = (props: IProps) => {
   return (
     <main>
       <h1>Home</h1>
-      <div style={{width: '70%', padding: '15px', display: 'flex', justifyContent: 'flex-start', gap: '10px', boxSizing: 'border-box', flexWrap: 'wrap'}}>
+      <div style={{width: '80%', padding: '15px', display: 'flex', justifyContent: 'flex-start', gap: '10px', boxSizing: 'border-box', flexWrap: 'wrap'}}>
       <Card className='user-data'>
           <CardContent sx={{textAlign: 'center', position: 'relative'}}>
             <Typography variant="h4" component="div">
@@ -72,8 +72,9 @@ const Home = (props: IProps) => {
             </Typography>
           </CardContent>
       </Card>
+      <div className='posts-home'>
       {posts.map((post) => (
-        <Card key={post._id} className='posts-home'>
+        <Card key={post._id}>
           <CardContent sx={{textAlign: 'center', position: 'relative'}}>
             <Typography gutterBottom variant="h5" component="div">
               {post.title}
@@ -90,6 +91,7 @@ const Home = (props: IProps) => {
           </CardContent>
       </Card>
       ))}
+      </div>
       </div>
     </main>
   )

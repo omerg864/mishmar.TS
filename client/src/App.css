@@ -126,12 +126,15 @@ td, th {
 
 .posts-home {
   width: 60%;
-  margin-top: 15px
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .user-data {
   width: 30%;
-
+  height: fit-content;
 }
 
 @media only screen and (max-width: 899px){

@@ -22,7 +22,7 @@ export class PostController {
         return this.postService.deletePost(id);
     }
 
-    @Get('all')
+    @Get('auth/all')
     async getAllPosts(@Query() query: { page?: number }): Promise<{ posts: PostInterface[], pages: number}> {
         return this.postService.getAll(query);
     }

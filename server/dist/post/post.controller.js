@@ -60,7 +60,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PostController.prototype, "deletePost", null);
 __decorate([
-    (0, common_1.Get)('all'),
+    (0, common_1.Get)('auth/all'),
     __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

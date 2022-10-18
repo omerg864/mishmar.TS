@@ -16,7 +16,7 @@ export class PostModule implements NestModule {
     consumer.apply(ShiftManagerMiddleware).forRoutes({path: 'api/posts', method: RequestMethod.POST})
     consumer.apply(ShiftManagerMiddleware).forRoutes({path: 'api/posts/*', method: RequestMethod.DELETE})
     consumer.apply(ShiftManagerMiddleware).forRoutes({path: 'api/posts', method: RequestMethod.PATCH})
-    consumer.apply(ShiftManagerMiddleware).forRoutes({path: 'api/posts/*', method: RequestMethod.GET})
-    consumer.apply(AuthMiddleware).forRoutes({path: 'api/posts/all', method: RequestMethod.GET})
+    consumer.apply(ShiftManagerMiddleware).forRoutes({path: 'api/posts/:id', method: RequestMethod.GET})
+    consumer.apply(AuthMiddleware).forRoutes({path: 'api/posts/auth/all', method: RequestMethod.GET})
   }
 }
