@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { addDays } from 'src/functions/functions';
 import { Schedule } from 'src/schedule/schedule.model';
 import { User } from 'src/user/user.model';
 import { EventInterface } from './event.model';
@@ -23,15 +24,9 @@ export class EventService {
         return {events, users, pages};
     }
 
-    addDays = (date: Date, days: number): Date => {
-        var result = new Date(date);
-        result.setDate(result.getDate() + days);
-        return result;
-    }
-
     async getUserEventsSchedule(scheduleId: string, userId: string): Promise<EventInterface[]> {
         const schedule = await this.ScheduleModel.findById(scheduleId);
-        const events = await this.eventModel.find({users: userId, date: { $gte : schedule.date, $lte: this.addDays(schedule.date, schedule.num_weeks * 7)}}).sort( { date: -1});
+        const events = await this.eventModel.find({users: userId, date: { $gte : schedule.date, $lte: addDays(schedule.date, schedule.num_weeks * 7)}}).sort( { date: -1});
         return events;
     }
 

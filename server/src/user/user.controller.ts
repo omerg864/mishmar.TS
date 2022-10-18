@@ -9,12 +9,12 @@ export class UserController {
     constructor(private readonly userService: UserService) {}
 
     @Post('login')
-    async login(@Body('username') username: string, @Body('password') password: string) {
+    async login(@Body('username') username: string, @Body('password') password: string): Promise<{user: User, token: string}> {
         return await this.userService.login(username, password);
     }
 
     @Post('register')
-    async register(@Body('user') user: User, @Body('pin_code') pinCode: string) {
+    async register(@Body('user') user: User, @Body('pin_code') pinCode: string): Promise<{message: string}> {
         return await this.userService.register(user, pinCode);
     }
 
@@ -34,17 +34,17 @@ export class UserController {
     }
 
     @Patch()
-    async updateUser(@Body() user: User, @UserID() userId: string) {
+    async updateUser(@Body() user: User, @UserID() userId: string): Promise<User> {
         return await this.userService.updateUser(user, userId);
     }
 
     @Patch('manager')
-    async updateUserManager(@Body() user: User) {
+    async updateUserManager(@Body() user: User): Promise<User> {
         return await this.userService.updateUser(user, user._id.toString());
     }
 
     @Patch('many')
-    async updateManyUsers(@Body() users: User[]) {
+    async updateManyUsers(@Body() users: User[]): Promise<User[]> {
         return await this.userService.updateManyUsers(users);
     }
 
@@ -54,7 +54,7 @@ export class UserController {
     }
 
     @Get('all')
-    async getAllUsers() {
+    async getAllUsers(): Promise<User[]> {
         return await this.userService.getAll();
     }
 
@@ -64,7 +64,7 @@ export class UserController {
     }
 
     @Get('get/:id')
-    async getUser(@Param('id') userId: string) {
+    async getUser(@Param('id') userId: string): Promise<User> {
         return await this.userService.getUser(userId);
     }
 }

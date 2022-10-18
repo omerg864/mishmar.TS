@@ -30,7 +30,7 @@ export class ShiftController {
     }
 
     @Delete(':id')
-    async deleteShift(@Param('id') id: string): Promise<string> {
+    async deleteShift(@Param('id') id: string): Promise<{id: string}> {
         return this.shiftService.delete(id);
     }
 

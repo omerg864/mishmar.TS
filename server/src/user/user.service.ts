@@ -18,7 +18,7 @@ export class UserService {
     }
 
 
-    async login(username: string, password: string) {
+    async login(username: string, password: string): Promise<{user: User, token: string}> {
         const user = await this.userModel.findOne({ username }).select('-reset_token');
         if (!user) {
             throw new NotFoundException('User not found');
@@ -32,7 +32,7 @@ export class UserService {
         return { user: {...user["_doc"]}, token };
     }
 
-    async register(user: User, pin_code: string) {
+    async register(user: User, pin_code: string): Promise<{message: string}> {
         let userFound = await this.userModel.findOne( { email: { $regex : new RegExp(user.username, "i") }});
         if (userFound) {
             throw new ConflictException('username already in use');
@@ -57,7 +57,7 @@ export class UserService {
         }
     }
 
-    async updateManyUsers(users: User[]) {
+    async updateManyUsers(users: User[]): Promise<User[]> {
         let users_temp: User[] = []
         for (let i = 0; i < users.length; i++){
             let userObj = {...users[i]}
@@ -119,7 +119,7 @@ export class UserService {
         }
     }
 
-    async updateUser(user: User, userId: string) {
+    async updateUser(user: User, userId: string): Promise<User> {
         let userObj = {...user}
         if (userObj.role) {
             delete userObj.role;
@@ -145,7 +145,7 @@ export class UserService {
         return { id: user.id.toString() };
     }
 
-    async getAll(){
+    async getAll(): Promise<User[]>{
         const users = await this.userModel.find().select(['-password', '-reset_token']);
         return users;
     }

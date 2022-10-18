@@ -32,13 +32,13 @@ export class PostService {
         return {posts, pages};
     }
 
-    async deletePost(id: string): Promise<string> {
+    async deletePost(id: string): Promise<{id: string}> {
         const postFound = await this.postModel.findById(id);
         if (!postFound) {
             throw new NotFoundException('Post not found');
         }
         await this.postModel.findByIdAndDelete(id);
-        return postFound.id.toString();
+        return {id: postFound.id.toString()};
     }
 
     async updatePost(userId: string, post: PostInterface): Promise<PostInterface> {
