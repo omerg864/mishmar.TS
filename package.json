@@ -1,0 +1,19 @@
+{
+  "name": "git",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "add": "cd client && npm run build && cd .. && git add ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/omerg864/mishmar.TS.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/omerg864/mishmar.TS/issues"
+  },
+  "homepage": "https://github.com/omerg864/mishmar.TS#readme"
+}
