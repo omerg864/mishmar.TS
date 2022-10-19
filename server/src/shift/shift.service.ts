@@ -105,6 +105,7 @@ export class ShiftService {
             }
         }
         let userids = userMins.map(user => user.id);
+        users = users.filter(user => userids.includes(user.id));
         userMins = userMins.filter(u => {
             for (let i = 0; i < u.morning.length; i++) {
                 if (u.morning[i] < 2 || u.noon[i] < 1) {
