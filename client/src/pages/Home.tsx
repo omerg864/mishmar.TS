@@ -42,7 +42,7 @@ const Home = (props: IProps) => {
 
 
   if (!props.authenticated) {
-    return <main><h1>Please Login to view Site</h1></main>
+    return <main><h1>התחבר כדי לראות את האתר</h1></main>
   }
 
   if (isLoading) {

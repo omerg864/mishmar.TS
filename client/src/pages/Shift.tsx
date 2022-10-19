@@ -151,6 +151,8 @@ const Shift = (props: IProps) => {
   return (
     <main>
         <h1 style={{margin : 0}}>הגשת משמרות</h1>
+        {schedule && (
+          <>
         <h1>{dateToString(schedule.date)} - {dateToString(addDays(schedule.date, schedule.num_weeks * 7 - 1))}</h1>
         {!submitting ? <h1>לא ניתן לשנות/להגיש משמרות</h1> :
         <Button variant="contained" color="primary" disabled={!submitting} onClick={submitShift}>עדכון</Button>}
@@ -164,6 +166,7 @@ const Shift = (props: IProps) => {
           <TableHead2 key={`week-${week}`} days={schedule.days[week]} 
           children={<TableBodyShift rows={rows} week={week} data={shift.weeks} notesChange={notesChange} checkboxChange={checkboxChange} update={true} disabled={!submitting}/>}/>
         ))}
+        </>)}
     </main>
   )
 }
