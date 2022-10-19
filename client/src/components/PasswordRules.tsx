@@ -6,19 +6,22 @@ const PasswordRules = () => {
     return (
         <>
         <Typography variant="body2" color="text.secondary">
-            Password must contain:
+            סיסמה חייבת להיות:
             </Typography>
             <Typography variant="body2" color="text.secondary">
-            • must contain one lower case letter
+            • באנגלית
             </Typography>
             <Typography variant="body2" color="text.secondary">
-            • must contain one upper case letter
+            • אות קטנה אחת לפחות
             </Typography>
             <Typography variant="body2" color="text.secondary">
-            • must contain one number
+            • אות גדולה אחת לפחות
             </Typography>
             <Typography variant="body2" color="text.secondary">
-            • must be between 8 and 24 characters
+            • מספר אחד לפחות
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+            • בין 8 ל24 אותיות
             </Typography>
         </>
     )

@@ -90,11 +90,11 @@ const Events = (props: IProps) => {
 
     const createEvent = async () => {
       if (newEvent.users.length === 0) {
-        toast.error("please add users");
+        toast.error("חייב להוסיף משתמשים");
         return;
       }
       if (newEvent.content === "") {
-        toast.error("please add content");
+        toast.error("חייב להוסיף תוכן");
         return;
       }
       setIsLoading(true);
@@ -102,17 +102,17 @@ const Events = (props: IProps) => {
         const response = await fetch(`/api/events/`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') },
       method: 'POST', body: JSON.stringify(newEvent)});
         const data = await response.json();
-        if (data.error) {
+        if (data.error || data.statusCode) {
           toast.error(data.message);
         } else {
-          toast.success("Event created");
+          toast.success("אירוע נוצר");
           await saveEvents(false);
           await getEvents(false);
           setNewEvent({content: "", users: [], date: (new Date()).toString()});
         }
       } catch (e) {
         console.log(e);
-        toast.error("Internal server error");
+        toast.error("Internal Server Error");
       }
       setIsLoading(false);
     }
@@ -124,15 +124,15 @@ const Events = (props: IProps) => {
       try {
         const response = await fetch(`/api/events/${(e.target as HTMLButtonElement).value}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') }, method: 'DELETE'});
         const data = await response.json();
-        if (data.error) {
+        if (data.error || data.statusCode) {
           toast.error(data.message);
         } else {
-          toast.success('Event deleted');
+          toast.success('אירוע נמחק');
           await getEvents(false);
         }
       } catch (e) {
         console.log(e);
-        toast.error("Internal server error");
+        toast.error("Internal Server Error");
       }
       setIsLoading(false);
     }
@@ -140,11 +140,11 @@ const Events = (props: IProps) => {
     const saveEvents = async (loading: boolean) => {
       for ( let i = 0; i < events.length; i++ ) {
         if ( events[i].content === ""){
-          toast.error("please add content to all events");
+          toast.error("נא להוסיף תוכן לכל אירוע");
           return;
         }
         if ( events[i].users.length === 0 ) {
-          toast.error("please add users to all events");
+          toast.error("נא להוסיף משתמשים לכל אירוע");
           return;
         }
       }
@@ -154,14 +154,14 @@ const Events = (props: IProps) => {
         const response = await fetch(`/api/events/many`, { headers: { 'Content-Type': 'application/json', Authorization : 'Bearer ' + cookies.get('userToken') }, 
       method: 'PATCH', body: JSON.stringify(events) });
       const data = await response.json();
-        if (data.error) {
+        if (data.error || data.statusCode) {
           toast.error(data.message);
         } else {
-          toast.success('Events saved');
+          toast.success('אירועים עודכנו');
         }
       } catch (e) {
         console.log(e);
-        toast.error("Internal server error");
+        toast.error("Internal Server Error");
       }
       if (loading)
         setIsLoading(false);
@@ -175,7 +175,7 @@ const Events = (props: IProps) => {
         let page = searchParams.get('page') ? searchParams.get('page') : 1;
         const response = await fetch(`/api/events/all?page=${page}`, { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}});
         const data = await response.json();
-        if (data.error) {
+        if (data.error|| data.statusCode) {
           toast.error(data.message);
         } else {
           setEvents(data.events);
@@ -184,7 +184,7 @@ const Events = (props: IProps) => {
         }
       } catch (e) {
         console.log(e);
-        toast.error('Internal server error');
+        toast.error('Internal Server Error');
       }
       if (loading)
         setIsLoading(false);
@@ -217,17 +217,17 @@ const Events = (props: IProps) => {
 
   return (
     <main>
-      <h1>Events</h1>
+      <h1>אירועים</h1>
       <div className='save-btn-container'>
-        <Button variant="contained" color="primary" onClick={() => saveEvents(true)}>Save</Button>
+        <Button variant="contained" color="primary" onClick={() => saveEvents(true)}>שמור</Button>
         </div>
       <TableContainer style={{minHeight: height}} component={Paper}>
       <Table ref={changeRef} sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <StyledTableRow>
-            <StyledTableCell align="center">Date</StyledTableCell>
-            <StyledTableCell align="center">Content</StyledTableCell>
-            <StyledTableCell align="center">Users</StyledTableCell>
+            <StyledTableCell align="center">תאריך</StyledTableCell>
+            <StyledTableCell align="center">תוכן</StyledTableCell>
+            <StyledTableCell align="center">משתמשים</StyledTableCell>
             <StyledTableCell align="center"></StyledTableCell>
           </StyledTableRow>
         </TableHead>
@@ -239,13 +239,13 @@ const Events = (props: IProps) => {
               <DatePicker value={dayjs(newEvent.date)} onChange={newDateChange}/>
               </TableCell>
               <TableCell align="center" scope="row">
-              <TextField required label="Content" value={newEvent.content} name={`content`} onChange={newTextChange}/>
+              <TextField sx={{minWidth: '180px'}} required label="תוכן" value={newEvent.content} name={`content`} onChange={newTextChange}/>
               </TableCell>
               <TableCell align="center" scope="row">
-                <ChipSelect names={users} onChange={newSelectChange} name={`newEvent`} inputLabel={`Users`} values={(newEvent.users) as string[]} />
+                <ChipSelect names={users} onChange={newSelectChange} name={`newEvent`} inputLabel={`משתמשים`} values={(newEvent.users) as string[]} />
               </TableCell>
               <TableCell align="center" scope="row">
-              <Button variant="contained" color="primary" onClick={createEvent}>Create</Button>
+              <Button variant="contained" color="primary" onClick={createEvent}>הוסף</Button>
               </TableCell>
             </TableRow>
           {events.map((event) => (
@@ -257,13 +257,13 @@ const Events = (props: IProps) => {
                 <DatePicker value={dayjs(event.date)} onChange={dateChange} id={event._id}/>
                 </TableCell>
               <TableCell align="center" scope="row">
-                <TextField required label="Content" value={event.content} name={`content&&${event._id}`} onChange={textChange}/>
+                <TextField sx={{minWidth: '180px'}} required label="תוכן" value={event.content} name={`content&&${event._id}`} onChange={textChange}/>
                 </TableCell>
               <TableCell align="center" scope="row">
-                <ChipSelect names={users} onChange={handleChange} name={`${event._id}`} inputLabel={`Users`} values={(event.users) as string[]} />
+                <ChipSelect names={users} onChange={handleChange} name={`${event._id}`} inputLabel={`משתמשים`} values={(event.users) as string[]} />
               </TableCell>
               <TableCell align="center" scope="row">
-              <Button variant="contained" color="error" value={event._id} onClick={deleteEvent} >Delete</Button>
+              <Button variant="contained" color="error" value={event._id} onClick={deleteEvent} >מחק</Button>
               </TableCell>
             </TableRow>
           ))}

@@ -26,18 +26,22 @@ const ScheduleNew = (props: IProps) => {
     const createSchedule = async (e:  React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
-        const response = await fetch(`/api/schedules`, 
-        {headers: {'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken')}
-        ,method: 'POST', body: JSON.stringify({ date, num_weeks: numWeeks})});
-        const data = await response.json();
-        if (data.error) {
-            toast.error(data.error);
-            setLoading(false);
-        } else {
-            toast.success('Schedule created');
-            setLoading(false);
-            navigate(`/schedule/${data._id}/update`);
+        try {
+            const response = await fetch(`/api/schedules`, 
+            {headers: {'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken')}
+            ,method: 'POST', body: JSON.stringify({ date, num_weeks: numWeeks})});
+            const data = await response.json();
+            if (data.error || data.statusCode) {
+                toast.error(data.message);
+            } else {
+                toast.success('Schedule created');
+                navigate(`/schedule/${data._id}/update`);
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error("Internal Server Error");
         }
+        setLoading(false);
     }
 
 
@@ -51,12 +55,12 @@ const ScheduleNew = (props: IProps) => {
 
   return (
     <main>
-        <h1>New Schedule</h1>
+        <h1>סידור חדש</h1>
         <form className='form-new' onSubmit={createSchedule}>
             <Calendar calendarType="Hebrew" onChange={setDate} defaultValue={date}/>
             <h2>{dateToString(date)}</h2>
-            <TextField  id="num_weeks" type="number" required inputProps={{min: '1'}} name='num_weeks' value={numWeeks} label="Number of weeks" onChange={e => setNumWeeks(+e.target.value)} />
-            <Button variant="contained" color="primary" type="submit">Create Schedule</Button>
+            <TextField  id="num_weeks" type="number" required inputProps={{min: '1'}} name='num_weeks' value={numWeeks} label="מ'ס שבועות" onChange={e => setNumWeeks(+e.target.value)} />
+            <Button variant="contained" color="primary" type="submit">סידור חדש</Button>
         </form>
     </main>
   )

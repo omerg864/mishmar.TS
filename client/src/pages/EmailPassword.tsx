@@ -18,22 +18,22 @@ const EmailPassword = (props: IProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!email_regex.test(email)){
-      toast.error("Please enter a valid email");
+      toast.error("דואר אלקטרוני לא תקין");
       return;
     }
     setIsLoading(true);
     try {
       const response = await fetch(`/api/users/forgot`, { headers: { 'Content-Type': 'application/json'}, method: 'POST', body: JSON.stringify({email})});
       const data = await response.json();
-      if (data.error) {
+      if (data.error || data.statusCode) {
         toast.error(data.message);
       } else {
-        toast.success("Please check your email address");
+        toast.success("נשלח כתובת לאיפוס סיסמה למייל");
         navigate("/");
       }
     } catch (e) {
       console.log(e);
-      toast.error('Please enter a valid email address');
+      toast.error('Internal Server Error');
     }
     setIsLoading(false);
   }
@@ -50,11 +50,11 @@ const EmailPassword = (props: IProps) => {
 
   return (
     <main>
-      <h1>Forgot My Password</h1>
+      <h1>שכחתי את הסיסמה</h1>
       <form onSubmit={handleSubmit}>
-      <TextField sx={{minWidth: '180px'}} type="email" required onChange={(e) => setEmail(e.target.value)} value={email} name={`email`} label="Email" />
+      <TextField sx={{minWidth: '180px'}} type="email" required onChange={(e) => setEmail(e.target.value)} value={email} name={`email`} label="אימייל" />
       <div style={{display: 'flex', justifyContent: 'center', marginTop: '10px'}}>
-      <Button type="submit" variant="contained" color="primary" >Send Reset Email</Button>
+      <Button type="submit" variant="contained" color="primary" >שלח אימייל לאיפוס</Button>
       </div>
       </form>
     </main>

@@ -28,7 +28,7 @@ export class PostService {
         }
         const postsCount = await this.postModel.find().count();
         const pages = postsCount > 0 ? Math.ceil(postsCount / 3) : 1;
-        const posts = await this.postModel.find().populate('userId', ["nickname"]).skip(query.page * 3).limit(3);
+        const posts = await this.postModel.find().sort({ date: -1 }).populate('userId', ["nickname"]).skip(query.page * 3).limit(3);
         return {posts, pages};
     }
 

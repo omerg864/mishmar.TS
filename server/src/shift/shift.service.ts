@@ -1,3 +1,4 @@
+import { Settings } from '../settings/settings.model';
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -9,7 +10,10 @@ import { Shift, ShiftScheduleWeek } from './shift.model';
 @Injectable()
 export class ShiftService {
 
-    constructor(@InjectModel('Shift') private readonly shiftModel: Model<Shift>, @InjectModel('User') private readonly userModel: Model<User>, @InjectModel('Schedule') private readonly scheduleModel: Model<Schedule>) {}
+    constructor(@InjectModel('Shift') private readonly shiftModel: Model<Shift>,
+     @InjectModel('User') private readonly userModel: Model<User>,
+      @InjectModel('Schedule') private readonly scheduleModel: Model<Schedule>,
+      @InjectModel('Settings') private readonly settingsModel: Model<Settings>) {}
 
 
     async getAll(query: {userId: string, scheduleId: string}): Promise<Shift[]> {
@@ -149,6 +153,10 @@ export class ShiftService {
         if (!userFound.role.includes('ADMIN') && !userFound.role.includes('SITE_MANAGER')) {
             if (userId !== shift.userId.toString()) {
                 throw new UnauthorizedException('Cant change shift of this user');
+            }
+            const settings = await this.settingsModel.findOne();
+            if (!settings.submit) {
+                throw new UnauthorizedException('Cant change submission anymore');
             }
         }
         return await this.shiftModel.findByIdAndUpdate(shift._id, shift, { new: true });

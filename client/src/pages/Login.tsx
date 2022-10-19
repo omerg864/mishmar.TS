@@ -28,7 +28,7 @@ const Login = (props: IProps) => {
         setIsLoading(true);
         const response = await fetch(`/api/users/login`, { headers: {"Content-type": "application/json"} ,method: 'POST', body: JSON.stringify(userData)})
         const data = await response.json();
-        if (data.error) {
+        if (data.error || data.statusCode) {
             toast.error(data.message);
         } else {
             let date30 = addDays(new Date(), 30);
@@ -60,10 +60,10 @@ const Login = (props: IProps) => {
         <div className='container'>
             <h1>Login</h1>
             <form onSubmit={handleSubmit}>
-            <TextField className='text_input' id="username" label="Username" name='username' required variant="outlined" onChange={(e) => setUserData({...userData, [e.target.name]: e.target.value})} />
-            <TextField className='text_input' id="password" label="Password" name="password" type="password" required variant="outlined" onChange={(e) => setUserData({...userData, [e.target.name]: e.target.value})} />
-            <Link to="/password/reset/email">Forgot my password?</Link>
-            <Button variant="contained" color="primary" type="submit" >Login</Button>
+            <TextField className='text_input' id="username" label="שם משתמש" name='username' required variant="outlined" onChange={(e) => setUserData({...userData, [e.target.name]: e.target.value})} />
+            <TextField className='text_input' id="password" label="סיסמה" name="password" type="password" required variant="outlined" onChange={(e) => setUserData({...userData, [e.target.name]: e.target.value})} />
+            <Link to="/password/reset/email">שכחתי את הסיסמה</Link>
+            <Button variant="contained" color="primary" type="submit" >התחבר</Button>
             </form>
         </div>
     </main>

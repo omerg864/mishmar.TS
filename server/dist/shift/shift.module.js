@@ -7,6 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ShiftModule = void 0;
+const settings_model_1 = require("../settings/settings.model");
 const schedule_model_1 = require("./../schedule/schedule.model");
 const auth_middlware_1 = require("./../middleware/auth.middlware");
 const shift_model_1 = require("./shift.model");
@@ -28,7 +29,7 @@ let ShiftModule = class ShiftModule {
 };
 ShiftModule = __decorate([
     (0, common_1.Module)({
-        imports: [mongoose_1.MongooseModule.forFeature([{ name: 'Shift', schema: shift_model_1.ShiftScheme }, { name: 'Schedule', schema: schedule_model_1.ScheduleScheme }, { name: 'User', schema: user_model_1.UserScheme }])],
+        imports: [mongoose_1.MongooseModule.forFeature([{ name: 'Shift', schema: shift_model_1.ShiftScheme }, { name: 'Settings', schema: settings_model_1.SettingsScheme }, { name: 'Schedule', schema: schedule_model_1.ScheduleScheme }, { name: 'User', schema: user_model_1.UserScheme }])],
         controllers: [shift_controller_1.ShiftController],
         providers: [shift_service_1.ShiftService]
     })

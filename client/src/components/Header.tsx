@@ -21,10 +21,10 @@ import Cookies from 'universal-cookie';
 
 
 
-const pages = ['Shift', 'Schedule'];
-const pages_manager = ['Shift', 'Schedule', 'Manage Board'];
-const settings_auth = ['Profile', 'Logout'];
-const settings = ['Login', 'Register'];
+const pages = ['הגשת משמרות', 'סידור עבודה'];
+const pages_manager = ['הגשת משמרות', 'סידור עבודה', 'לוח מנהל'];
+const settings_auth = ['פרופיל', 'התנתק'];
+const settings = ['התחבר', 'הירשם'];
 
 interface IProps {
   authenticated: boolean;
@@ -53,13 +53,13 @@ const Header = (props: IProps) => {
 
   const handleCloseNavMenu = (e: React.MouseEvent<Element>) => {
     switch((e.target as HTMLButtonElement).innerText.toLowerCase()){
-      case 'manage board':
+      case 'לוח מנהל':
         navigate('/management');
         break;
-      case 'shift':
+      case 'הגשת משמרות':
         navigate('/shift');
         break;
-      case 'schedule':
+      case 'סידור עבודה':
         navigate('/schedule');
         break;
       default:
@@ -70,16 +70,16 @@ const Header = (props: IProps) => {
 
   const handleCloseUserMenu = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
     switch((e.target as HTMLLIElement).innerText){
-      case 'Login':
+      case 'התחבר':
         navigate('/login');
         break;
-      case 'Register':
+      case 'הירשם':
         navigate('/register');
         break;
-      case 'Logout': 
+      case 'התנתק': 
         logout();
         break;
-      case 'Profile':
+      case 'פרופיל':
         navigate('/profile');
         break;
       default:
@@ -101,26 +101,33 @@ const Header = (props: IProps) => {
     try {
       const response = await fetch('/api/settings/general')
       const data = await response.json();
-      if (data.error) {
+      if (data.error || data.statusCode) {
         toast.error(data.message);
       } else {
         setTitle(data.title);
       }
     } catch (err) {
       console.error(err);
-      toast.error("Internal server error");
+      toast.error("Internal Server Error");
     }
     setIsLoading(false);
   }
 
   const authUser = async () => {
     setAuthLoading(true);
-    const response = await fetch('/api/users/auth', { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}})
-    const data = await response.json();
-    if (!data.error) {
-      props.setAuthenticated(true);
-      props.setManager(data.manager);
-    } else {
+    try {
+      const response = await fetch('/api/users/auth', { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}})
+      const data = await response.json();
+      if (data.error || data.statusCode) {
+        props.setAuthenticated(false);
+        props.setManager(false);
+      } else {
+        props.setAuthenticated(true);
+        props.setManager(data.manager);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Internal Server Error");
       props.setAuthenticated(false);
       props.setManager(false);
     }

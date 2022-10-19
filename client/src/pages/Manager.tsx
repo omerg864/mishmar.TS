@@ -21,7 +21,7 @@ const Manager = (props: IProps) => {
         setLoading(true);
         const response = await fetch('/api/settings/general')
         const data = await response.json();
-        if (data.error) {
+        if (data.error || data.statusCode) {
             toast.error(data.message);
         } else {
             setChecked(data.submit);
@@ -40,7 +40,7 @@ const Manager = (props: IProps) => {
         if (data.error) {
             toast.error(data.message);
         } else {
-            toast.success("Changed");
+            toast.success("שונה");
         }
     }
 

@@ -36,12 +36,17 @@ const ScheduleUpdate = (props: IProps) => {
 
     const getSchedule = async () => {
         setIsLoading(true);
-        const response = await fetch('/api/schedules/' + id, { headers: { authorization: 'Bearer ' + cookies.get('userToken')}});
-        const data = await response.json();
-        if (data.error) {
-            toast.error(data.message);
-        } else {
-            setSchedule(data);
+        try {
+            const response = await fetch('/api/schedules/' + id, { headers: { authorization: 'Bearer ' + cookies.get('userToken')}});
+            const data = await response.json();
+            if (data.error || data.statusCode) {
+                toast.error(data.message);
+            } else {
+                setSchedule(data);
+            }
+        }catch (e) {
+            console.log(e);
+            toast.error("Internal Server Error");
         }
         setIsLoading(false);
     }
@@ -64,14 +69,14 @@ const ScheduleUpdate = (props: IProps) => {
             const response = await fetch('/api/schedules/', { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken')  },
             method: 'PATCH', body: JSON.stringify(schedule) });
             const data = await response.json();
-            if (data.error) {
+            if (data.error || data.statusCode) {
                 toast.error(data.message);
             } else {
-                toast.success("Saved Successfully");
+                toast.success("עודכן");
             }
         } catch (e) {
             console.log(e);
-            toast.error("Internal server error");
+            toast.error("Internal Server error");
         }
         setIsLoading(false);
     }
@@ -83,15 +88,15 @@ const ScheduleUpdate = (props: IProps) => {
             const response = await fetch(`/api/schedules/${id}`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken')  },
             method: 'DELETE' });
             const data = await response.json();
-            if (data.error) {
+            if (data.error || data.statusCode) {
                 toast.error(data.message);
             } else {
-                toast.success("Deleted Successfully");
+                toast.success("סידור נמחק");
                 navigate('/schedules');
             }
         } catch (e) {
             console.log(e);
-            toast.error("Internal server error");
+            toast.error("Internal Server Error");
         }
         setIsLoading(false);
     }
@@ -120,14 +125,14 @@ const ScheduleUpdate = (props: IProps) => {
             const response = await fetch('/api/schedules/', { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken')  },
             method: 'PATCH', body: JSON.stringify({...schedule, weeks}) });
             const data = await response.json();
-            if (data.error) {
+            if (data.error || data.statusCode) {
                 toast.error(data.message);
             } else {
-                toast.success("Saved Successfully");
+                toast.success("עודכן");
             }
         } catch (e) {
             console.log(e);
-            toast.error("Internal server error");
+            toast.error("Internal Server Error");
         }
         setIsLoading(false);
     }
@@ -139,7 +144,7 @@ const ScheduleUpdate = (props: IProps) => {
             const response = await fetch('/api/schedules/check', { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken')  },
             method: 'PUT', body: JSON.stringify(schedule.weeks) });
             const data = await response.json();
-            if (data.error) {
+            if (data.error || data.statusCode) {
                 toast.error(data.message);
             } else {
                 if (data.length > 0) {
@@ -147,12 +152,12 @@ const ScheduleUpdate = (props: IProps) => {
                         toast.error(data[i], { autoClose: false });
                     }
                 } else {
-                    toast.success("Schedule Valid");
+                    toast.success("סידור תקין");
                 }
             }
         } catch (e) {
             console.log(e);
-            toast.error("Internal server error");
+            toast.error("Internal Server Error");
         }
         setIsLoading(false);
     }

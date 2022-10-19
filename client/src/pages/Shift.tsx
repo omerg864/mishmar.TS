@@ -31,12 +31,16 @@ const Shift = (props: IProps) => {
         try {
             const response = await fetch(`/api/schedules/auth/last`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
             const data = await response.json();
-            getShift(data._id);
-            await getEvents(data._id);
-            setSchedule({...data, date: new Date(data.date)});
+            if (data.error || data.statusCode) {
+              toast.error(data.message);
+            } else {
+              getShift(data._id);
+              await getEvents(data._id);
+              setSchedule({...data, date: new Date(data.date)});
+            }
         } catch (err) {
             console.log(err);
-            toast.error("Internal server error");
+            toast.error("Internal Server Error");
         }
         setIsLoading(false);
       }
@@ -45,14 +49,14 @@ const Shift = (props: IProps) => {
         try {
             const response = await fetch(`/api/settings/general`, { headers: { Authorization: 'Bearer ' + cookies.get('userToken') } });
             const data = await response.json();
-            if (data.error) {
+            if (data.error || data.statusCode) {
                 toast.error(data.message);
             } else {
                 setSubmitting(data.submit);
             }
         } catch (err) {
             console.log(err);
-            toast.error("Internal server error");
+            toast.error("Internal Server Error");
         }
       }
 
@@ -60,14 +64,14 @@ const Shift = (props: IProps) => {
         try {
             const response = await fetch(`/api/shifts/user/${id}`, { headers: { Authorization: 'Bearer ' + cookies.get('userToken') } });
             const data = await response.json();
-            if (data.error) {
+            if (data.error || data.statusCode) {
                 toast.error(data.message);
             } else {
                 setShift(data);
             }
         } catch (err) {
             console.log(err);
-            toast.error("Internal server error");
+            toast.error("Internal Server Error");
         }
       }
 
@@ -75,7 +79,7 @@ const Shift = (props: IProps) => {
         try {
           const response = await fetch(`/api/events/schedule/${id}`, { headers: { Authorization: 'Bearer ' + cookies.get('userToken') } });
           const data = await response.json();
-          if (data.error) {
+          if (data.error || data.statusCode) {
               toast.error(data.message);
           } else {
             for ( let i = 0; i < data.length; i++) {
@@ -84,7 +88,7 @@ const Shift = (props: IProps) => {
           }
       } catch (err) {
           console.log(err);
-          toast.error("Internal server error");
+          toast.error("Internal Server Error");
       }
       }
 
@@ -108,7 +112,7 @@ const Shift = (props: IProps) => {
 
       const submitShift = async () => {
         if (!submitting) {
-          toast.error('cant submit anymore');
+          toast.error('לא ניתן להגיש משמרות כעת');
           return;
         }
         setIsLoading(true);
@@ -116,14 +120,14 @@ const Shift = (props: IProps) => {
             const response = await fetch(`/api/shifts`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') },
         method: 'PATCH', body: JSON.stringify(shift) });
             const data = await response.json();
-            if (data.error) {
+            if (data.error || data.statusCode) {
                 toast.error(data.message);
             } else {
-                toast.success("Shift submitted successfully");
+                toast.success("משמרות עודכנו");
             }
         } catch (e) {
             console.log(e);
-            toast.error("Internal server error");
+            toast.error("Internal Server Error");
         }
         setIsLoading(false);
       }
@@ -149,11 +153,11 @@ const Shift = (props: IProps) => {
         <h1 style={{margin : 0}}>Shift</h1>
         <h1>{dateToString(schedule.date)} - {dateToString(addDays(schedule.date, schedule.num_weeks * 7 - 1))}</h1>
         {!submitting ? <h1>לא ניתן לשנות/להגיש משמרות</h1> :
-        <Button variant="contained" color="primary" disabled={!submitting} onClick={submitShift}>Submit</Button>}
+        <Button variant="contained" color="primary" disabled={!submitting} onClick={submitShift}>עדכון</Button>}
         <div style={{display: 'flex', width: '100%', gap: '10px', textAlign: 'center', justifyContent: 'start', padding: '10px', boxSizing: 'border-box'}}>
           <TextField label="Weekend Night" type="number" value={shift.weekend_night} name="weekend_night" disabled={!submitting} onChange={shiftTextChange} />
           <TextField label="Weekend day" type="number" value={shift.weekend_day} name="weekend_day" disabled={!submitting} onChange={shiftTextChange} />
-          <Typography style={{marginTop: 'auto', marginBottom: 'auto'}}>Notes: </Typography>
+          <Typography style={{marginTop: 'auto', marginBottom: 'auto'}}>הערות: </Typography>
           <TextareaAutosize id="notes" minRows={3} name="notes" value={shift.notes} disabled={!submitting} onChange={shiftTextChange} />
         </div>
         {numberToArray(schedule.num_weeks).map((week, index1) => (

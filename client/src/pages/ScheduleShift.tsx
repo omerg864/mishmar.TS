@@ -29,6 +29,7 @@ interface ShiftScheduleWeek {
 const rows = ["morning", "noon", "night", "reinforcement", "notes"];
 
 const ScheduleShift = (props: IProps) => {
+
     const { id } = useParams();
     const [loading, setLoading] = useState<boolean>(true);
     const [data, setData] = useState<ShiftScheduleWeek[]>([]);
@@ -45,7 +46,7 @@ const ScheduleShift = (props: IProps) => {
         try {
             const response = await fetch(`/api/shifts/schedule/${id}`, {headers: { authorization: 'Bearer ' + cookies.get('userToken') }});
             const data = await response.json();
-            if (data.error) {
+            if (data.error || data.statusCode) {
                 toast.error(data.message);
             } else {
                 setData(data.weeks);
@@ -57,7 +58,7 @@ const ScheduleShift = (props: IProps) => {
             }
         } catch (e) {
             console.log(e);
-            toast.error('Internal server error');
+            toast.error('Internal Server Error');
         }
     }
 
@@ -65,14 +66,14 @@ const ScheduleShift = (props: IProps) => {
         try {
             const response = await fetch(`/api/schedules/${id}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') }});
             const data = await response.json();
-            if (data.error) {
+            if (data.error || data.statusCode) {
                 toast.error(data.message);
             } else {
                 setSchedule(data);
             }
         } catch (e) {
             console.log(e);
-            toast.error('Internal server error');
+            toast.error('Internal Server Error');
         }
     }
 
@@ -101,7 +102,7 @@ const ScheduleShift = (props: IProps) => {
 
   return (
     <main>
-        <h1 style={{margin: 0}}>Schedule Shifts</h1>
+        <h1 style={{margin: 0}}>משמרות שהוגשו לסידור</h1>
         <h1>{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
         <div style={{display: "flex", width: "100%", padding: "10px", gap: "5%"}}>
         <div style={{display: "flex", alignItems: "center"}}>

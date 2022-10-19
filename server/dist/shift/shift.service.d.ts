@@ -1,3 +1,4 @@
+import { Settings } from '../settings/settings.model';
 import { Model } from 'mongoose';
 import { Schedule } from '../schedule/schedule.model';
 import { User } from '../user/user.model';
@@ -6,7 +7,8 @@ export declare class ShiftService {
     private readonly shiftModel;
     private readonly userModel;
     private readonly scheduleModel;
-    constructor(shiftModel: Model<Shift>, userModel: Model<User>, scheduleModel: Model<Schedule>);
+    private readonly settingsModel;
+    constructor(shiftModel: Model<Shift>, userModel: Model<User>, scheduleModel: Model<Schedule>, settingsModel: Model<Settings>);
     getAll(query: {
         userId: string;
         scheduleId: string;

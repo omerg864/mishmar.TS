@@ -31,7 +31,7 @@ const Posts = (props: IProps) => {
       let page = searchParams.get('page') ? searchParams.get('page') : 1;
       const response = await fetch(`/api/posts/auth/all?page=${page}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
       const data = await response.json();
-      if (data.error) {
+      if (data.error || data.statusCode) {
         toast.error(data.message);
       } else {
         setPosts(data.posts);
@@ -39,7 +39,7 @@ const Posts = (props: IProps) => {
       }
     } catch (err) {
       console.log(err);
-      toast.error("Internal server error")
+      toast.error("Internal Server Error")
     }
     setLoading(false);
   }
@@ -69,7 +69,7 @@ const Posts = (props: IProps) => {
 
   return (
     <main>
-      <h1>Posts</h1>
+      <h1>פוסטים</h1>
       {posts.map((post) => (
         <Card key={post._id} sx={{ width: '60%' }}>
         <CardActionArea onClick={() => goToPost(post._id as string)}>

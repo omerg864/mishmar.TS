@@ -31,7 +31,7 @@ export default function Modal(props: IProps) {
         </DialogContent>
         <DialogActions>
         <Button onClick={props.confirmButton}>{props.confirmButtonText}</Button>
-          <Button color="error" onClick={props.closeModal}>Cancel</Button>
+          <Button color="error" onClick={props.closeModal}>בטל</Button>
         </DialogActions>
       </Dialog>
     </div>

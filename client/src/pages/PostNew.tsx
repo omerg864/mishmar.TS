@@ -35,15 +35,15 @@ const PostNew = (props: IProps) => {
       const response = await fetch(`/api/posts/`, { headers: { authorization: 'Bearer ' + cookies.get('userToken'), "Content-type": "application/json" },
       method: 'POST', body: JSON.stringify({...post, date: new Date() })});
       const data = await response.json();
-      if (data.error) {
+      if (data.error || data.statusCode) {
         toast.error(data.message);
       } else {
-        toast.success("post saved");
+        toast.success("פוסט נשמר");
         navigate('/posts');
       }
     } catch (e) {
       console.log(e);
-      toast.error('Internal server error');
+      toast.error('Internal Server Error');
     }
     setLoading(false);
   }
@@ -60,7 +60,7 @@ const PostNew = (props: IProps) => {
 
   return (
     <main>
-      <h1>New Post</h1>
+      <h1>פוסט חדש</h1>
       <Card sx={{ width: '60%' }}>
           <CardContent sx={{textAlign: 'center', position: 'relative'}}>
             <TextField required value={post.title} name="title" label="Title" onChange={handleChange}/>
@@ -74,7 +74,7 @@ const PostNew = (props: IProps) => {
             <TextareaAutosize style={{width: '100%', marginTop: '10px'}} minRows={5} value={post.content} onChange={handleChange} name="content"/>
             </div>
             <div style={{display: 'flex', gap: "10px", marginTop: '10px'}}>
-              <Button variant="contained" color="primary" onClick={savePost} >Save</Button>
+              <Button variant="contained" color="primary" onClick={savePost} >שמור</Button>
             </div>
           </CardContent>
       </Card>

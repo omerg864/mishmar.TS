@@ -1,3 +1,4 @@
+import { SettingsScheme } from '../settings/settings.model';
 import { ScheduleScheme } from './../schedule/schedule.model';
 import { AdminManagerMiddleware } from './../middleware/auth.middlware';
 import { ShiftScheme } from './shift.model';
@@ -9,7 +10,7 @@ import { UserScheme } from '../user/user.model';
 import { AuthMiddleware, SiteManagerMiddleware } from '../middleware/auth.middlware';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'Shift', schema: ShiftScheme}, {name: 'Schedule', schema: ScheduleScheme}, {name: 'User', schema: UserScheme}])],
+  imports: [MongooseModule.forFeature([{ name: 'Shift', schema: ShiftScheme},{ name: 'Settings', schema: SettingsScheme}, {name: 'Schedule', schema: ScheduleScheme}, {name: 'User', schema: UserScheme}])],
   controllers: [ShiftController],
   providers: [ShiftService]
 })

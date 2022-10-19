@@ -20,21 +20,21 @@ const Register = (props: IProps) => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (formData.password !== formData.confirmPassword) {
-            toast.error('Passwords do not match');
+            toast.error('סיסמאות לא תואמות');
             return;
         }
         if (!password_regex.test(formData.password)) {
-            toast.error('please enter a valid password');
+            toast.error('סיסמה לא תקינה');
             return;
         }
         if (!email_regex.test(formData.email)) {
-            toast.error('please enter a valid email');
+            toast.error('אימייל לא תקין');
             return;
         }
         setIsLoading(true);
         const response = await fetch(`/api/users/register`, { headers: {"Content-type": "application/json"} ,method: 'POST', body: JSON.stringify({user: formData, pin_code: formData.pin_code})})
         const data = await response.json();
-        if (data.error) {
+        if (data.error || data.statusCode) {
             toast.error(data.message);
         } else {
             navigate('/login');
@@ -57,16 +57,16 @@ const Register = (props: IProps) => {
   return (
     <main>
         <div className='container'>
-            <h1>Register</h1>
+            <h1>הרשמה</h1>
             <form onSubmit={handleSubmit}>
-            <TextField className='text_input' id="name" label="Full Name" name='name' required variant="outlined" onChange={handleChange} />
-            <TextField className='text_input' id="username" label="Username" name='username' required variant="outlined" onChange={handleChange} />
-            <TextField className='text_input' id="email" label="Email" name='email' type="email" required variant="outlined" onChange={handleChange} />
-            <TextField className='text_input' id="password" label="Password" name="password" type="password" required variant="outlined" onChange={handleChange} />
+            <TextField className='text_input' id="name" label="שם מלא" name='name' required variant="outlined" onChange={handleChange} />
+            <TextField className='text_input' id="username" label="שם משתמש" name='username' required variant="outlined" onChange={handleChange} />
+            <TextField className='text_input' id="email" label="אימייל" name='email' type="email" required variant="outlined" onChange={handleChange} />
+            <TextField className='text_input' id="password" label="סיסמה" name="password" type="password" required variant="outlined" onChange={handleChange} />
             <PasswordRules />
-            <TextField className='text_input' id="confirmPassword" label="Confirm Password" name="confirmPassword" type="password" required variant="outlined" onChange={handleChange} />
-            <TextField className='text_input' id="pin_code" label="Register Code" name='pin_code' required variant="outlined" onChange={handleChange} />
-            <Button variant="contained" color="primary" type="submit" >Register</Button>
+            <TextField className='text_input' id="confirmPassword" label="סיסמה שוב" name="confirmPassword" type="password" required variant="outlined" onChange={handleChange} />
+            <TextField className='text_input' id="pin_code" label="קוד הרשמה" name='pin_code' required variant="outlined" onChange={handleChange} />
+            <Button variant="contained" color="primary" type="submit" >הירשם</Button>
             </form>
         </div>
     </main>

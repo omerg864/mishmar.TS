@@ -22,14 +22,14 @@ const Home = (props: IProps) => {
     try {
       const response = await fetch(`/api/posts/auth/all?page=1`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
       const data = await response.json();
-      if (data.error) {
+      if (data.error || data.statusCode) {
         toast.error(data.message);
       } else {
         setPosts(data.posts)
       }
     } catch (err) {
       console.log(err);
-      toast.error("Internal server error")
+      toast.error("Internal Server Error")
     }
     setIsLoading(false);
   }
@@ -42,7 +42,7 @@ const Home = (props: IProps) => {
 
 
   if (!props.authenticated) {
-    return <h1>Please Login to view Site</h1>
+    return <main><h1>Please Login to view Site</h1></main>
   }
 
   if (isLoading) {
@@ -51,7 +51,7 @@ const Home = (props: IProps) => {
 
   return (
     <main>
-      <h1>Home</h1>
+      <h1>דף הבית</h1>
       <div style={{width: '80%', padding: '15px', display: 'flex', justifyContent: 'flex-start', gap: '10px', boxSizing: 'border-box', flexWrap: 'wrap'}}>
       <Card className='user-data'>
           <CardContent sx={{textAlign: 'center', position: 'relative'}}>
@@ -59,22 +59,22 @@ const Home = (props: IProps) => {
             {cookies.get('user').username}
             </Typography>
             <Typography variant="h4" component="div">
-            Weekend Night: {cookies.get('user').weekend_night}
+            שישי לילה/מוצ"ש: {cookies.get('user').weekend_night}
             </Typography>
             <Typography variant="h4" component="div">
-            Weekend Day: {cookies.get('user').weekend_day}
+            שבת בוקר/צהריים: {cookies.get('user').weekend_day}
             </Typography>
             <Typography variant="h4" component="div">
-            Night: {cookies.get('user').night}
+            לילה: {cookies.get('user').night}
             </Typography>
             <Typography variant="h4" component="div">
-            Friday Noon: {cookies.get('user').friday_noon}
+            שישי צהריים: {cookies.get('user').friday_noon}
             </Typography>
           </CardContent>
       </Card>
       <div className='posts-home'>
       {posts.map((post) => (
-        <Card key={post._id}>
+        <Card sx={{width: '100%'}} key={post._id}>
           <CardContent sx={{textAlign: 'center', position: 'relative'}}>
             <Typography gutterBottom variant="h5" component="div">
               {post.title}

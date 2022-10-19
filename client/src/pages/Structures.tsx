@@ -95,7 +95,7 @@ const Structures = (props: IProps) => {
         try {
             const response = await fetch('/api/structures/all', {headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}});
             const data = await response.json();
-            if (data.error) {
+            if (data.error || data.statusCode) {
                 toast.error(data.message);
             } else {
                 setStructures(data);
@@ -103,6 +103,7 @@ const Structures = (props: IProps) => {
             }
         } catch (e) {
             console.log(e);
+            toast.error("Internal Server Error");
         }
         setLoading(false);
     }
@@ -125,14 +126,14 @@ const Structures = (props: IProps) => {
           method: 'PATCH', body: JSON.stringify(structures)
       })
         const data = await response.json();
-        if (data.error) {
+        if (data.error || data.statusCode) {
           toast.error(data.message);
         } else {
-          toast.success("Changes Saved");
+          toast.success("שינויים נשמרו");
         }
       } catch (err) {
         console.log(err);
-        toast.error("Internal server error");
+        toast.error("Internal Server Error");
       }
       setLoading(false);
     }
@@ -154,11 +155,11 @@ const Structures = (props: IProps) => {
         if (data.statusCode || data.error) {
           toast.error(data.message);
         } else {
-          toast.success("Created successfully");
+          toast.success("נוצר בהצלחה");
         }
       } catch (err) {
         console.log(err);
-        toast.error("Internal server error");
+        toast.error("Internal Server Error");
       }
       setNewStructure(defaultValue);
       setLoading(false);
@@ -173,11 +174,11 @@ const Structures = (props: IProps) => {
         if (data.error) {
           toast.error(data.message);
         } else {
-          toast.success("Structure deleted successfully");
+          toast.success("נמחק בהצלחה");
         }
       } catch (err) {
         console.log(err);
-        toast.error("Internal server error");
+        toast.error("Internal Server Error");
       }
       setLoading(false);
       getStructures();
@@ -207,23 +208,23 @@ const Structures = (props: IProps) => {
 
   return (
     <main>
-      <OptionsModal open={modalOpen} children={<></>} textContent={"Do you want to add the new Structure to the last Schedule?"}
-       title="Create Structure" confirmButtonText='Yes' closeModal={closeModal} confirmButton={createStructure} noButtonText="No" noButton={createStructure}/>
-        <h1>Structure</h1>
+      <OptionsModal open={modalOpen} children={<></>} textContent={"האם להוסיף את המשמרת לסידור האחרון?"}
+       title="יצירת משמרת חדשה" confirmButtonText='כן' closeModal={closeModal} confirmButton={createStructure} noButtonText="לא" noButton={createStructure}/>
+        <h1>מבנה סידור</h1>
         <div className='save-btn-container'>
-        <Button variant="contained" color="primary" onClick={saveStructures}>Save</Button>
+        <Button variant="contained" color="primary" onClick={saveStructures}>שמור</Button>
         </div>
         <TableContainer style={{minHeight: height}} component={Paper}>
       <Table ref={changeRef} sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <StyledTableRow>
-            <StyledTableCell align="center">Shift</StyledTableCell>
-            <StyledTableCell align="center">Index</StyledTableCell>
-            <StyledTableCell align="center">Title</StyledTableCell>
-            <StyledTableCell align="center">Description</StyledTableCell>
-            <StyledTableCell align="center">Opening</StyledTableCell>
-            <StyledTableCell align="center">Manager</StyledTableCell>
-            <StyledTableCell align="center">Pull</StyledTableCell>
+            <StyledTableCell align="center">משמרת</StyledTableCell>
+            <StyledTableCell align="center">מספר</StyledTableCell>
+            <StyledTableCell align="center">כותרת</StyledTableCell>
+            <StyledTableCell align="center">תיאור</StyledTableCell>
+            <StyledTableCell align="center">פתיחה</StyledTableCell>
+            <StyledTableCell align="center">אחמ"ש</StyledTableCell>
+            <StyledTableCell align="center">משיכה</StyledTableCell>
             <StyledTableCell align="center"></StyledTableCell>
           </StyledTableRow>
         </TableHead>
@@ -237,19 +238,19 @@ const Structures = (props: IProps) => {
                     value={newStructure.shift}
                     label="Shift"
                     onChange={newHandleSelectChange}>
-                    <MenuItem value={0}>Morning</MenuItem>
-                    <MenuItem value={1}>Noon</MenuItem>
-                    <MenuItem value={2}>Night</MenuItem>
-                    <MenuItem value={3}>Other</MenuItem>
+                    <MenuItem value={0}>בוקר</MenuItem>
+                    <MenuItem value={1}>צהריים</MenuItem>
+                    <MenuItem value={2}>לילה</MenuItem>
+                    <MenuItem value={3}>אחר</MenuItem>
                 </Select>
                 </TableCell>
-              <TableCell align="center"><TextField type="number" required inputProps={{min: '0'}} name={`index`} value={newStructure.index} label="Index" onChange={newInputChange} /></TableCell>
-              <TableCell align="center"><TextField name={`title`} required value={newStructure.title} label="Title" onChange={newInputChange}/></TableCell>
-              <TableCell align="center"><TextField name={`description`} value={newStructure.description} label="Description" onChange={newInputChange}/></TableCell>
+              <TableCell align="center"><TextField sx={{minWidth: '180px'}} type="number" required inputProps={{min: '0'}} name={`index`} value={newStructure.index} label="מספר" onChange={newInputChange} /></TableCell>
+              <TableCell align="center"><TextField sx={{minWidth: '180px'}} name={`title`} required value={newStructure.title} label="כותרת" onChange={newInputChange}/></TableCell>
+              <TableCell align="center"><TextField sx={{minWidth: '180px'}} name={`description`} value={newStructure.description} label="תיאור" onChange={newInputChange}/></TableCell>
               <TableCell align="center"><Checkbox name={`opening`} checked={newStructure.opening} onChange={newCheckboxChange} /></TableCell>
               <TableCell align="center"><Checkbox name={`manager`} checked={newStructure.manager} onChange={newCheckboxChange} /></TableCell>
               <TableCell align="center"><Checkbox name={`pull`} checked={newStructure.pull} onChange={newCheckboxChange} /></TableCell>
-              <TableCell align="center"><Button variant="contained" color="primary" onClick={openModal}>Create</Button></TableCell>
+              <TableCell align="center"><Button variant="contained" color="primary" onClick={openModal}>הוסף</Button></TableCell>
             </TableRow>
           {structures.map((structure) => (
             <TableRow
@@ -262,19 +263,19 @@ const Structures = (props: IProps) => {
                     value={`${structure.shift}&&${structure._id}`}
                     label="Shift"
                     onChange={handleSelectChange}>
-                    <MenuItem value={`0&&${structure._id}`}>Morning</MenuItem>
-                    <MenuItem value={`1&&${structure._id}`}>Noon</MenuItem>
-                    <MenuItem value={`2&&${structure._id}`}>Night</MenuItem>
-                    <MenuItem value={`3&&${structure._id}`}>Other</MenuItem>
+                    <MenuItem value={`0&&${structure._id}`}>בוקר</MenuItem>
+                    <MenuItem value={`1&&${structure._id}`}>צהריים</MenuItem>
+                    <MenuItem value={`2&&${structure._id}`}>לילה</MenuItem>
+                    <MenuItem value={`3&&${structure._id}`}>אחר</MenuItem>
                 </Select>
                 </TableCell>
-              <TableCell align="center"><TextField required inputProps={{min: '0'}} type="number" name={`index&&${structure._id}`} value={structure.index} label="Index" onChange={inputChange} /></TableCell>
-              <TableCell align="center"><TextField required name={`title&&${structure._id}`} value={structure.title} label="Title" onChange={inputChange}/></TableCell>
-              <TableCell align="center"><TextField name={`description&&${structure._id}`} value={structure.description} label="Description" onChange={inputChange}/></TableCell>
+              <TableCell align="center"><TextField sx={{minWidth: '180px'}} required inputProps={{min: '0'}} type="number" name={`index&&${structure._id}`} value={structure.index} label="מספר" onChange={inputChange} /></TableCell>
+              <TableCell align="center"><TextField sx={{minWidth: '180px'}} required name={`title&&${structure._id}`} value={structure.title} label="כותרת" onChange={inputChange}/></TableCell>
+              <TableCell align="center"><TextField sx={{minWidth: '180px'}} name={`description&&${structure._id}`} value={structure.description} label="תיאור" onChange={inputChange}/></TableCell>
               <TableCell align="center"><Checkbox name={`opening&&${structure._id}`} checked={structure.opening} onChange={checkboxChange} /></TableCell>
               <TableCell align="center"><Checkbox name={`manager&&${structure._id}`} checked={structure.manager} onChange={checkboxChange} /></TableCell>
               <TableCell align="center"><Checkbox name={`pull&&${structure._id}`} checked={structure.pull} onChange={checkboxChange} /></TableCell>
-              <TableCell align="center"><Button variant="contained" color="error" value={structure._id} onClick={deleteStructure} >Delete</Button></TableCell>
+              <TableCell align="center"><Button variant="contained" color="error" value={structure._id} onClick={deleteStructure} >מחק</Button></TableCell>
             </TableRow>
           ))}
         </TableBody>

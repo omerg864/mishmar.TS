@@ -39,7 +39,7 @@ const Quality = (props: IProps) => {
           }
         } catch (e) {
           console.log(e);
-          toast.error('Internal server error');
+          toast.error('Internal Server Error');
         }
         setIsLoading(false);
     }
@@ -70,15 +70,19 @@ const Quality = (props: IProps) => {
       return arr.filter((item, index) => arr.indexOf(item) != index)
     }
 
-    const saveUsers = async (loading: boolean, e?: React.FormEvent<HTMLFormElement>) => {
+    const saveUsers = async (loading: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
       e?.preventDefault();
       let users_nickname: string[] = [];
       for (let i = 0; i < users.length; i++) {
+        if (users[i].nickname === ""){
+          toast.error("כינוי לא יכול להיות ריק");
+          return;
+        }
         users_nickname.push(users[i].nickname);
       }
       users_nickname = arrayDuplicates(users_nickname);
       if (users_nickname.length > 0) {
-        toast.error("Nickname must be unique");
+        toast.error("כינוי חייב להיות יחודי");
         return;
       }
         if (loading)
@@ -90,13 +94,13 @@ const Quality = (props: IProps) => {
           if (data.error) {
             toast.error(data.message);
           } else {
-            toast.success("Users saved");
+            toast.success("איכויות נשמרו");
             const userID = cookies.get('user')._id;
             cookies.set('user', users.find(user => user._id === userID));
           }
         } catch (e) {
           console.log(e);
-          toast.error('Internal server error');
+          toast.error('Internal Server Error');
         }
         if (loading)
             setIsLoading(false);
@@ -140,21 +144,20 @@ const Quality = (props: IProps) => {
 
   return (
     <main>
-        <h1>Users Quality</h1>
-        <form onSubmit={(e) => saveUsers(true, e)}>
+        <h1>איכויות</h1>
         <div style={{display: 'flex', justifyContent: "space-between", width: "100%", padding: "10px", boxSizing: "border-box"}}>
-        <Button variant="contained" color="primary" type="submit" >Save</Button>
-        <Button variant="contained" color="error" onClick={(e) => resetQuality(e)}>Reset</Button>
+        <Button variant="contained" color="primary" onClick={(e) => saveUsers(true, e)} >שמור</Button>
+        <Button variant="contained" color="error" onClick={(e) => resetQuality(e)}>איפוס איכויות</Button>
         </div>
         <TableContainer style={{minHeight: height}} component={Paper}>
       <Table ref={changeRef} sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <StyledTableRow>
-            <StyledTableCell align="center">Nickname</StyledTableCell>
-            <StyledTableCell align="center">Night</StyledTableCell>
-            <StyledTableCell align="center">Friday Noon</StyledTableCell>
-            <StyledTableCell align="center">Weekend Night</StyledTableCell>
-            <StyledTableCell align="center">Weekend Day</StyledTableCell>
+            <StyledTableCell align="center">כינוי</StyledTableCell>
+            <StyledTableCell align="center">לילה</StyledTableCell>
+            <StyledTableCell align="center">שישי צהריים</StyledTableCell>
+            <StyledTableCell align="center">שישי לילה/מוצ"ש</StyledTableCell>
+            <StyledTableCell align="center">שבת בוקר/צהריים</StyledTableCell>
           </StyledTableRow>
         </TableHead>
         <TableBody>
@@ -163,17 +166,16 @@ const Quality = (props: IProps) => {
               key={user._id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-            <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} onChange={handleTextChange} required value={user.nickname} name={`nickname&&${user._id}`} label="Nickname"/></TableCell>
-              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} inputProps={{min: '0'}} onChange={handleNumberChange} required type="number" value={user.night} name={`night&&${user._id}`} label="Night"/></TableCell>
-              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} inputProps={{min: '0'}} onChange={handleNumberChange} required type="number" value={user.friday_noon} name={`friday_noon&&${user._id}`} label="Friday Noon"/></TableCell>
-              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} inputProps={{min: '0'}} onChange={handleNumberChange} required type="number" value={user.weekend_night} name={`weekend_night&&${user._id}`} label="Weekend Night"/></TableCell>
-              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} inputProps={{min: '0'}} onChange={handleNumberChange} required type="number" value={user.weekend_day} name={`weekend_day&&${user._id}`} label="Weekend Day"/></TableCell>
+            <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} onChange={handleTextChange} required value={user.nickname} name={`nickname&&${user._id}`} label="כינוי"/></TableCell>
+              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} inputProps={{min: '0'}} onChange={handleNumberChange} required type="number" value={user.night} name={`night&&${user._id}`} label="לילה"/></TableCell>
+              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} inputProps={{min: '0'}} onChange={handleNumberChange} required type="number" value={user.friday_noon} name={`friday_noon&&${user._id}`} label="שישי צהריים"/></TableCell>
+              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} inputProps={{min: '0'}} onChange={handleNumberChange} required type="number" value={user.weekend_night} name={`weekend_night&&${user._id}`} label={'שישי לילה/מוצ"ש'}/></TableCell>
+              <TableCell align="center" scope="row"><TextField sx={{minWidth: '180px'}} inputProps={{min: '0'}} onChange={handleNumberChange} required type="number" value={user.weekend_day} name={`weekend_day&&${user._id}`} label="שבת בוקר/צהריים"/></TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
-    </form>
     </main>
   )
 }

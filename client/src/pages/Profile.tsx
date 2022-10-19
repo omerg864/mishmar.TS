@@ -37,34 +37,34 @@ const Profile = (props: IProps) => {
       const response = await fetch(`/api/users`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
       method: 'PATCH', body: JSON.stringify(formData)});
       const data = await response.json();
-      if (data.error) {
+      if (data.error || data.statusCode) {
         toast.error(data.message);
       } else {
-        toast.success("Settings saved");
+        toast.success("הגדרות נשמרו");
         cookies.set('user', data);
       }
     } catch (e) {
       console.log(e);
-      toast.error('Internal server error');
+      toast.error('Internal Server Error');
     }
     setLoading(false);
   }
 
   const updatePassword = async () => {
     if (passwordData.password === ""){
-      toast.error('Password is required');
+      toast.error('נא הכנס סיסמה');
       return;
     }
     if (passwordData.confirmPassword === ""){
-      toast.error('Please enter password again');
+      toast.error('נא הכנס סיסמה בשנית');
       return;
     }
     if (!password_regex.test(passwordData.password)){
-      toast.error('Please enter a valid password');
+      toast.error('סיסמה לא תקינה');
       return;
     }
     if (passwordData.password !== passwordData.confirmPassword) {
-      toast.error('Password do not match');
+      toast.error('סיסמאות לא תואמות');
       return;
     }
     setLoading(true);
@@ -72,15 +72,15 @@ const Profile = (props: IProps) => {
       const response = await fetch(`/api/users`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
       method: 'PATCH', body: JSON.stringify(passwordData)});
       const data = await response.json();
-      if (data.error) {
+      if (data.error || data.statusCode) {
         toast.error(data.message);
       } else {
-        toast.success("Password Changed");
+        toast.success("סיסמה שונתה");
         closeModal();
       }
     } catch (e) {
       console.log(e);
-      toast.error('Internal server error');
+      toast.error('Internal Server Error');
     }
     setLoading(false);
   }
@@ -91,10 +91,10 @@ const Profile = (props: IProps) => {
   }
 
   const modalChildren = (<>
-    <TextField name='password' required sx={{marginTop: '10px'}} type="password" label={"Password"} value={passwordData.password} onChange={(e) => setPasswordData({...passwordData, password: e.target.value})}/>
+    <TextField name='password' required sx={{marginTop: '10px'}} type="password" label={"סיסמה"} value={passwordData.password} onChange={(e) => setPasswordData({...passwordData, password: e.target.value})}/>
     <PasswordRules />
     <div>
-    <TextField name='confirmPassword' required sx={{marginTop: '10px'}} type="password" label={"Confirm Password"} value={passwordData.confirmPassword} onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}/>
+    <TextField name='confirmPassword' required sx={{marginTop: '10px'}} type="password" label={"הכנס סיסמה שוב"} value={passwordData.confirmPassword} onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}/>
     </div>
     </>)
 
@@ -108,21 +108,21 @@ const Profile = (props: IProps) => {
 
   return (
     <main>
-      <Modal open={modal} closeModal={closeModal} textContent="" title='Password Change' confirmButtonText='Change Password' children={modalChildren} confirmButton={updatePassword} />
-        <h1>Profile</h1>
+      <Modal open={modal} closeModal={closeModal} textContent="" title='שינוי סיסמה' confirmButtonText='שנה' children={modalChildren} confirmButton={updatePassword} />
+        <h1>פרופיל</h1>
         <Card sx={{ width: '60%' }}>
           <CardContent sx={{textAlign: 'center', position: 'relative'}}>
             <form onSubmit={handleSubmit}>
-            <TextField value={formData.username} required onChange={handleChange} name="username" color="primary" label="Username" />
+            <TextField value={formData.username} required onChange={handleChange} name="username" color="primary" label="שם משתמש" />
             <div style={{marginTop: '10px'}}>
-              <TextField value={formData.email} required onChange={handleChange} name="email" type="email" label="Email" />
+              <TextField value={formData.email} required onChange={handleChange} name="email" type="email" label="אימייל" />
             </div>
             <div style={{marginTop: '10px'}}>
-              <TextField value={formData.name} required onChange={handleChange} name="name" color="primary" label="Name" />
+              <TextField value={formData.name} required onChange={handleChange} name="name" color="primary" label="שם מלא" />
             </div>
             <div style={{marginTop: '10px', display: 'flex', justifyContent: 'space-between', gap: '10px'}}>
-            <Button variant="contained" color="primary" type="submit">Save</Button>
-            <Button variant="contained" color="secondary" onClick={() => setModal(true)} >Change Password</Button>
+            <Button variant="contained" color="primary" type="submit">שמור</Button>
+            <Button variant="contained" color="secondary" onClick={() => setModal(true)} >שנה סיסמה</Button>
             </div>
             </form>
           </CardContent>

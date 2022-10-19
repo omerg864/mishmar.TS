@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { addDays } from '../functions/functions';
@@ -48,8 +48,12 @@ export class EventService {
     }
 
     async createEvent(event: EventInterface): Promise<EventInterface> {
+        try {
         const eventModel = await this.eventModel.create(event);
         return eventModel;
+        } catch (e) {
+            throw new BadRequestException(e)
+        }
     }
 
     async updateManyEvents(events: EventInterface[]): Promise<EventInterface[]> {

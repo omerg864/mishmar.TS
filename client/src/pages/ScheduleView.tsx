@@ -36,7 +36,7 @@ const ScheduleView = (props: IProps) => {
         }
         const response = await fetch(url, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
         const data = await response.json();
-        if (data.error) {
+        if (data.error || data.statusCode) {
           toast.error(data.message);
         } else {
           if (!id){
@@ -48,7 +48,7 @@ const ScheduleView = (props: IProps) => {
         }
     } catch (err) {
         console.log(err);
-        toast.error("Internal server error");
+        toast.error("Internal Server Error");
     }
     setIsLoading(false);
   }

@@ -26,7 +26,7 @@ export default function MaterialUIPickers(props: IProps) {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Stack>
         <MobileDatePicker
-          label="Date"
+          label="תאריך"
           inputFormat="DD/MM/YYYY"
           value={props.value}
           onChange={handleChange}

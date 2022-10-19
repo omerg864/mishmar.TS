@@ -29,13 +29,14 @@ const Schedules = (props: IProps) => {
             const response = await fetch(`/api/schedules/auth/all?page=${page}`, { headers: {authorization: 'Bearer ' + cookies.get('userToken')}});
             const data = await response.json();
             if (data.error) {
-                toast.error(data.error);
+                toast.error(data.message);
             } else {
                 setSchedules(data.schedules);
                 setPages(data.pages);
             }
         } catch (err) {
             console.log(err);
+            toast.error("Internal Server Error");
         }
         setLoading(false);
     }
@@ -68,14 +69,14 @@ const Schedules = (props: IProps) => {
 
   return (
     <main>
-        <h1>Schedules</h1>
+        <h1>סידורים</h1>
         <div>
             {schedules.map(schedule => (
                 <Card key={schedule._id} className='schedule'>
                     <h1>{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
                     <div className='space-div'>
-                        <Button variant='contained' color="info" onClick={() => goToUpdate(schedule._id)}>Update</Button>
-                        <Button variant='contained' color="success" onClick={() => goToShifts(schedule._id)} >Shifts</Button>
+                        <Button variant='contained' color="info" onClick={() => goToUpdate(schedule._id)}>עדכון</Button>
+                        <Button variant='contained' color="success" onClick={() => goToShifts(schedule._id)} >משמרות</Button>
                     </div>
                 </Card>
             ))}

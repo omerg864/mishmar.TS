@@ -17,10 +17,11 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 let ShiftService = class ShiftService {
-    constructor(shiftModel, userModel, scheduleModel) {
+    constructor(shiftModel, userModel, scheduleModel, settingsModel) {
         this.shiftModel = shiftModel;
         this.userModel = userModel;
         this.scheduleModel = scheduleModel;
+        this.settingsModel = settingsModel;
     }
     async getAll(query) {
         if (query) {
@@ -159,6 +160,10 @@ let ShiftService = class ShiftService {
             if (userId !== shift.userId.toString()) {
                 throw new common_1.UnauthorizedException('Cant change shift of this user');
             }
+            const settings = await this.settingsModel.findOne();
+            if (!settings.submit) {
+                throw new common_1.UnauthorizedException('Cant change submission anymore');
+            }
         }
         return await this.shiftModel.findByIdAndUpdate(shift._id, shift, { new: true });
     }
@@ -176,7 +181,11 @@ ShiftService = __decorate([
     __param(0, (0, mongoose_1.InjectModel)('Shift')),
     __param(1, (0, mongoose_1.InjectModel)('User')),
     __param(2, (0, mongoose_1.InjectModel)('Schedule')),
-    __metadata("design:paramtypes", [mongoose_2.Model, mongoose_2.Model, mongoose_2.Model])
+    __param(3, (0, mongoose_1.InjectModel)('Settings')),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model,
+        mongoose_2.Model,
+        mongoose_2.Model])
 ], ShiftService);
 exports.ShiftService = ShiftService;
 //# sourceMappingURL=shift.service.js.map

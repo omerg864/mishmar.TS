@@ -26,14 +26,14 @@ const ResetPassword = (props: IProps) => {
     try {
       const response = await fetch(`/api/users/resetPassword/${reset_token}`)
       const data = await response.json();
-      if (data.error) {
+      if (data.error || data.statusCode) {
         toast.error(data.message);
       } else {
         setToken(true);
       }
     } catch (err) {
       console.log(err);
-      toast.error("Internal server error");
+      toast.error("Internal Server Error");
     }
     setIsLoading(false);
   }
@@ -48,25 +48,25 @@ const ResetPassword = (props: IProps) => {
   const changePassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (passwordData.password !== passwordData.confirmPassword) {
-      toast.error('passwords do not match');
+      toast.error('סיסמאות לא תואמות');
       return;
     }
     if (!password_regex.test(passwordData.password)) {
-      toast.error('please enter a valid password');
+      toast.error('סיסמה לא תקינה');
       return;
     }
     setIsLoading(true);
     try {
       const response = await fetch(`/api/users/resetPassword/${reset_token}`, { headers: { 'Content-Type': 'application/json' }, method: 'POST', body: JSON.stringify(passwordData) });
       const data = await response.json();
-      if (data.error) {
+      if (data.error || data.statusCode) {
         toast.error(data.message);
       } else {
         navigate('/login');
       }
     } catch (err) {
       console.log(err);
-      toast.error("Internal server error");
+      toast.error("Internal Server Error");
     }
     setIsLoading(false);
   }
@@ -84,14 +84,14 @@ const ResetPassword = (props: IProps) => {
 
   return (
     <main>
-      {token && <> <h1>Reset Password</h1>
+      {token && <> <h1>איפוס סיסמה</h1>
       <form onSubmit={changePassword}>
-      <TextField name='password' required sx={{marginTop: '10px'}} type="password" label={"Password"} value={passwordData.password} onChange={(e) => setPasswordData({...passwordData, password: e.target.value})}/>
+      <TextField name='password' required sx={{marginTop: '10px'}} type="password" label={"סיסמה"} value={passwordData.password} onChange={(e) => setPasswordData({...passwordData, password: e.target.value})}/>
       <PasswordRules />
     <div style={{marginTop: '10px'}}>
-    <TextField name='confirmPassword' required sx={{marginTop: '10px'}} type="password" label={"Confirm Password"} value={passwordData.confirmPassword} onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}/>
+    <TextField name='confirmPassword' required sx={{marginTop: '10px'}} type="password" label={"הכנס סיסמה שוב"} value={passwordData.confirmPassword} onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}/>
     </div>
-    <Button style={{marginTop: '10px'}} variant="contained" color="primary" type="submit">Change Password</Button>
+    <Button style={{marginTop: '10px'}} variant="contained" color="primary" type="submit">שנה סיסמה</Button>
     </form></>}
     </main>
   )

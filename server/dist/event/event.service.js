@@ -57,8 +57,13 @@ let EventService = class EventService {
         return { id: event._id.toString() };
     }
     async createEvent(event) {
-        const eventModel = await this.eventModel.create(event);
-        return eventModel;
+        try {
+            const eventModel = await this.eventModel.create(event);
+            return eventModel;
+        }
+        catch (e) {
+            throw new common_1.BadRequestException(e);
+        }
     }
     async updateManyEvents(events) {
         let events_temp = [];
