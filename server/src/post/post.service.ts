@@ -15,7 +15,7 @@ export class PostService {
     async getPost(id: string): Promise<PostInterface> {
         const postFound = await this.postModel.findById(id).populate('userId', ["nickname"]);
         if (!postFound) {
-            throw new NotFoundException('Post not found');
+            throw new NotFoundException('פוסט לא נמצא');
         }
         return postFound;
     }
@@ -35,7 +35,7 @@ export class PostService {
     async deletePost(id: string): Promise<{id: string}> {
         const postFound = await this.postModel.findById(id);
         if (!postFound) {
-            throw new NotFoundException('Post not found');
+            throw new NotFoundException('פוסט לא נמצא');
         }
         await this.postModel.findByIdAndDelete(id);
         return {id: postFound.id.toString()};
@@ -44,7 +44,7 @@ export class PostService {
     async updatePost(userId: string, post: PostInterface): Promise<PostInterface> {
         const postFound = await this.postModel.findById(post._id);
         if (!postFound) {
-            throw new NotFoundException('Post not found');
+            throw new NotFoundException('פוסט לא נמצא');
         }
         return await this.postModel.findByIdAndUpdate(post._id, {...post, userId: userId}, { new: true});
     }

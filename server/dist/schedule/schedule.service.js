@@ -79,19 +79,19 @@ let ScheduleService = class ScheduleService {
         }
         let all_schedules = await this.scheduleModel.find().sort({ date: -1 });
         if (all_schedules.length === 0) {
-            throw new common_1.NotFoundException('No schedules found');
+            throw new common_1.NotFoundException('לא נמצאו סידורים');
         }
         let index = 0;
         if (!all_schedules[index].publish) {
             index = 1;
             if (all_schedules.length === 1) {
-                throw new common_1.ConflictException('No Published schedule found');
+                throw new common_1.ConflictException('אין סידורים מפורסמים עדיין');
             }
         }
         let pages = all_schedules.length - index;
         let schedule_found = (await this.scheduleModel.find().sort({ date: -1 }).skip(query.page + index).limit(1))[0];
         if (!schedule_found) {
-            throw new common_1.NotFoundException('No Schedules found');
+            throw new common_1.NotFoundException('לא נמצאו סידורים');
         }
         let days = this.calculateDays(schedule_found);
         let schedule = await this.populateSchedule(schedule_found);
@@ -112,7 +112,7 @@ let ScheduleService = class ScheduleService {
     async getLast() {
         let schedules = await this.scheduleModel.find().sort({ date: -1 }).select('-weeks');
         if (schedules.length === 0) {
-            throw new common_1.ConflictException('No schedules found');
+            throw new common_1.ConflictException('לא נמצאו סידורים');
         }
         let days = this.calculateDays(schedules[0]);
         return Object.assign(Object.assign({}, schedules[0]["_doc"]), { days });
@@ -120,13 +120,13 @@ let ScheduleService = class ScheduleService {
     async getLastData() {
         let schedules = await this.scheduleModel.find().sort({ date: -1 });
         if (schedules.length === 0) {
-            throw new common_1.ConflictException('No schedules found');
+            throw new common_1.ConflictException('לא נמצאו סידורים');
         }
         let index = 0;
         if (!schedules[index].publish) {
             index = 1;
             if (schedules.length === 1) {
-                throw new common_1.ConflictException('No Published schedule found');
+                throw new common_1.ConflictException('אין סידורים מפורסמים עדיין');
             }
         }
         let days = this.calculateDays(schedules[index]);
@@ -207,7 +207,7 @@ let ScheduleService = class ScheduleService {
     async getSchedule(id) {
         let schedule = await this.scheduleModel.findById(id);
         if (!schedule) {
-            throw new common_1.NotFoundException('Schedule not found');
+            throw new common_1.NotFoundException('סידור לא נמצא');
         }
         schedule = await this.populateSchedule(schedule);
         let days = this.calculateDays(schedule);
@@ -227,7 +227,7 @@ let ScheduleService = class ScheduleService {
     async update(schedule) {
         let scheduleFound = await this.scheduleModel.findById(schedule._id);
         if (!scheduleFound) {
-            throw new common_1.NotFoundException('Schedule not found');
+            throw new common_1.NotFoundException('סידור לא נמצא');
         }
         let newSchedule = await this.scheduleModel.findByIdAndUpdate(schedule._id, schedule, { new: true });
         newSchedule = await this.populateSchedule(newSchedule);
@@ -237,7 +237,7 @@ let ScheduleService = class ScheduleService {
     async delete(id) {
         const schedule = await this.scheduleModel.findById(id);
         if (!schedule) {
-            throw new common_1.NotFoundException('Schedule not found');
+            throw new common_1.NotFoundException('סידור לא נמצא');
         }
         await schedule.remove();
         return { id: schedule._id.toString() };

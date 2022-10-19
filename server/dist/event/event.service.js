@@ -44,14 +44,14 @@ let EventService = class EventService {
     async getEvent(id) {
         const event = await this.eventModel.findById(id);
         if (!event) {
-            throw new common_1.NotFoundException('Event not found');
+            throw new common_1.NotFoundException('אירוע לא נמצא');
         }
         return event;
     }
     async deleteEvent(eventId) {
         const event = await this.eventModel.findById(eventId);
         if (!event) {
-            throw new common_1.NotFoundException('Event not found');
+            throw new common_1.NotFoundException('אירוע לא נמצא');
         }
         await this.eventModel.deleteOne({ _id: event._id });
         return { id: event._id.toString() };
@@ -70,7 +70,7 @@ let EventService = class EventService {
         for (let i = 0; i < events.length; i++) {
             const eventFound = await this.eventModel.findOne({ _id: events[i]._id });
             if (!eventFound) {
-                throw new common_1.NotFoundException('Event not found');
+                throw new common_1.NotFoundException('אירוע לא נמצא');
             }
             events_temp.push(await this.eventModel.findByIdAndUpdate({ _id: events[i]._id }, events[i], { new: true }));
         }
@@ -79,7 +79,7 @@ let EventService = class EventService {
     async updateEvent(event) {
         const eventFound = await this.eventModel.findOne({ _id: event.id });
         if (!eventFound) {
-            throw new common_1.NotFoundException('Event not found');
+            throw new common_1.NotFoundException('אירוע לא נמצא');
         }
         return await this.eventModel.findByIdAndUpdate({ _id: event.id }, event, { new: true });
     }

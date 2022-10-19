@@ -99,6 +99,10 @@ const Structures = (props: IProps) => {
                 toast.error(data.message);
             } else {
                 setStructures(data);
+                let morningStructure: Structure[] = data.filter((structure: Structure) => structure.shift === 0)
+                if (morningStructure.length !== 0) {
+                  setNewStructure({...newStructure, index: morningStructure.slice(-1)[0].index + 1})
+                }
                 //setSavedStractures(data);
             }
         } catch (e) {

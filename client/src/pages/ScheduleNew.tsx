@@ -4,7 +4,7 @@ import Spinner from '../components/Spinner';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom'
 import Calendar from 'react-calendar';
-import { dateToString } from '../functions/functions';
+import { addDays, dateToString } from '../functions/functions';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
@@ -43,6 +43,31 @@ const ScheduleNew = (props: IProps) => {
         }
         setLoading(false);
     }
+
+
+    const getLast = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(`/api/schedules/auth/last`, 
+            {headers: {'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken')}});
+            const data = await response.json();
+            if (data.error || data.statusCode) {
+                toast.error(data.message);
+            } else {
+                setDate(addDays(new Date(data.date), data.num_weeks * 7))
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error("Internal Server Error");
+        }
+        setLoading(false);
+    }
+
+    useEffect(() => {
+        if (props.manager) {
+            getLast();
+        }
+    }, [props.manager]);
 
 
     if (!props.manager) {

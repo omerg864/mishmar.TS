@@ -44,14 +44,14 @@ let StructureService = class StructureService {
     async updateStructure(structure) {
         const structureFound = this.structureModel.findById(structure.id);
         if (!structureFound) {
-            throw new common_1.NotFoundException('Structure not found');
+            throw new common_1.NotFoundException('משמרת לא נמצאה');
         }
         return this.structureModel.findByIdAndUpdate(structure.id, structure, { new: true });
     }
     async deleteStructure(id) {
         const structure = await this.structureModel.findById(id);
         if (!structure) {
-            throw new common_1.NotFoundException('Structure not found');
+            throw new common_1.NotFoundException('משמרת לא נמצאה');
         }
         await structure.remove();
         return { id: structure._id.toString() };

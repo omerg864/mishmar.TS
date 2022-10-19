@@ -60,19 +60,19 @@ export class ScheduleService {
         }
         let all_schedules =  await this.scheduleModel.find().sort( { date: -1})
         if (all_schedules.length === 0) {
-            throw new NotFoundException('No schedules found')
+            throw new NotFoundException('לא נמצאו סידורים')
         }
         let index = 0;
         if (!all_schedules[index].publish) {
             index = 1
             if (all_schedules.length === 1) {
-                throw new ConflictException('No Published schedule found')
+                throw new ConflictException('אין סידורים מפורסמים עדיין')
             }
         }
         let pages = all_schedules.length - index;
         let schedule_found =  (await this.scheduleModel.find().sort( { date: -1}).skip(query.page + index).limit(1))[0]
         if (!schedule_found) {
-            throw new NotFoundException('No Schedules found');
+            throw new NotFoundException('לא נמצאו סידורים');
         }
         let days: Date[][] = this.calculateDays(schedule_found);
         let schedule = await this.populateSchedule(schedule_found);
@@ -95,7 +95,7 @@ export class ScheduleService {
     async getLast() : Promise<Schedule> {
         let schedules = await this.scheduleModel.find().sort({ date: -1}).select('-weeks');
         if (schedules.length === 0) {
-            throw new ConflictException('No schedules found')
+            throw new ConflictException('לא נמצאו סידורים')
         }
         let days: Date[][] = this.calculateDays(schedules[0]);
         return { ...schedules[0]["_doc"], days}
@@ -104,13 +104,13 @@ export class ScheduleService {
     async getLastData() : Promise<Schedule> {
         let schedules = await this.scheduleModel.find().sort({ date: -1});
         if (schedules.length === 0) {
-            throw new ConflictException('No schedules found')
+            throw new ConflictException('לא נמצאו סידורים')
         }
         let index = 0;
         if (!schedules[index].publish) {
             index = 1
             if (schedules.length === 1) {
-                throw new ConflictException('No Published schedule found')
+                throw new ConflictException('אין סידורים מפורסמים עדיין')
             }
         }
         let days: Date[][] = this.calculateDays(schedules[index]);
@@ -215,7 +215,7 @@ export class ScheduleService {
     async getSchedule(id: string): Promise<Schedule> {
         let schedule: Schedule = await this.scheduleModel.findById(id);
         if (!schedule) {
-            throw new NotFoundException('Schedule not found');
+            throw new NotFoundException('סידור לא נמצא');
         }
         schedule = await this.populateSchedule(schedule);
         let days: Date[][] = this.calculateDays(schedule);
@@ -237,7 +237,7 @@ export class ScheduleService {
     async update(schedule: Schedule): Promise<Schedule> {
         let scheduleFound = await this.scheduleModel.findById(schedule._id);
         if (!scheduleFound) {
-            throw new NotFoundException('Schedule not found');
+            throw new NotFoundException('סידור לא נמצא');
         }
         let newSchedule: Schedule = await this.scheduleModel.findByIdAndUpdate(schedule._id, schedule, {new: true});
         newSchedule = await this.populateSchedule(newSchedule);
@@ -249,7 +249,7 @@ export class ScheduleService {
     async delete(id: string): Promise<{id: string}> {
         const schedule = await this.scheduleModel.findById(id);
         if (!schedule) {
-            throw new NotFoundException('Schedule not found');
+            throw new NotFoundException('סידור לא נמצא');
         }
         await schedule.remove();
         return {id: schedule._id.toString()};

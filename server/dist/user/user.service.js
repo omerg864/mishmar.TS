@@ -29,26 +29,26 @@ let UserService = class UserService {
         return jwt.sign({ id }, "ABC", { expiresIn: '30d' });
     }
     async login(username, password) {
-        const user = await this.userModel.findOne({ username }).select('-reset_token');
+        const user = await this.userModel.findOne({ username: { $regex: new RegExp(username, "i") } }).select('-reset_token');
         if (!user) {
-            throw new common_1.NotFoundException('User not found');
+            throw new common_1.NotFoundException('משתמש לא נמצא');
         }
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            throw new common_1.UnauthorizedException('Incorrect password');
+            throw new common_1.UnauthorizedException('סיסמא לא נכונה');
         }
         const token = this.generateToken(user.id);
         delete user["_doc"].password;
         return { user: Object.assign({}, user["_doc"]), token };
     }
     async register(user, pin_code) {
-        let userFound = await this.userModel.findOne({ email: { $regex: new RegExp(user.username, "i") } });
+        let userFound = await this.userModel.findOne({ username: { $regex: new RegExp(user.username, "i") } });
         if (userFound) {
-            throw new common_1.ConflictException('username already in use');
+            throw new common_1.ConflictException('שם משתמש בשימוש');
         }
         userFound = await this.userModel.findOne({ email: { $regex: new RegExp(user.email, "i") } });
         if (userFound) {
-            throw new common_1.ConflictException('email already in use');
+            throw new common_1.ConflictException('אימייל בשימוש');
         }
         let settings = await this.settingsModel.findOne();
         if (!settings) {
@@ -56,7 +56,7 @@ let UserService = class UserService {
             await settings.save();
         }
         if (settings.pin_code !== pin_code) {
-            throw new common_1.UnauthorizedException('Pin code incorrect');
+            throw new common_1.UnauthorizedException('קוד הרשמה לא תקין');
         }
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(user.password, salt);
@@ -82,7 +82,7 @@ let UserService = class UserService {
     async forgotPasswordEmail(email) {
         const userFound = await this.userModel.findOne({ email: { $regex: new RegExp(email, "i") } });
         if (!userFound) {
-            throw new common_1.NotFoundException(`User with email ${email} not found`);
+            throw new common_1.NotFoundException(`משתמש עם אימייל ${email} לא נמצא`);
         }
         var generatedToken = crypto.randomBytes(26).toString('hex');
         while (await this.userModel.findOne({ reset_token: generatedToken })) {
@@ -90,12 +90,12 @@ let UserService = class UserService {
         }
         userFound.reset_token = generatedToken;
         await userFound.save();
-        return (0, functions_1.sendMail)(email, "Reset User Password", `To reset your password please go to:\n ${process.env.SITE_ADDRESS}/password/reset/${generatedToken}`);
+        return (0, functions_1.sendMail)(email, "איפוס סיסמה למשתמש", `כדי לאפס סיסמה נא ללכת לכתובת:\n ${process.env.SITE_ADDRESS}/password/reset/${generatedToken}`);
     }
     async resetTokenPassword(reset_token, password) {
         const userFound = await this.userModel.findOne({ reset_token });
         if (!userFound) {
-            throw new common_1.NotFoundException(`User token not valid`);
+            throw new common_1.NotFoundException(`טוקן איפוס לא תקין`);
         }
         if (password) {
             const salt = await bcrypt.genSalt(10);
@@ -112,13 +112,13 @@ let UserService = class UserService {
             };
         }
         else {
-            throw new common_1.ConflictException('No Password Provided');
+            throw new common_1.ConflictException('לא הוזנה סיסמה');
         }
     }
     async resetTokenCheck(reset_token) {
         const userFound = await this.userModel.findOne({ reset_token });
         if (!userFound) {
-            throw new common_1.NotFoundException(`User token not valid`);
+            throw new common_1.NotFoundException(`טוקן איפוס לא תקין`);
         }
         return {
             success: true
@@ -143,7 +143,7 @@ let UserService = class UserService {
     async deleteUser(userId) {
         const user = await this.userModel.findById(userId);
         if (!user) {
-            throw new common_1.NotFoundException('User not found');
+            throw new common_1.NotFoundException('משתמש לא נמצא');
         }
         await user.delete();
         return { id: user.id.toString() };
@@ -155,7 +155,7 @@ let UserService = class UserService {
     async getUser(id) {
         const user = await this.userModel.findById(id).select(['-password', '-reset_token']);
         if (!user) {
-            throw new common_1.NotFoundException('User not found');
+            throw new common_1.NotFoundException('משתמש לא נמצא');
         }
         return user;
     }

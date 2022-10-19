@@ -33,7 +33,7 @@ export class StructureService {
     async updateStructure(structure: Structure): Promise<Structure> {
         const structureFound = this.structureModel.findById(structure.id);
         if (!structureFound) {
-            throw new NotFoundException('Structure not found');
+            throw new NotFoundException('משמרת לא נמצאה');
         }
         return this.structureModel.findByIdAndUpdate(structure.id, structure, { new: true});
     }
@@ -41,7 +41,7 @@ export class StructureService {
     async deleteStructure(id: string): Promise<{id: string}> {
         const structure = await this.structureModel.findById(id);
         if (!structure) {
-            throw new NotFoundException('Structure not found');
+            throw new NotFoundException('משמרת לא נמצאה');
         }
         await structure.remove();
         return {id :structure._id.toString()};

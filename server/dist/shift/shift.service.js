@@ -32,7 +32,7 @@ let ShiftService = class ShiftService {
     async scheduleShifts(scheduleId) {
         const schedule = await this.scheduleModel.findById(scheduleId);
         if (!schedule) {
-            throw new common_1.NotFoundException('Schedule not found');
+            throw new common_1.NotFoundException('משמרת לא נמצאה');
         }
         const shifts = await this.shiftModel.find({ scheduleId: scheduleId }).populate('userId');
         const params = ["morning", "noon", "night", "pull", "reinforcement", "notes"];
@@ -153,16 +153,16 @@ let ShiftService = class ShiftService {
     async update(shift, userId) {
         const shiftFound = await this.shiftModel.findById(shift._id);
         if (!shiftFound) {
-            throw new common_1.NotFoundException('Shift not found');
+            throw new common_1.NotFoundException('משמרת לא נמצאה');
         }
         const userFound = await this.userModel.findById(userId);
         if (!userFound.role.includes('ADMIN') && !userFound.role.includes('SITE_MANAGER')) {
             if (userId !== shift.userId.toString()) {
-                throw new common_1.UnauthorizedException('Cant change shift of this user');
+                throw new common_1.UnauthorizedException('לא יכול לשנות משמרת של משתמש אחר');
             }
             const settings = await this.settingsModel.findOne();
             if (!settings.submit) {
-                throw new common_1.UnauthorizedException('Cant change submission anymore');
+                throw new common_1.UnauthorizedException('אין אפשרות לשנות הגשות יותר');
             }
         }
         return await this.shiftModel.findByIdAndUpdate(shift._id, shift, { new: true });
@@ -170,7 +170,7 @@ let ShiftService = class ShiftService {
     async delete(id) {
         const shiftFound = await this.shiftModel.findById(id);
         if (!shiftFound) {
-            throw new common_1.NotFoundException('Shift not found');
+            throw new common_1.NotFoundException('משמרת לא נמצאה');
         }
         await this.shiftModel.findByIdAndRemove(id);
         return { id: shiftFound._id.toString() };

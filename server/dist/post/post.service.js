@@ -26,7 +26,7 @@ let PostService = class PostService {
     async getPost(id) {
         const postFound = await this.postModel.findById(id).populate('userId', ["nickname"]);
         if (!postFound) {
-            throw new common_1.NotFoundException('Post not found');
+            throw new common_1.NotFoundException('פוסט לא נמצא');
         }
         return postFound;
     }
@@ -45,7 +45,7 @@ let PostService = class PostService {
     async deletePost(id) {
         const postFound = await this.postModel.findById(id);
         if (!postFound) {
-            throw new common_1.NotFoundException('Post not found');
+            throw new common_1.NotFoundException('פוסט לא נמצא');
         }
         await this.postModel.findByIdAndDelete(id);
         return { id: postFound.id.toString() };
@@ -53,7 +53,7 @@ let PostService = class PostService {
     async updatePost(userId, post) {
         const postFound = await this.postModel.findById(post._id);
         if (!postFound) {
-            throw new common_1.NotFoundException('Post not found');
+            throw new common_1.NotFoundException('פוסט לא נמצא');
         }
         return await this.postModel.findByIdAndUpdate(post._id, Object.assign(Object.assign({}, post), { userId: userId }), { new: true });
     }

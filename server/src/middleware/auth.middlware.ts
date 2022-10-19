@@ -11,25 +11,25 @@ import { User } from "../user/user.model";
 
 const checkUser = async (headers: {authorization : string}, userModel: Model<User>): Promise<User> => {
       if (!headers.authorization) {
-        throw new UnauthorizedException('No Token Provided')
+        throw new UnauthorizedException('לא נמצא טוקן הזדהות')
     }
       const token = headers.authorization.split(' ')[1]
       if (!token) {
-          throw new UnauthorizedException('No Token Provided')
+          throw new UnauthorizedException('לא נמצא טוקן הזדהות')
       }
       try {
         const payload = jwt.verify(token, 'ABC');
         const userId = payload['id'];
         if (!userId) {
-            throw new UnauthorizedException('No User Provided')
+            throw new UnauthorizedException('טוקן הזדהות לא תקין')
         }
         const userFound = await userModel.findById(userId);
         if (!userFound) {
-            throw new NotFoundException('User not found')
+            throw new NotFoundException('משתמש לא נמצא')
         }
         return userFound;
       } catch (err) {
-        throw new UnauthorizedException('Incorrect Token')
+        throw new UnauthorizedException('טוקן הזדהות לא תקין')
       }
 }
 @Injectable()
@@ -52,7 +52,7 @@ export class SiteManagerMiddleware implements NestMiddleware {
   async use(req, res: Response, next: NextFunction) {
     const userFound: User = await checkUser(req.headers, this.userModel);
     if (!userFound.role.includes('SITE_MANAGER') && !userFound.role.includes('ADMIN')){
-      throw new UnauthorizedException('Only a site manager can make this changes')
+      throw new UnauthorizedException('רק מנהל האתר יכול לעשות בקשה זאת')
     }
     req.userId = userFound._id.toString();
     next();
@@ -67,7 +67,7 @@ export class ShiftManagerMiddleware implements NestMiddleware {
   async use(req, res: Response, next: NextFunction) {
     const userFound: User = await checkUser(req.headers, this.userModel);
     if (!userFound.role.includes('SHIFT_MANAGER') && !userFound.role.includes('ADMIN')){
-      throw new UnauthorizedException('Only a site manager can make this changes')
+      throw new UnauthorizedException('רק אחמ"ש יכול לעשות בקשה זאת')
     }
     req.userId = userFound._id.toString();
     next();
@@ -82,7 +82,7 @@ export class AdminManagerMiddleware implements NestMiddleware {
   async use(req, res: Response, next: NextFunction) {
     const userFound: User = await checkUser(req.headers, this.userModel);
     if (!userFound.role.includes('ADMIN')){
-      throw new UnauthorizedException('Only a site manager can make this changes')
+      throw new UnauthorizedException('רק אדמין יכול לעשות בקשה זאת')
     }
     req.userId = userFound._id.toString();
     next();

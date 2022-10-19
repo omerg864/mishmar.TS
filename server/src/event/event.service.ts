@@ -33,7 +33,7 @@ export class EventService {
     async getEvent(id: string): Promise<EventInterface> {
         const event = await this.eventModel.findById(id);
         if (!event){
-            throw new NotFoundException('Event not found');
+            throw new NotFoundException('אירוע לא נמצא');
         }
         return event;
     }
@@ -41,7 +41,7 @@ export class EventService {
     async deleteEvent(eventId: string): Promise<{id : string}> {
         const event = await this.eventModel.findById(eventId);
         if (!event) {
-            throw new NotFoundException('Event not found');
+            throw new NotFoundException('אירוע לא נמצא');
         }
         await this.eventModel.deleteOne({ _id: event._id });
         return { id: event._id.toString() };
@@ -61,7 +61,7 @@ export class EventService {
         for (let i = 0; i < events.length; i++) {
             const eventFound = await this.eventModel.findOne({ _id: events[i]._id });
             if (!eventFound) {
-                throw new NotFoundException('Event not found');
+                throw new NotFoundException('אירוע לא נמצא');
             }
             events_temp.push(await this.eventModel.findByIdAndUpdate({ _id: events[i]._id }, events[i], { new: true }));
         }
@@ -71,7 +71,7 @@ export class EventService {
     async updateEvent(event: EventInterface): Promise<EventInterface> {
         const eventFound = await this.eventModel.findOne({ _id: event.id });
         if (!eventFound) {
-            throw new NotFoundException('Event not found');
+            throw new NotFoundException('אירוע לא נמצא');
         }
         return await this.eventModel.findByIdAndUpdate({ _id: event.id }, event, { new: true });
     }
