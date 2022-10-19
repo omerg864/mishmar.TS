@@ -151,7 +151,7 @@ const Shift = (props: IProps) => {
   return (
     <main>
         <h1 style={{margin : 0}}>הגשת משמרות</h1>
-        {schedule && (
+        {schedule.num_weeks !== 0 && (
           <>
         <h1>{dateToString(schedule.date)} - {dateToString(addDays(schedule.date, schedule.num_weeks * 7 - 1))}</h1>
         {!submitting ? <h1>לא ניתן לשנות/להגיש משמרות</h1> :
