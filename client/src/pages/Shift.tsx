@@ -150,13 +150,13 @@ const Shift = (props: IProps) => {
 
   return (
     <main>
-        <h1 style={{margin : 0}}>Shift</h1>
+        <h1 style={{margin : 0}}>הגשת משמרות</h1>
         <h1>{dateToString(schedule.date)} - {dateToString(addDays(schedule.date, schedule.num_weeks * 7 - 1))}</h1>
         {!submitting ? <h1>לא ניתן לשנות/להגיש משמרות</h1> :
         <Button variant="contained" color="primary" disabled={!submitting} onClick={submitShift}>עדכון</Button>}
         <div style={{display: 'flex', width: '100%', gap: '10px', textAlign: 'center', justifyContent: 'start', padding: '10px', boxSizing: 'border-box'}}>
-          <TextField label="Weekend Night" type="number" value={shift.weekend_night} name="weekend_night" disabled={!submitting} onChange={shiftTextChange} />
-          <TextField label="Weekend day" type="number" value={shift.weekend_day} name="weekend_day" disabled={!submitting} onChange={shiftTextChange} />
+          <TextField label="מ'ס רצפים לילה לצהריים" type="number" value={shift.weekend_night} name="weekend_night" disabled={!submitting} onChange={shiftTextChange} />
+          <TextField label="מ'ס רצפים צהריים לבוקר" type="number" value={shift.weekend_day} name="weekend_day" disabled={!submitting} onChange={shiftTextChange} />
           <Typography style={{marginTop: 'auto', marginBottom: 'auto'}}>הערות: </Typography>
           <TextareaAutosize id="notes" minRows={3} name="notes" value={shift.notes} disabled={!submitting} onChange={shiftTextChange} />
         </div>
