@@ -104,7 +104,7 @@ export class ShiftService {
                 userMins.push({ nickname, id, morning: counters.morning, noon: counters.noon });
             }
         }
-        let userids = users.map(user => user.id);
+        let userids = userMins.map(user => user.id);
         userMins = userMins.filter(u => {
             for (let i = 0; i < u.morning.length; i++) {
                 if (u.morning[i] < 2 || u.noon[i] < 1) {

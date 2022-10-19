@@ -60,7 +60,7 @@ const Manager = (props: IProps) => {
         <CardContent sx={{textAlign: 'center'}}>
         <div className='manager-div'>        
         <div>
-        <FormControlLabel control={<Switch onChange={changeSubmit} checked={checked} />} label="Submit" />
+        <FormControlLabel control={<Switch onChange={changeSubmit} checked={checked} />} label="ניתן להגיש/לשנות הגשות לסידור" />
         <div>
         <Link to="/settings" >הגדרות</Link>
         </div>
