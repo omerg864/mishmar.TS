@@ -60,9 +60,11 @@ const Users = (props: IProps) => {
       for (let i = 0; i < users.length; i++) {
         if (users[i].name === "") {
           toast.error("חייב למלא שם מלא");
+          return;
         }
         if (users[i].nickname === "") {
           toast.error("חייב למלא כינוי");
+          return;
         }
         users_nickname.push(users[i].nickname);
       }
@@ -75,6 +77,7 @@ const Users = (props: IProps) => {
       for (let i = 0; i < users.length; i++) {
         if (users[i].nickname === "") {
           toast.error("חייב למלא שם משתמש");
+          return;
         }
         users_nickname.push(users[i].username as string);
       }
@@ -87,6 +90,7 @@ const Users = (props: IProps) => {
       for (let i = 0; i < users.length; i++) {
         if (users[i].nickname === "") {
           toast.error("חייב למלא שם אימייל");
+          return;
         }
         users_nickname.push(users[i].email as string);
         if( !email_regex.test(users[i].email as string)) {
