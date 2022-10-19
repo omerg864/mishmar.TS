@@ -6,6 +6,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { password_regex, email_regex } from '../types/regularExpressions'
 import PasswordRules from '../components/PasswordRules'
+import PasswordInput from '../components/PasswordInput';
 
 interface IProps {
     authenticated: boolean;
@@ -62,9 +63,9 @@ const Register = (props: IProps) => {
             <TextField className='text_input' id="name" label="שם מלא" name='name' required variant="outlined" onChange={handleChange} />
             <TextField className='text_input' id="username" label="שם משתמש" name='username' required variant="outlined" onChange={handleChange} />
             <TextField className='text_input' id="email" label="אימייל" name='email' type="email" required variant="outlined" onChange={handleChange} />
-            <TextField className='text_input' id="password" label="סיסמה" name="password" type="password" required variant="outlined" onChange={handleChange} />
+            <PasswordInput id="password" label="סיסמה" name="password" onChange={handleChange}/>
             <PasswordRules />
-            <TextField className='text_input' id="confirmPassword" label="סיסמה שוב" name="confirmPassword" type="password" required variant="outlined" onChange={handleChange} />
+            <PasswordInput id="confirmPassword" label="סיסמה שוב" name="confirmPassword" onChange={handleChange}/>
             <TextField className='text_input' id="pin_code" label="קוד הרשמה" name='pin_code' required variant="outlined" onChange={handleChange} />
             <Button variant="contained" color="primary" type="submit" >הירשם</Button>
             </form>

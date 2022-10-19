@@ -7,6 +7,9 @@ import {toast} from 'react-toastify';
 import Cookies from 'universal-cookie';
 import { Dispatch, SetStateAction } from "react";
 import { addDays } from '../functions/functions';
+import { IconButton, InputAdornment, Box } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import PasswordInput from '../components/PasswordInput';
 
 interface IProps {
     authenticated: boolean;
@@ -21,6 +24,11 @@ const Login = (props: IProps) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const navigate = useNavigate();
     const cookies = new Cookies();
+
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setUserData({...userData, [e.target.name]: e.target.value});
+    }
 
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -60,10 +68,10 @@ const Login = (props: IProps) => {
         <div className='container'>
             <h1>Login</h1>
             <form onSubmit={handleSubmit}>
-            <TextField className='text_input' id="username" label="שם משתמש" name='username' required variant="outlined" onChange={(e) => setUserData({...userData, [e.target.name]: e.target.value})} />
-            <TextField className='text_input' id="password" label="סיסמה" name="password" type="password" required variant="outlined" onChange={(e) => setUserData({...userData, [e.target.name]: e.target.value})} />
-            <Link to="/password/reset/email">שכחתי את הסיסמה</Link>
-            <Button variant="contained" color="primary" type="submit" >התחבר</Button>
+                <TextField fullWidth className='text_input' id="username" label="שם משתמש" name='username' required variant="outlined" onChange={handleChange} />
+                <PasswordInput name="password" label="סיסמה" id="password" onChange={handleChange}/>
+              <Link to="/password/reset/email">שכחתי את הסיסמה</Link>
+              <Button variant="contained" color="primary" type="submit" >התחבר</Button>
             </form>
         </div>
     </main>

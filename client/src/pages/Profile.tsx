@@ -7,6 +7,7 @@ import Spinner from '../components/Spinner'
 import { email_regex, password_regex } from '../types/regularExpressions'
 import PasswordRules from '../components/PasswordRules'
 import { Passwords } from '../types/types'
+import PasswordInput from '../components/PasswordInput'
 
 
 interface IProps {
@@ -90,11 +91,15 @@ const Profile = (props: IProps) => {
     setPasswordData({ password: '', confirmPassword: ''});
   }
 
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPasswordData({...passwordData, [e.target.name]: e.target.value})
+  }
+
   const modalChildren = (<>
-    <TextField name='password' required sx={{marginTop: '10px'}} type="password" label={"סיסמה"} value={passwordData.password} onChange={(e) => setPasswordData({...passwordData, password: e.target.value})}/>
+  <PasswordInput sx={{marginTop: '10px'}} name="password" id="password" label="סיסמה" onChange={handlePasswordChange} />
     <PasswordRules />
     <div>
-    <TextField name='confirmPassword' required sx={{marginTop: '10px'}} type="password" label={"הכנס סיסמה שוב"} value={passwordData.confirmPassword} onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}/>
+    <PasswordInput sx={{marginTop: '10px'}} name="confirmPassword" id="confirmPassword" label={"הכנס סיסמה שוב"} onChange={handlePasswordChange} />
     </div>
     </>)
 

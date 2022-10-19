@@ -17,6 +17,7 @@ import { StyledTableCell, StyledTableRow } from '../components/StyledTable';
 import Modal from '../components/Modal';
 import PasswordRules from '../components/PasswordRules';
 import { email_regex, password_regex } from '../types/regularExpressions';
+import PasswordInput from '../components/PasswordInput';
 
 
 interface IProps {
@@ -203,11 +204,15 @@ const Users = (props: IProps) => {
     setIsLoading(false);
   }
 
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setModal({open: true, user: {...modal.user, [e.target.name]: e.target.value}})
+  }
+
   const modalChildren = (<>
-  <TextField name='password' required sx={{marginTop: '10px'}} type="password" label={"סיסמה"} value={modal.user.password} onChange={(e) => setModal({open: true, user: {...modal.user, password: e.target.value}})}/>
+  <PasswordInput sx={{marginTop: '10px'}} id="password" label="סיסמה" name="password" value={modal.user.password} onChange={handlePasswordChange}/>
   <PasswordRules />
   <div>
-  <TextField name='confirmPassword' required sx={{marginTop: '10px'}} type="password" label={"הכנס סיסמה שוב"} value={modal.user.confirmPassword} onChange={(e) => setModal({open: true, user: {...modal.user, confirmPassword: e.target.value}})}/>
+    <PasswordInput sx={{marginTop: '10px'}} name='confirmPassword' id='confirmPassword' label={"הכנס סיסמה שוב"} value={modal.user.confirmPassword} onChange={handlePasswordChange}/>
   </div>
   </>)
 

@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import PasswordRules from '../components/PasswordRules'
 import { password_regex } from '../types/regularExpressions'
 import { Passwords } from '../types/types';
+import PasswordInput from '../components/PasswordInput';
 
 interface IProps {
   authenticated: boolean;
@@ -71,6 +72,9 @@ const ResetPassword = (props: IProps) => {
     setIsLoading(false);
   }
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPasswordData({...passwordData, [e.target.name]: e.target.value})
+  }
 
 
   if (isLoading) {
@@ -86,10 +90,10 @@ const ResetPassword = (props: IProps) => {
     <main>
       {token && <> <h1>איפוס סיסמה</h1>
       <form onSubmit={changePassword}>
-      <TextField name='password' required sx={{marginTop: '10px'}} type="password" label={"סיסמה"} value={passwordData.password} onChange={(e) => setPasswordData({...passwordData, password: e.target.value})}/>
+      <PasswordInput sx={{marginTop: '10px'}} id="password" label="סיסמה" name="password" value={passwordData.password} onChange={handleChange}/>
       <PasswordRules />
     <div style={{marginTop: '10px'}}>
-    <TextField name='confirmPassword' required sx={{marginTop: '10px'}} type="password" label={"הכנס סיסמה שוב"} value={passwordData.confirmPassword} onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}/>
+    <PasswordInput sx={{marginTop: '10px'}} name='confirmPassword' id='confirmPassword' label={"הכנס סיסמה שוב"} value={passwordData.confirmPassword} onChange={handleChange}/>
     </div>
     <Button style={{marginTop: '10px'}} variant="contained" color="primary" type="submit">שנה סיסמה</Button>
     </form></>}
