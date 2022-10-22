@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Spinner from '../components/Spinner'
-import TableContainer from '@mui/material/TableContainer';
-import Paper from '@mui/material/Paper';
-import TextareaAutosize from '@mui/material/TextareaAutosize';
-import { Button, Checkbox, TableHead, Typography } from '@mui/material';
+import { Button } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import { toast } from 'react-toastify';
@@ -26,7 +23,7 @@ interface ShiftScheduleWeek {
     notes: string[];
 }
 
-const rows = ["morning", "noon", "night", "reinforcement", "notes"];
+const rows = ["morning", "noon", "night", "reinforcement"];
 
 const ScheduleShift = (props: IProps) => {
 

@@ -47,7 +47,7 @@ const TableBody2 = (props: IProps) => {
     {(!props.update) ? <TableBody>
     {props.rows.map((row) => (
     <TableRow key={`${row}-${props.week}`}>
-        <TableCell align="center">{row}</TableCell>
+        <TableCell align="center">{rowToHebrew(row)}</TableCell>
     {numberToArray(7).map(num => (
             <TableCell  key={`${row}-${props.week}-${num}`} style={{padding: '1px'}} align="center">
             <pre style={{ fontFamily: 'inherit' }}>

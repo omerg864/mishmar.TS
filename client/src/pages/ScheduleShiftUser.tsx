@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
 import { ScheduleUser, Shift, User } from '../types/types';
 import { addDays, dateToString, numberToArray } from '../functions/functions';
-import { Button, Paper, TableContainer } from '@mui/material';
+import { Button, Paper, TableContainer, TextareaAutosize, TextField, Typography } from '@mui/material';
 import TableHead2 from '../components/TableHead';
 
 
@@ -92,7 +92,7 @@ const ScheduleShiftUser = (props: IProps) => {
             if (data.error || data.statusCode) {
                 toast.error(data.message);
             } else {
-                toast.success("Shift submitted successfully");
+                toast.success("משמרות עודכנו");
             }
         } catch (e) {
             console.log(e);
@@ -125,6 +125,9 @@ const ScheduleShiftUser = (props: IProps) => {
         setIsLoading(false);
     }
 
+    const shiftTextChange = (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
+        setShift({...shift, [e.target.name]: e.target.value});
+    }
 
     if(!props.manager) {
         return <></>
@@ -139,6 +142,12 @@ const ScheduleShiftUser = (props: IProps) => {
         <h1>{user.nickname}</h1>
         <h1>{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
         <Button variant="contained" color="primary" onClick={submitShift}>שמור</Button>
+        <div style={{display: 'flex', width: '100%', gap: '10px', marginTop: '10px', textAlign: 'center', justifyContent: 'start', padding: '10px', boxSizing: 'border-box'}}>
+          <TextField label="מ'ס רצפים לילה לצהריים" type="number" value={shift.weekend_night} name="weekend_night" onChange={shiftTextChange} />
+          <TextField label="מ'ס רצפים צהריים לבוקר" type="number" value={shift.weekend_day} name="weekend_day" onChange={shiftTextChange} />
+          <Typography style={{marginTop: 'auto', marginBottom: 'auto'}}>הערות: </Typography>
+          <TextareaAutosize id="notes" minRows={3} name="notes" value={shift.notes} onChange={shiftTextChange} />
+        </div>
         {numberToArray(schedule.num_weeks).map((week, index1) => (
           <TableHead2 key={`week-${week}`}  days={schedule.days[week]} 
           children={<TableBodyShift rows={rows} week={week} data={shift.weeks} notesChange={notesChange} checkboxChange={checkboxChange} update={true} disabled={false}/>}/>
