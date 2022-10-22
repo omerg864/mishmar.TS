@@ -70,8 +70,9 @@ const Posts = (props: IProps) => {
   return (
     <main>
       <h1>פוסטים</h1>
+      <div className='box-container' style={{display: 'flex', flexDirection: 'column', gap: '15px'}}>
       {posts.map((post) => (
-        <Card key={post._id} sx={{ width: '60%' }}>
+        <Card key={post._id} sx={{ width: '100%' }}>
         <CardActionArea onClick={() => goToPost(post._id as string)}>
           <CardContent sx={{textAlign: 'center', position: 'relative'}}>
             <Typography gutterBottom variant="h5" component="div">
@@ -90,6 +91,7 @@ const Posts = (props: IProps) => {
         </CardActionArea>
       </Card>
       ))}
+      </div>
       <Pagination sx={{marginTop: '15px'}} page={searchParams.get('page') ? parseInt(searchParams.get('page') as string) : 1} onChange={paginationClick} count={pages} variant="outlined" color="primary" />
     </main>
   )

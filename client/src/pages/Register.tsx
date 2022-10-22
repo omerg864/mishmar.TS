@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import {toast} from 'react-toastify';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { Box, Paper } from '@mui/material';
 import { password_regex, email_regex } from '../types/regularExpressions'
 import PasswordRules from '../components/PasswordRules'
 import PasswordInput from '../components/PasswordInput';
@@ -57,19 +58,19 @@ const Register = (props: IProps) => {
 
   return (
     <main>
-        <div className='container'>
-            <h1>הרשמה</h1>
-            <form onSubmit={handleSubmit}>
-            <TextField className='text_input' id="name" label="שם מלא" name='name' required variant="outlined" onChange={handleChange} />
-            <TextField className='text_input' id="username" label="שם משתמש" name='username' required variant="outlined" onChange={handleChange} />
-            <TextField className='text_input' id="email" label="אימייל" name='email' type="email" required variant="outlined" onChange={handleChange} />
+        <h1>הרשמה</h1>
+        <Box className='box-container' component={Paper}>
+            <form className='box-container' style={{textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '15px'}} onSubmit={handleSubmit}>
+            <TextField fullWidth className='text_input' id="name" label="שם מלא" name='name' required variant="outlined" onChange={handleChange} />
+            <TextField fullWidth className='text_input' id="username" label="שם משתמש" name='username' required variant="outlined" onChange={handleChange} />
+            <TextField fullWidth className='text_input' id="email" label="אימייל" name='email' type="email" required variant="outlined" onChange={handleChange} />
             <PasswordInput id="password" label="סיסמה" name="password" onChange={handleChange}/>
             <PasswordRules />
             <PasswordInput id="confirmPassword" label="סיסמה שוב" name="confirmPassword" onChange={handleChange}/>
-            <TextField className='text_input' id="pin_code" label="קוד הרשמה" name='pin_code' required variant="outlined" onChange={handleChange} />
+            <TextField fullWidth className='text_input' id="pin_code" label="קוד הרשמה" name='pin_code' required variant="outlined" onChange={handleChange} />
             <Button variant="contained" color="primary" type="submit" >הירשם</Button>
             </form>
-        </div>
+        </Box>
     </main>
   )
 }

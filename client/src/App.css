@@ -133,6 +133,19 @@ td, th {
   align-items: center;
 }
 
+.box-container {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 10px;
+  align-items: center;
+}
+
+.card-container {
+  width: 100%;
+}
+
 .user-data {
   width: 30%;
   height: fit-content;
@@ -145,5 +158,8 @@ td, th {
   .user-data {
     width: 100%;
     
+  }
+  .box-container {
+    width: 100%;
   }
 }

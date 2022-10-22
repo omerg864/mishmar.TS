@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { toast } from 'react-toastify';
 import Spinner from '../components/Spinner'
-import { Button, TextField } from '@mui/material';
+import { Box, Button, Card, TextField, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { email_regex } from '../types/regularExpressions'
 
@@ -51,12 +51,14 @@ const EmailPassword = (props: IProps) => {
   return (
     <main>
       <h1>שכחתי את הסיסמה</h1>
+      <Box className='box-container' component={Paper}>
       <form onSubmit={handleSubmit}>
       <TextField sx={{minWidth: '180px'}} type="email" required onChange={(e) => setEmail(e.target.value)} value={email} name={`email`} label="אימייל" />
       <div style={{display: 'flex', justifyContent: 'center', marginTop: '10px'}}>
       <Button type="submit" variant="contained" color="primary" >שלח אימייל לאיפוס</Button>
       </div>
       </form>
+      </Box>
     </main>
   )
 }

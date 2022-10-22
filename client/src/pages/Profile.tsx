@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, TextField, Button } from '@mui/material'
+import { Paper, Box, Typography, TextField, Button } from '@mui/material'
 import React, { useState } from 'react'
 import Cookies from 'universal-cookie'
 import { toast } from 'react-toastify'
@@ -115,23 +115,17 @@ const Profile = (props: IProps) => {
     <main>
       <Modal open={modal} closeModal={closeModal} textContent="" title='שינוי סיסמה' confirmButtonText='שנה' children={modalChildren} confirmButton={updatePassword} />
         <h1>פרופיל</h1>
-        <Card sx={{ width: '60%' }}>
-          <CardContent sx={{textAlign: 'center', position: 'relative'}}>
-            <form onSubmit={handleSubmit}>
-            <TextField value={formData.username} required onChange={handleChange} name="username" color="primary" label="שם משתמש" />
-            <div style={{marginTop: '10px'}}>
-              <TextField value={formData.email} required onChange={handleChange} name="email" type="email" label="אימייל" />
-            </div>
-            <div style={{marginTop: '10px'}}>
-              <TextField value={formData.name} required onChange={handleChange} name="name" color="primary" label="שם מלא" />
-            </div>
-            <div style={{marginTop: '10px', display: 'flex', justifyContent: 'space-between', gap: '10px'}}>
+        <Box className="box-container" component={Paper}>
+            <form className='box-container' style={{textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '15px'}} onSubmit={handleSubmit}>
+            <TextField fullWidth value={formData.username} required onChange={handleChange} name="username" color="primary" label="שם משתמש" />
+              <TextField fullWidth value={formData.email} required onChange={handleChange} name="email" type="email" label="אימייל" />
+              <TextField fullWidth value={formData.name} required onChange={handleChange} name="name" color="primary" label="שם מלא" />
+            <div style={{width: '100%',marginTop: '10px', display: 'flex', justifyContent: 'space-between', gap: '10px'}}>
             <Button variant="contained" color="primary" type="submit">שמור</Button>
             <Button variant="contained" color="secondary" onClick={() => setModal(true)} >שנה סיסמה</Button>
             </div>
             </form>
-          </CardContent>
-      </Card>
+      </Box>
     </main>
   )
 }

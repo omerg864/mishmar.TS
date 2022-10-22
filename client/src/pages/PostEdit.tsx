@@ -10,7 +10,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { dateToString } from '../functions/functions';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import DatePicker from '../components/DatePicker'
+import { Box } from '@mui/material';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 
 
@@ -104,9 +104,10 @@ const PostEdit = (props: IProps) => {
   return (
     <main>
       <h1>פוסט</h1>
-      <Card sx={{ width: '60%' }}>
+      <Box className="box-container">
+      <Card sx={{ width: '100%' }}>
           <CardContent sx={{textAlign: 'center', position: 'relative'}}>
-            <TextField required value={post.title} name="title" label="Title" onChange={handleChange}/>
+            <TextField sx={{marginTop: '10px'}} required value={post.title} name="title" label="Title" onChange={handleChange}/>
             <Typography variant="body2" color="text.secondary" sx={{position: 'absolute', top: '3px', right: '10px'}}>
               {dateToString(new Date())}
             </Typography>
@@ -116,12 +117,13 @@ const PostEdit = (props: IProps) => {
             <div>
             <TextareaAutosize style={{width: '100%', marginTop: '10px'}} minRows={5} value={post.content} onChange={handleChange} name="content"/>
             </div>
-            <div style={{display: 'flex', gap: "10px", marginTop: '10px'}}>
+            <div style={{display: 'flex', justifyContent: 'space-between', gap: "10px", marginTop: '10px'}}>
               <Button variant="contained" color="primary" onClick={updatePost} >שמור</Button>
               <Button variant="contained" color="error" onClick={deletePost} >מחק</Button>
             </div>
           </CardContent>
       </Card>
+      </Box>
     </main>
   )
 }

@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { toast} from 'react-toastify';
 import Spinner from '../components/Spinner'
 import Switch from '@mui/material/Switch';
-import { Box, Card, CardContent, FormControlLabel } from '@mui/material';
+import { Box, Card, CardContent, FormControlLabel, Paper } from '@mui/material';
 import Cookies from 'universal-cookie';
 
 interface IProps {
@@ -55,9 +55,7 @@ const Manager = (props: IProps) => {
   return (
     <main>
         <h1>לוח מנהל</h1>
-      <Box style={{width: '70%'}}>
-        <Card sx={{textAlign: 'center'}}>
-        <CardContent sx={{textAlign: 'center'}}>
+      <Box className='box-container' component={Paper}>
         <div className='manager-div'>        
         <div>
         <FormControlLabel control={<Switch onChange={changeSubmit} checked={checked} />} label="ניתן להגיש/לשנות הגשות לסידור" />
@@ -86,8 +84,6 @@ const Manager = (props: IProps) => {
             <Link to="/posts" >פוסטים</Link>
             <Link to="/post/new" >פוסט חדש</Link>
         </div>
-        </CardContent>
-        </Card>
     </Box>  
     </main>
   )

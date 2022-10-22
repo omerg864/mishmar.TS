@@ -7,8 +7,7 @@ import {toast} from 'react-toastify';
 import Cookies from 'universal-cookie';
 import { Dispatch, SetStateAction } from "react";
 import { addDays } from '../functions/functions';
-import { IconButton, InputAdornment, Box } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Box, Paper } from '@mui/material';
 import PasswordInput from '../components/PasswordInput';
 
 interface IProps {
@@ -65,15 +64,17 @@ const Login = (props: IProps) => {
 
   return (
     <main>
-        <div className='container'>
-            <h1>Login</h1>
-            <form onSubmit={handleSubmit}>
+      <h1>Login</h1>
+        <Box className='box-container' component={Paper}>
+            <form className='box-container' style={{textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '15px'}} onSubmit={handleSubmit}>
                 <TextField fullWidth className='text_input' id="username" label="שם משתמש" name='username' required variant="outlined" onChange={handleChange} />
                 <PasswordInput name="password" label="סיסמה" id="password" onChange={handleChange}/>
               <Link to="/password/reset/email">שכחתי את הסיסמה</Link>
+              <div>
               <Button variant="contained" color="primary" type="submit" >התחבר</Button>
+              </div>
             </form>
-        </div>
+        </Box>
     </main>
   )
 }
