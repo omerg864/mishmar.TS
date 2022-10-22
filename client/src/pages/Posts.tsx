@@ -2,13 +2,11 @@ import React, { useEffect, useState } from 'react'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import { CardActionArea, Pagination } from '@mui/material';
+import { CardActionArea, Pagination, Typography, CardContent, Card } from '@mui/material';
 import { PostType, User } from '../types/types';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { dateToString } from '../functions/functions';
+import NotAuthorized from '../components/NotAuthorized';
 
 
 interface IProps {
@@ -63,7 +61,7 @@ const Posts = (props: IProps) => {
   }
 
   if (!props.authenticated) {
-    return <></>
+    return <NotAuthorized />;
   }
 
 

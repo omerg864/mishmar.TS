@@ -1,12 +1,13 @@
 import { Button, Card, Pagination } from '@mui/material';
 import React, { useState, useEffect } from 'react'
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import Spinner from '../components/Spinner';
 import { addDays, dateToString } from '../functions/functions';
 import { Schedule } from '../types/types';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import NotAuthorized from '../components/NotAuthorized';
 
 
 interface IProps {
@@ -64,7 +65,7 @@ const Schedules = (props: IProps) => {
     }
 
     if(!props.manager) {
-        return <></>;
+        return <NotAuthorized />;
     }
 
   return (

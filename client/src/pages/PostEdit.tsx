@@ -12,6 +12,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { Box } from '@mui/material';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
+import NotAuthorized from '../components/NotAuthorized';
 
 
 interface IProps {
@@ -97,7 +98,7 @@ const PostEdit = (props: IProps) => {
   }
 
   if (!props.manager) {
-    return <></>
+    return <NotAuthorized />;
   }
 
 

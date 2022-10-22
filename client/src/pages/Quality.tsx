@@ -1,18 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
 import { UserQuality } from '../types/types';
-import Button from '@mui/material/Button';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
+import { TextField, Paper, TableRow, TableHead, TableContainer, TableCell, TableBody,
+          Table, Button } from '@mui/material';
 import { StyledTableCell, StyledTableRow } from '../components/StyledTable';
+import NotAuthorized from '../components/NotAuthorized';
 
 
 
@@ -56,7 +50,7 @@ const Quality = (props: IProps) => {
     }
 
     const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const [ name, id ] = e.target.name.split("&&");
+        const [ _, id ] = e.target.name.split("&&");
         let users_temp = users.map(user => {
           if (user._id === id) {
             user.nickname = e.target.value;
@@ -67,7 +61,7 @@ const Quality = (props: IProps) => {
     }
 
     const arrayDuplicates = (arr: string[]): string[] => {
-      return arr.filter((item, index) => arr.indexOf(item) != index)
+      return arr.filter((item, index) => arr.indexOf(item) !== index)
     }
 
     const saveUsers = async (loading: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
@@ -135,7 +129,7 @@ const Quality = (props: IProps) => {
     }
 
     if (!props.manager) {
-        return <></>
+        return <NotAuthorized />;
     }
 
     if (isLoading) {

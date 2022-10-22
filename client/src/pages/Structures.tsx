@@ -1,22 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { toast } from 'react-toastify';
 import Spinner from '../components/Spinner'
 import Cookies from 'universal-cookie';
 import { Structure } from '../types/types';
-import Button from '@mui/material/Button';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
-import Checkbox from '@mui/material/Checkbox';
+import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
+  TextField, Checkbox, MenuItem } from '@mui/material';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
 import { StyledTableCell, StyledTableRow } from '../components/StyledTable'
 import OptionsModal from '../components/OptionsModal';
+import NotAuthorized from '../components/NotAuthorized';
 
 
 interface IProps {
@@ -203,7 +195,7 @@ const Structures = (props: IProps) => {
 
 
     if (!props.manager) {
-        return <></>;
+        return <NotAuthorized />;
     }
 
     if (loading) {

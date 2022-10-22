@@ -1,27 +1,17 @@
-import React, { useState, useEffect, useRef, ElementType, HtmlHTMLAttributes } from 'react'
+import React, { useState, useEffect } from 'react'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
 import { EventType, User } from '../types/types';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
-import Button from '@mui/material/Button';
-import { Pagination, TextField } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
+          Button, Pagination, TextField} from '@mui/material';
 import ChipSelect from '../components/ChipSelect';
 import { SelectChangeEvent } from '@mui/material/Select';
 import DatePicker from '../components/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import { StyledTableCell, StyledTableRow } from '../components/StyledTable';
 import { useSearchParams } from 'react-router-dom';
-
-
-
+import NotAuthorized from '../components/NotAuthorized';
 
 interface IProps {
   manager: boolean;
@@ -64,7 +54,7 @@ const Events = (props: IProps) => {
     }
 
     const textChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      let [ key, id ] = e.target.name.split("&&");
+      let [ _, id ] = e.target.name.split("&&");
       let events_temp = [...events];
       events_temp = events_temp.map(event => {
         if (event._id === id) {
@@ -212,7 +202,7 @@ const Events = (props: IProps) => {
     }
 
     if (!props.manager) {
-      return <></>;
+      return <NotAuthorized />;
     }
 
   return (

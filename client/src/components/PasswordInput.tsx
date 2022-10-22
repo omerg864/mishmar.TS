@@ -1,6 +1,6 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { IconButton, InputAdornment, TextField } from '@mui/material';
-import React, { useState} from 'react'
+import React, { useState } from 'react'
 
 interface IProps {
     name: string;

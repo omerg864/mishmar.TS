@@ -1,4 +1,4 @@
-import { Paper, Box, Typography, TextField, Button } from '@mui/material'
+import { Paper, Box, TextField, Button } from '@mui/material'
 import React, { useState } from 'react'
 import Cookies from 'universal-cookie'
 import { toast } from 'react-toastify'
@@ -8,6 +8,7 @@ import { email_regex, password_regex } from '../types/regularExpressions'
 import PasswordRules from '../components/PasswordRules'
 import { Passwords } from '../types/types'
 import PasswordInput from '../components/PasswordInput'
+import NotAuthorized from '../components/NotAuthorized'
 
 
 interface IProps {
@@ -108,7 +109,7 @@ const Profile = (props: IProps) => {
   }
 
   if (!props.authenticated) {
-    return <></>
+    return <NotAuthorized />
   }
 
   return (

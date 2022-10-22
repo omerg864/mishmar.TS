@@ -1,9 +1,6 @@
 import React from 'react'
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableRow from '@mui/material/TableRow';
 import { numberToArray } from '../functions/functions';
-import { Checkbox, TextareaAutosize, Typography } from '@mui/material';
+import { Checkbox, TextareaAutosize, TableRow, TableCell, TableBody } from '@mui/material';
 
 interface IProps {
   rows: string[];

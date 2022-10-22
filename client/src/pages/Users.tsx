@@ -1,23 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import Spinner from '../components/Spinner';
 import { toast } from 'react-toastify';
 import { User, UserStrings } from '../types/types';
 import Cookies from 'universal-cookie';
-import Button from '@mui/material/Button';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
-import Checkbox from '@mui/material/Checkbox';
+import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Paper, TextField, Checkbox } from '@mui/material';
 import { StyledTableCell, StyledTableRow } from '../components/StyledTable';
 import Modal from '../components/Modal';
 import PasswordRules from '../components/PasswordRules';
 import { email_regex, password_regex } from '../types/regularExpressions';
 import PasswordInput from '../components/PasswordInput';
+import NotAuthorized from '../components/NotAuthorized';
 
 
 interface IProps {
@@ -52,7 +45,7 @@ const Users = (props: IProps) => {
   }
 
   const arrayDuplicates = (arr: string[]): string[] => {
-    return arr.filter((item, index) => arr.indexOf(item) != index)
+    return arr.filter((item, index) => arr.indexOf(item) !== index)
   }
 
   const saveUsers = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -230,7 +223,7 @@ const Users = (props: IProps) => {
   }
 
   if (!props.manager) {
-    return <></>
+    return <NotAuthorized />;
   }
 
   if (isLoading) {

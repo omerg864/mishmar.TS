@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom';
 import { toast} from 'react-toastify';
 import Spinner from '../components/Spinner'
-import Switch from '@mui/material/Switch';
-import { Box, Card, CardContent, FormControlLabel, Paper } from '@mui/material';
+import { Box, Switch, FormControlLabel, Paper } from '@mui/material';
 import Cookies from 'universal-cookie';
+import NotAuthorized from '../components/NotAuthorized';
 
 interface IProps {
   manager: boolean;
@@ -45,7 +45,7 @@ const Manager = (props: IProps) => {
     }
 
     if(!props.manager) {
-        return <></>;
+        return <NotAuthorized />;
     }
 
     if (loading) {

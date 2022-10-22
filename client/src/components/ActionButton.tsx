@@ -1,9 +1,5 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Backdrop from '@mui/material/Backdrop';
-import SpeedDial from '@mui/material/SpeedDial';
-import SpeedDialIcon from '@mui/material/SpeedDialIcon';
-import SpeedDialAction from '@mui/material/SpeedDialAction';
+import { Backdrop, SpeedDial, SpeedDialIcon, SpeedDialAction} from '@mui/material';
 
 interface IProps {
   actions: {icon: React.ReactNode|Element, name: string, onClick: () => void }[];

@@ -28,6 +28,7 @@ import ScheduleView from './pages/ScheduleView';
 import ResetPassword from './pages/ResetPassword';
 import Settings from './pages/Settings';
 import ScheduleTable from './pages/ScheduleTable';
+import Page404 from './pages/Page404';
 
 
 function App() {
@@ -67,6 +68,7 @@ function App() {
       <Route path="/profile" element={<Profile authenticated={authenticated}/>} />
       <Route path="/schedule" element={<ScheduleView authenticated={authenticated}/>} />
       <Route path="/settings" element={<Settings settingsChange={settingsChange} setSettingsChange={setSettingsChange} manager={manager}/>} />
+      <Route path="*" element={<Page404 />} />
     </Routes>
     </>
   );

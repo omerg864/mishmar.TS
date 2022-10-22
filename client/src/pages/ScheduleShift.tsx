@@ -8,6 +8,7 @@ import { addDays, dateToString, dateToStringShort, numberToArray } from '../func
 import { EventType, ScheduleUser, ShiftWeek, User } from '../types/types';
 import TableHead2 from '../components/TableHead';
 import TableBodyShift from '../components/TableBodyShift';
+import NotAuthorized from '../components/NotAuthorized';
 
 
 interface IProps {
@@ -129,7 +130,7 @@ const ScheduleShift = (props: IProps) => {
 
 
     if (!props.manager) {
-        return <></>;
+        return <NotAuthorized />;
     }
 
     if (loading) {

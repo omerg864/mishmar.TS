@@ -1,4 +1,4 @@
-import React, { ReactNode, useRef, useEffect, useState } from 'react'
+import React, { ReactNode } from 'react'
 import TableHead from '@mui/material/TableHead';
 import { dateToStringShort } from '../functions/functions';
 import { StyledTableCell, StyledTableRow } from './StyledTable';

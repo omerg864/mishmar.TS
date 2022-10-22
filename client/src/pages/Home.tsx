@@ -5,6 +5,7 @@ import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify';
 import { PostType, User } from '../types/types';
 import { dateToString } from '../functions/functions';
+import NotAuthorized from '../components/NotAuthorized';
 
 interface IProps {
   authenticated: boolean;
@@ -42,7 +43,7 @@ const Home = (props: IProps) => {
 
 
   if (!props.authenticated) {
-    return <main><h1>התחבר כדי לראות את האתר</h1></main>
+    return <NotAuthorized />
   }
 
   if (isLoading) {

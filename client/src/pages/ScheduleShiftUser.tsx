@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import Spinner from '../components/Spinner';
-import TableHead from '../components/TableHead';
 import TableBodyShift from '../components/TableBodyShift';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
 import { ScheduleUser, Shift, User } from '../types/types';
 import { addDays, dateToString, numberToArray } from '../functions/functions';
-import { Button, Paper, TableContainer, TextareaAutosize, TextField, Typography } from '@mui/material';
+import { Button, TextareaAutosize, TextField, Typography } from '@mui/material';
 import TableHead2 from '../components/TableHead';
+import NotAuthorized from '../components/NotAuthorized';
 
 
 
@@ -110,7 +110,7 @@ const ScheduleShiftUser = (props: IProps) => {
 
       const notesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         let weeks = [...shift.weeks]
-        const [row, week, day] = e.target.name.split("-");
+        const [_, week, day] = e.target.name.split("-");
         weeks[parseInt(week)].notes[parseInt(day)] = e.target.value;
         setShift({...shift, weeks });
       }
@@ -130,7 +130,7 @@ const ScheduleShiftUser = (props: IProps) => {
     }
 
     if(!props.manager) {
-        return <></>
+        return <NotAuthorized />;
     }
 
     if (isLoading) {

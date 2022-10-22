@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import Spinner from '../components/Spinner';
 import { Settings } from '../types/types';
 import Cookies from 'universal-cookie';
+import NotAuthorized from '../components/NotAuthorized';
 
 interface IProps {
     manager: boolean;
@@ -71,7 +72,7 @@ const SettingsPage = (props: IProps) => {
     }
 
     if (!props.manager) {
-        return <></>;
+        return <NotAuthorized />;
     }
 
   return (

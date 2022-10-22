@@ -1,13 +1,13 @@
-import React, { useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import Spinner from '../components/Spinner';
 import { ScheduleUser, Shift as ShiftType } from '../types/types';
 import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
 import { addDays, dateToString, dateToStringShort, numberToArray } from '../functions/functions';
-import { Button, TextField, Typography } from '@mui/material';
+import { Button, TextField, Typography, TextareaAutosize } from '@mui/material';
 import TableHead2 from '../components/TableHead';
 import TableBodyShift from '../components/TableBodyShift';
-import { TextareaAutosize } from '@mui/material';
+import NotAuthorized from '../components/NotAuthorized';
 
 
 interface IProps {
@@ -140,7 +140,7 @@ const Shift = (props: IProps) => {
       }, [props.authenticated]);
 
       if (!props.authenticated) {
-        return <></>;
+        return <NotAuthorized />;
       }
 
 

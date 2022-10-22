@@ -1,4 +1,4 @@
-import React, { ReactFragment, useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify';
 import { Button, Box, Paper } from '@mui/material';
@@ -8,6 +8,7 @@ import PasswordRules from '../components/PasswordRules'
 import { password_regex } from '../types/regularExpressions'
 import { Passwords } from '../types/types';
 import PasswordInput from '../components/PasswordInput';
+import LogoutMessage from '../components/LogoutMessage';
 
 interface IProps {
   authenticated: boolean;
@@ -82,7 +83,7 @@ const ResetPassword = (props: IProps) => {
   }
 
   if (props.authenticated) {
-    return <></>;
+    return <LogoutMessage />
   }
 
   if (!token) {

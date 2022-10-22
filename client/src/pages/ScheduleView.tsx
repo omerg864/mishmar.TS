@@ -1,4 +1,4 @@
-import { Button, Pagination, Paper, Table, TableContainer } from '@mui/material'
+import { Pagination, Paper, Table, TableContainer } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import Spinner from '../components/Spinner'
 import TableBodySchedule from '../components/TableBodySchedule'
@@ -8,6 +8,7 @@ import { Schedule } from '../types/types'
 import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
 import { useParams, useSearchParams } from 'react-router-dom';
+import NotAuthorized from '../components/NotAuthorized'
 
 
 interface IProps {
@@ -70,7 +71,7 @@ const ScheduleView = (props: IProps) => {
   }
 
   if (!props.authenticated) {
-    return <></>;
+    return <NotAuthorized />;
   }
 
   const changeRef = (el: HTMLTableElement) => {

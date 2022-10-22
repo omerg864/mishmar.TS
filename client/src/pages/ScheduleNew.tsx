@@ -5,9 +5,8 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom'
 import Calendar from 'react-calendar';
 import { addDays, dateToString } from '../functions/functions';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import {Box, Paper} from '@mui/material';
+import { Box, Paper, TextField, Button } from '@mui/material';
+import NotAuthorized from '../components/NotAuthorized';
 
 
 interface IProps {
@@ -77,7 +76,7 @@ const ScheduleNew = (props: IProps) => {
 
 
     if (!props.manager) {
-        return <></>
+        return <NotAuthorized />;
     }
 
     if (loading) {

@@ -1,14 +1,14 @@
 import React from 'react'
 import { Typography } from '@mui/material';
 
-const Page404 = () => {
+const LogoutMessage = () => {
   return (
     <main>
         <Typography>
-          כתובת לא נכונה אין כלום בעמוד זה
+          לא ניתן להציג עמוד זה נא התנתק כדי לגשת אליו
         </Typography>
     </main>
   )
 }
 
-export default Page404
+export default LogoutMessage

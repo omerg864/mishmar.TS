@@ -1,17 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import { Box } from '@mui/material';
-import { PostType, User } from '../types/types';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Box, Typography, CardContent, Card, TextField, Button, TextareaAutosize } from '@mui/material';
+import { PostType } from '../types/types';
+import { useNavigate } from 'react-router-dom';
 import { dateToString } from '../functions/functions';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import TextareaAutosize from '@mui/material/TextareaAutosize';
+import NotAuthorized from '../components/NotAuthorized';
 
 
 interface IProps {
@@ -54,7 +49,7 @@ const PostNew = (props: IProps) => {
   }
 
   if (!props.manager) {
-    return <></>
+    return <NotAuthorized />;
   }
 
 

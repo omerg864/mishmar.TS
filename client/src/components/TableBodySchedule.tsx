@@ -1,8 +1,5 @@
 import React from 'react'
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableRow from '@mui/material/TableRow';
-import { TextareaAutosize, Typography } from '@mui/material';
+import { TextareaAutosize, Typography, TableRow, TableCell, TableBody } from '@mui/material';
 import { ShiftWeek, Structure } from '../types/types';
 
 interface IProps {

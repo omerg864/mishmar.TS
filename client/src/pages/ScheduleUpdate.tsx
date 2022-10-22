@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Navigate, useParams } from 'react-router-dom';
-import { Schedule, ShiftWeek, Structure } from '../types/types';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Schedule } from '../types/types';
 import Cookies from 'universal-cookie';
 import { toast } from 'react-toastify';
 import Spinner from '../components/Spinner'
-import { addDays, dateToString, dateToStringShort, numberToArray } from '../functions/functions';
-import TableContainer from '@mui/material/TableContainer';
-import Paper from '@mui/material/Paper';
-import { Button, FormControlLabel, Switch } from '@mui/material';
+import { addDays, dateToString, numberToArray } from '../functions/functions';
+import { FormControlLabel, Switch } from '@mui/material';
 import TableBodySchedule from '../components/TableBodySchedule';
 import TableHead2 from '../components/TableHead';
 import ActionButton from '../components/ActionButton';
@@ -18,7 +16,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import DatasetIcon from '@mui/icons-material/Dataset';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { useNavigate } from 'react-router-dom';
+import NotAuthorized from '../components/NotAuthorized';
 
 interface IProps {
     manager: boolean;
@@ -182,7 +180,7 @@ const ScheduleUpdate = (props: IProps) => {
 
 
     if (!props.manager) {
-        return <></>;
+        return <NotAuthorized />;
     }
 
     const actions = [

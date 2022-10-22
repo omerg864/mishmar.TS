@@ -1,9 +1,7 @@
-import React, { ReactNode, useRef, useEffect, useState } from 'react'
-import Table from '@mui/material/Table';
-import TableHead from '@mui/material/TableHead';
+import React, { ReactNode, useState } from 'react'
 import { dateToStringShort } from '../functions/functions';
 import { StyledTableCell, StyledTableRow } from './StyledTable';
-import { Paper, TableContainer } from '@mui/material';
+import { Paper, TableContainer, TableHead, Table } from '@mui/material';
 
 
 interface IProps {

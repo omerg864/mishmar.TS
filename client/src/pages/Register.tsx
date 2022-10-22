@@ -2,12 +2,11 @@ import React, { useState } from 'react'
 import Spinner from '../components/Spinner'
 import { useNavigate } from 'react-router-dom';
 import {toast} from 'react-toastify';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import { Box, Paper } from '@mui/material';
+import { Box, Paper, Button, TextField } from '@mui/material';
 import { password_regex, email_regex } from '../types/regularExpressions'
 import PasswordRules from '../components/PasswordRules'
 import PasswordInput from '../components/PasswordInput';
+import LogoutMessage from '../components/LogoutMessage';
 
 interface IProps {
     authenticated: boolean;
@@ -53,7 +52,7 @@ const Register = (props: IProps) => {
     }
 
     if(props.authenticated) {
-        return <></>;
+        return <LogoutMessage />;
       }
 
   return (

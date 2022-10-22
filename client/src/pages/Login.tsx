@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
 import Spinner from '../components/Spinner';
 import { Link, useNavigate } from 'react-router-dom';
 import {toast} from 'react-toastify';
 import Cookies from 'universal-cookie';
 import { Dispatch, SetStateAction } from "react";
 import { addDays } from '../functions/functions';
-import { Box, Paper } from '@mui/material';
+import { Box, Paper, Button, TextField } from '@mui/material';
 import PasswordInput from '../components/PasswordInput';
+import LogoutMessage from '../components/LogoutMessage';
 
 interface IProps {
     authenticated: boolean;
@@ -58,7 +57,7 @@ const Login = (props: IProps) => {
     }
 
     if(props.authenticated) {
-      return <></>;
+      return <LogoutMessage />;
     }
 
 

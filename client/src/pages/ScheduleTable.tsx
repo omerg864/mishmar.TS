@@ -3,10 +3,9 @@ import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import { minHeight } from '@mui/system';
 import { StyledTableRow, StyledTableCell } from '../components/StyledTable';
-import { Schedule } from '../types/types';
 import Cookies from 'universal-cookie';
+import NotAuthorized from '../components/NotAuthorized';
 
 
 interface IProps {
@@ -69,7 +68,7 @@ const ScheduleTable = (props: IProps) => {
     }
 
     if (!props.manager) {
-        return <></>;
+        return <NotAuthorized />;
     }
 
 
