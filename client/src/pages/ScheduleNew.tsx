@@ -7,6 +7,7 @@ import Calendar from 'react-calendar';
 import { addDays, dateToString } from '../functions/functions';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import {Box, Paper} from '@mui/material';
 
 
 interface IProps {
@@ -18,6 +19,7 @@ const ScheduleNew = (props: IProps) => {
 
     const [loading, setLoading] = useState<boolean>(false);
     const [date, setDate] = useState<Date>(new Date());
+    const [endDate, setEndDate] = useState<Date>(addDays(new Date(), 13));
     const [numWeeks, setNumWeeks] = useState<number>(2);
     const cookies = new Cookies();
     const navigate = useNavigate();
@@ -69,6 +71,10 @@ const ScheduleNew = (props: IProps) => {
         }
     }, [props.manager]);
 
+    useEffect(() => {
+        setEndDate(addDays(date, numWeeks * 7 - 1))
+    }, [numWeeks, date]);
+
 
     if (!props.manager) {
         return <></>
@@ -81,12 +87,14 @@ const ScheduleNew = (props: IProps) => {
   return (
     <main>
         <h1>סידור חדש</h1>
-        <form className='form-new' onSubmit={createSchedule}>
+        <Box className="box-container" component={Paper}>
+        <h2>{dateToString(date)} - {dateToString(endDate)}</h2>
+        <form className='box-container' style={{textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '15px', width: '100%'}} onSubmit={createSchedule}>
             <Calendar calendarType="Hebrew" onChange={setDate} defaultValue={date}/>
-            <h2>{dateToString(date)}</h2>
-            <TextField  id="num_weeks" type="number" required inputProps={{min: '1'}} name='num_weeks' value={numWeeks} label="מ'ס שבועות" onChange={e => setNumWeeks(+e.target.value)} />
+            <TextField fullWidth  id="num_weeks" type="number" required inputProps={{min: '1'}} name='num_weeks' value={numWeeks} label="מ'ס שבועות" onChange={e => setNumWeeks(+e.target.value)} />
             <Button variant="contained" color="primary" type="submit">סידור חדש</Button>
         </form>
+        </Box>
     </main>
   )
 }

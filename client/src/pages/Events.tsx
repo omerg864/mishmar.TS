@@ -235,7 +235,7 @@ const Events = (props: IProps) => {
         <TableRow
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-              <TableCell align="center" scope="row">
+              <TableCell align="center" scope="row" style={{minWidth: '180px'}}>
               <DatePicker value={dayjs(newEvent.date)} onChange={newDateChange}/>
               </TableCell>
               <TableCell align="center" scope="row">

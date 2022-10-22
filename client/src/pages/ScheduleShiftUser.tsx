@@ -139,10 +139,10 @@ const ScheduleShiftUser = (props: IProps) => {
 
   return (
     <main>
-        <h1>{user.nickname}</h1>
-        <h1>{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
+        <h1 style={{margin: 0, textAlign: 'center'}}>{user.nickname}</h1>
+        <h1 style={{textAlign: 'center'}}>{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
         <Button variant="contained" color="primary" onClick={submitShift}>שמור</Button>
-        <div style={{display: 'flex', width: '100%', gap: '10px', marginTop: '10px', textAlign: 'center', justifyContent: 'start', padding: '10px', boxSizing: 'border-box'}}>
+        <div className='shift-user'>
           <TextField label="מ'ס רצפים לילה לצהריים" type="number" value={shift.weekend_night} name="weekend_night" onChange={shiftTextChange} />
           <TextField label="מ'ס רצפים צהריים לבוקר" type="number" value={shift.weekend_day} name="weekend_day" onChange={shiftTextChange} />
           <Typography style={{marginTop: 'auto', marginBottom: 'auto'}}>הערות: </Typography>

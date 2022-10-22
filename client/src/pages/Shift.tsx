@@ -156,7 +156,7 @@ const Shift = (props: IProps) => {
         <h1>{dateToString(schedule.date)} - {dateToString(addDays(schedule.date, schedule.num_weeks * 7 - 1))}</h1>
         {!submitting ? <h1>לא ניתן לשנות/להגיש משמרות</h1> :
         <Button variant="contained" color="primary" disabled={!submitting} onClick={submitShift}>עדכון</Button>}
-        <div style={{display: 'flex', width: '100%', gap: '10px', textAlign: 'center', justifyContent: 'start', padding: '10px', boxSizing: 'border-box'}}>
+        <div className='shift-user'>
           <TextField label="מ'ס רצפים לילה לצהריים" type="number" value={shift.weekend_night} name="weekend_night" disabled={!submitting} onChange={shiftTextChange} />
           <TextField label="מ'ס רצפים צהריים לבוקר" type="number" value={shift.weekend_day} name="weekend_day" disabled={!submitting} onChange={shiftTextChange} />
           <Typography style={{marginTop: 'auto', marginBottom: 'auto'}}>הערות: </Typography>

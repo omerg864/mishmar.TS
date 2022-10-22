@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, TextField } from '@mui/material';
+import { Button, Box, Paper, TextField } from '@mui/material';
 import React, { useState, useEffect } from 'react'
 import { toast } from 'react-toastify';
 import Spinner from '../components/Spinner';
@@ -76,29 +76,17 @@ const SettingsPage = (props: IProps) => {
 
   return (
     <main>
-        <h1>Settings</h1>
-        <Card sx={{ width: '60%', overflow: 'visible' }}>
-          <CardContent sx={{textAlign: 'center', position: 'relative'}}>
-            <form onSubmit={saveSettings}>
-            <TextField value={settings.pin_code} required onChange={handleChange} name="pin_code" color="primary" label="קוד הרשמה" />
-            <div style={{marginTop: '10px'}}>
-              <TextField value={settings.officer} onChange={handleChange} name="officer" label="קצין מתקן" />
-            </div>
-            <div style={{marginTop: '10px'}}>
-              <TextField value={settings.title} required onChange={handleChange} name="title" color="primary" label="כותרת אתר" />
-            </div>
-            <div style={{marginTop: '10px'}}>
-              <TextField value={settings.max_seq_noon} type="number" inputProps={{min: "0"}} required onChange={handleChange} name="max_seq_noon" color="primary" label="מ'ס רצפים צהריים לבוקר" />
-            </div>
-            <div style={{marginTop: '10px'}}>
-              <TextField value={settings.max_seq_nights} type="number" inputProps={{min: "0"}} required onChange={handleChange} name="max_seq_nights" color="primary" label="מ'ס רצפים לילה לצהריים" />
-            </div>
-            <div style={{marginTop: '10px', display: 'flex', justifyContent: 'space-between', gap: '10px'}}>
+        <h1>הגדרות</h1>
+        <Box className='box-container' component={Paper}>
+            <form className='box-container' style={{textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '15px'}} onSubmit={saveSettings}>
+            <TextField fullWidth value={settings.pin_code} required onChange={handleChange} name="pin_code" color="primary" label="קוד הרשמה" />
+            <TextField fullWidth value={settings.officer} onChange={handleChange} name="officer" label="קצין מתקן" />
+            <TextField fullWidth value={settings.title} required onChange={handleChange} name="title" color="primary" label="כותרת אתר" />
+            <TextField fullWidth value={settings.max_seq_noon} type="number" inputProps={{min: "0"}} required onChange={handleChange} name="max_seq_noon" color="primary" label="מ'ס רצפים צהריים לבוקר" />
+            <TextField fullWidth value={settings.max_seq_nights} type="number" inputProps={{min: "0"}} required onChange={handleChange} name="max_seq_nights" color="primary" label="מ'ס רצפים לילה לצהריים" />
             <Button variant="contained" color="primary" type="submit">שמור</Button>
-            </div>
             </form>
-          </CardContent>
-      </Card>
+      </Box>
     </main>
   )
 }

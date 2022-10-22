@@ -1,7 +1,7 @@
 import React, { ReactFragment, useEffect, useState} from 'react'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify';
-import { Button, TextField } from '@mui/material';
+import { Button, Box, Paper } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import PasswordRules from '../components/PasswordRules'
@@ -85,19 +85,23 @@ const ResetPassword = (props: IProps) => {
     return <></>;
   }
 
+  if (!token) {
+    return <></>
+  }
+
 
   return (
     <main>
-      {token && <> <h1>איפוס סיסמה</h1>
-      <form onSubmit={changePassword}>
-      <PasswordInput sx={{marginTop: '10px'}} id="password" label="סיסמה" name="password" value={passwordData.password} onChange={handleChange}/>
-      <PasswordRules />
-    <div style={{marginTop: '10px'}}>
-    <PasswordInput sx={{marginTop: '10px'}} name='confirmPassword' id='confirmPassword' label={"הכנס סיסמה שוב"} value={passwordData.confirmPassword} onChange={handleChange}/>
-    </div>
-    <Button style={{marginTop: '10px'}} variant="contained" color="primary" type="submit">שנה סיסמה</Button>
-    </form></>}
-    </main>
+      <h1>איפוס סיסמה</h1>
+    <Box className='box-container' component={Paper}>
+      <form className='box-container' style={{textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '15px'}} onSubmit={changePassword}>
+        <PasswordInput id="password" label="סיסמה" name="password" value={passwordData.password} onChange={handleChange}/>
+        <PasswordRules />
+        <PasswordInput name='confirmPassword' id='confirmPassword' label={"הכנס סיסמה שוב"} value={passwordData.confirmPassword} onChange={handleChange}/>
+        <Button variant="contained" color="primary" type="submit">שנה סיסמה</Button>
+      </form>
+    </Box>
+  </main>
   )
 }
 

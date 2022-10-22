@@ -151,6 +151,21 @@ td, th {
   height: fit-content;
 }
 
+.schedule-shift-info {
+  display: flex;
+  width: 100%;
+  padding: 10px;
+  gap: 5%;
+}
+
+.shift-user {
+  display: flex;
+  width: 100%;
+  padding: 10px;
+  gap: 10px;
+}
+
+
 @media only screen and (max-width: 899px){
   .posts-home {
     width: 100%;
@@ -161,5 +176,16 @@ td, th {
   }
   .box-container {
     width: 100%;
+  }
+  .shift-user {
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+}
+
+@media only screen and (max-width: 700px){
+  .schedule-shift-info {
+    flex-direction: column;
+    justify-content: flex-start;
   }
 }

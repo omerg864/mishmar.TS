@@ -138,9 +138,9 @@ const ScheduleShift = (props: IProps) => {
 
   return (
     <main>
-        <h1 style={{margin: 0}}>משמרות שהוגשו לסידור</h1>
-        <h1>{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
-        <div style={{display: "flex", width: "100%", padding: "10px", gap: "5%"}}>
+        <h1 style={{margin: 0, textAlign: 'center'}}>משמרות שהוגשו לסידור</h1>
+        <h1 style={{textAlign: 'center'}} >{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
+        <div className='schedule-shift-info'>
         <div style={{display: "flex", alignItems: "center"}}>
         <Button variant="contained" sx={{height: "fit-content"}} onClick={toExcel} color="primary" >יצא לאקסל</Button>
         </div>
