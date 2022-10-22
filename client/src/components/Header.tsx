@@ -31,6 +31,7 @@ interface IProps {
   setAuthenticated: Dispatch<SetStateAction<boolean>>;
   manager: boolean;
   setManager: Dispatch<SetStateAction<boolean>>;
+  settingsChange: boolean;
 }
 
 
@@ -136,7 +137,7 @@ const Header = (props: IProps) => {
 
   React.useEffect(() => {
     getSettings();
-  }, []);
+  }, [props.settingsChange]);
 
 
   React.useEffect(() => {

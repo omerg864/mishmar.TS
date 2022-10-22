@@ -7,6 +7,8 @@ import Cookies from 'universal-cookie';
 
 interface IProps {
     manager: boolean;
+    setSettingsChange: React.Dispatch<React.SetStateAction<boolean>>;
+    settingsChange: boolean;
 }
 
 const SettingsPage = (props: IProps) => {
@@ -44,6 +46,7 @@ const SettingsPage = (props: IProps) => {
             toast.error(data.message);
           } else {
             toast.success("הגדרות נשמרו");
+            props.setSettingsChange(!props.settingsChange);
           }
         } catch (err) {
           console.error(err);

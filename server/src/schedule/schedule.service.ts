@@ -5,7 +5,7 @@ import { Structure } from '../structure/structure.model';
 import { Schedule } from './schedule.model';
 import { Document } from 'mongoose';
 import { findIndex } from 'rxjs';
-import { addDays } from '../functions/functions';
+import { addDays, numberToDay } from '../functions/functions';
 
 export type Shift = { shift: string|Structure, days: string[]}
 
@@ -239,34 +239,34 @@ export class ScheduleService {
                 let duplicates = this.arrayDuplicates(morningNames)
                 for (let k = 0; k < duplicates.length; k++) {
                     // k - duplicate name index
-                    notifications.add(`ביום ${j + 1} בשבוע ה-${i + 1} ${duplicates[k]} באותה משמרת בוקר כמה פעמים`);
+                    notifications.add(`ביום ${numberToDay(j)} בשבוע ה-${i + 1} ${duplicates[k]} באותה משמרת בוקר כמה פעמים`);
                 }
                 duplicates = this.arrayDuplicates(noonNames)
                 for (let k = 0; k < duplicates.length; k++) {
                     // k - duplicate name index
-                    notifications.add(`ביום ${j + 1} בשבוע ה-${i + 1} ${duplicates[k]} באותה משמרת צהריים כמה פעמים`);
+                    notifications.add(`ביום ${numberToDay(j)} בשבוע ה-${i + 1} ${duplicates[k]} באותה משמרת צהריים כמה פעמים`);
                 }
                 duplicates = this.arrayDuplicates(nightNames)
                 for (let k = 0; k < duplicates.length; k++) {
                     // k - duplicate name index
-                    notifications.add(`ביום ${j + 1} בשבוע ה-${i + 1} ${duplicates[k]} באותה משמרת לילה כמה פעמים`);
+                    notifications.add(`ביום ${numberToDay(j)} בשבוע ה-${i + 1} ${duplicates[k]} באותה משמרת לילה כמה פעמים`);
                 }
                 duplicates = this.compareTwoArrays(morningNames, noonNames);
                 for (let k = 0; k < duplicates.length; k++) {
                     // k - duplicate name index
-                    notifications.add(`ביום ${j + 1} בשבוע ה-${i + 1} ${duplicates[k]} במשמרת בוקר ואז צהריים`);
+                    notifications.add(`ביום ${numberToDay(j)} בשבוע ה-${i + 1} ${duplicates[k]} במשמרת בוקר ואז צהריים`);
                 }
                 duplicates = this.compareTwoArrays(noonNames, nightNames);
                 for (let k = 0; k < duplicates.length; k++) {
                     // k - duplicate name index
-                    notifications.add(`ביום ${j + 1} בשבוע ה-${i + 1} ${duplicates[k]} במשמרת צהריים ואז לילה`);
+                    notifications.add(`ביום ${numberToDay(j)} בשבוע ה-${i + 1} ${duplicates[k]} במשמרת צהריים ואז לילה`);
                 }
                 if ( j !== 6) {
                     morningNames = this.toShiftNamesArray(morningShifts, j + 1);
                     duplicates = this.compareTwoArrays(nightNames, morningNames);
                     for (let k = 0; k < duplicates.length; k++) {
                         // k - duplicate name index
-                        notifications.add(`ביום ${j + 1} בשבוע ה-${i + 1} ${duplicates[k]} במשמרת לילה ואז בוקר`);
+                        notifications.add(`ביום ${numberToDay(j)} בשבוע ה-${i + 1} ${duplicates[k]} במשמרת לילה ואז בוקר`);
                     }
                 } else {
                     if (i !== weeks.length - 1) {
@@ -275,7 +275,7 @@ export class ScheduleService {
                         duplicates = this.compareTwoArrays(nightNames, morningNames);
                         for (let k = 0; k < duplicates.length; k++) {
                             // k - duplicate name index
-                            notifications.add(`ביום ${j + 1} בשבוע ה-${i + 1} ${duplicates[k]} במשמרת לילה ואז בוקר`);
+                            notifications.add(`ביום ${numberToDay(j)} בשבוע ה-${i + 1} ${duplicates[k]} במשמרת לילה ואז בוקר`);
                         }
                     }
                 }

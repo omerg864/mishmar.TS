@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendMail = exports.dateToStringShort = exports.addDays = void 0;
+exports.sendMail = exports.numberToDay = exports.dateToStringShort = exports.addDays = void 0;
 const nodemailer = require("nodemailer");
 const addDays = (date, days) => {
     var result = new Date(date);
@@ -21,6 +21,11 @@ const dateToStringShort = (date) => {
     return formattedDate;
 };
 exports.dateToStringShort = dateToStringShort;
+const numberToDay = (num) => {
+    const days_names = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
+    return days_names[num];
+};
+exports.numberToDay = numberToDay;
 const sendMail = (reciever, subject, text) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',

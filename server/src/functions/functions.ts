@@ -22,6 +22,11 @@ export const dateToStringShort = (date: Date): string => {
   return formattedDate;
 }
 
+export const numberToDay = (num: number): string => {
+  const days_names = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
+  return days_names[num];
+}
+
 export const sendMail = (reciever: string, subject: string, text: string) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',

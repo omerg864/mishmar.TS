@@ -33,13 +33,14 @@ import ScheduleTable from './pages/ScheduleTable';
 function App() {
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [manager, setManager] = useState<boolean>(false);
+  const [settingsChange, setSettingsChange] = useState<boolean>(false);
 
   useEffect(() => {
 
   }, [])
   return (
     <>
-    <Header authenticated={authenticated} setAuthenticated={setAuthenticated} manager={manager} setManager={setManager}/>
+    <Header authenticated={authenticated} settingsChange={settingsChange} setAuthenticated={setAuthenticated} manager={manager} setManager={setManager}/>
     <ToastContainer rtl={true} theme="colored"/>
     <Routes>
       <Route path="/" element={<Home authenticated={authenticated} />} />
@@ -65,7 +66,7 @@ function App() {
       <Route path="/password/reset/:reset_token" element={<ResetPassword authenticated={authenticated}/>} />
       <Route path="/profile" element={<Profile authenticated={authenticated}/>} />
       <Route path="/schedule" element={<ScheduleView authenticated={authenticated}/>} />
-      <Route path="/settings" element={<Settings manager={manager}/>} />
+      <Route path="/settings" element={<Settings settingsChange={settingsChange} setSettingsChange={setSettingsChange} manager={manager}/>} />
     </Routes>
     </>
   );
