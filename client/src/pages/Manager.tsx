@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom';
 import { toast} from 'react-toastify';
 import Spinner from '../components/Spinner'
-import { Box, Switch, FormControlLabel, Paper } from '@mui/material';
+import { Box, Switch, FormControlLabel, Paper, Button } from '@mui/material';
 import Cookies from 'universal-cookie';
 import NotAuthorized from '../components/NotAuthorized';
 
@@ -44,6 +44,42 @@ const Manager = (props: IProps) => {
         }
     }
 
+    const goToSettings = () => {
+        navigate('/settings')
+    }
+
+    const goToSchedules = () => {
+        navigate('/schedules')
+    }
+
+    const goToNewSchedule = () => {
+        navigate('/schedule/new')
+    }
+
+    const goToStructure = () => {
+        navigate('/structure')
+    }
+
+    const goToUsers = () => {
+        navigate('/users')
+    }
+
+    const goToQuality = () => {
+        navigate('/users/quality')
+    }
+
+    const goToEvents = () => {
+        navigate('/events')
+    }
+
+    const goToPosts = () => {
+        navigate('/posts')
+    }
+
+    const goToNewPost = () => {
+        navigate('/post/new')
+    }
+
     if(!props.manager) {
         return <NotAuthorized />;
     }
@@ -56,33 +92,29 @@ const Manager = (props: IProps) => {
     <main>
         <h1>לוח מנהל</h1>
       <Box className='box-container' component={Paper}>
-        <div className='manager-div'>        
-        <div>
-        <FormControlLabel control={<Switch onChange={changeSubmit} checked={checked} />} label="ניתן להגיש/לשנות הגשות לסידור" />
-        <div>
-        <Link to="/settings" >הגדרות</Link>
-        </div>
-        </div>
-        </div>
-        <h2>סידורים</h2>
+      <FormControlLabel control={<Switch onChange={changeSubmit} checked={checked} />} label="ניתן להגיש/לשנות הגשות לסידור" />
         <div className='manager-div'>
-            <Link to="/schedules" >סידורים</Link>
-            <Link to="/schedule/new" >סידור חדש</Link>
-            <Link to="/structure" >מבנה סידור</Link>
+        <Button variant="contained" color="info" onClick={goToSettings} >הגדרות</Button>
         </div>
-        <h2>משתמשים</h2>
+        <h2 style={{marginTop: 0}}>סידורים</h2>
         <div className='manager-div'>
-            <Link to="/users" >משתמשים</Link>
-            <Link to="/users/quality" >איכויות</Link>
+        <Button variant="contained" color="success" onClick={goToSchedules} >סידורים</Button>
+        <Button variant="contained" color="primary" onClick={goToNewSchedule} >סידור חדש</Button>
+        <Button variant="contained" color="info" onClick={goToStructure} >מבנה סידור</Button>
         </div>
-        <h2>אירועים</h2>
+        <h2 style={{marginTop: 0}}>משתמשים</h2>
         <div className='manager-div'>
-            <Link to="/events" >אירועים</Link>
+        <Button variant="contained" color="success" onClick={goToUsers} >משתמשים</Button>
+        <Button variant="contained" color="info" onClick={goToQuality} >איכויות</Button>
         </div>
-        <h2>פוסטים</h2>
+        <h2 style={{marginTop: 0}}>אירועים</h2>
         <div className='manager-div'>
-            <Link to="/posts" >פוסטים</Link>
-            <Link to="/post/new" >פוסט חדש</Link>
+        <Button variant="contained" color="success" onClick={goToEvents} >אירועים</Button>
+        </div>
+        <h2 style={{marginTop: 0}}>פוסטים</h2>
+        <div className='manager-div'>
+        <Button variant="contained" color="success" onClick={goToPosts} >פוסטים</Button>
+        <Button variant="contained" color="primary" onClick={goToNewPost} >פוסט חדש</Button>
         </div>
     </Box>  
     </main>

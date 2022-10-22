@@ -29,6 +29,7 @@ export declare class ScheduleService {
     arrayDuplicates: (arr: string[]) => string[];
     toShiftNamesArray: (shifts: Shift[], day: number) => string[];
     compareTwoArrays(arr1: string[], arr2: string[]): string[];
+    excelToSchedule(weeks: Shift[][]): Promise<void>;
     scheduleTable(id: string): Promise<{
         counts: {
             name: string;

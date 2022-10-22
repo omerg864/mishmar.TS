@@ -90,7 +90,7 @@ const ScheduleNew = (props: IProps) => {
         <h2>{dateToString(date)} - {dateToString(endDate)}</h2>
         <form className='box-container' style={{textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '15px', width: '100%'}} onSubmit={createSchedule}>
             <Calendar calendarType="Hebrew" onChange={setDate} defaultValue={date}/>
-            <TextField fullWidth  id="num_weeks" type="number" required inputProps={{min: '1'}} name='num_weeks' value={numWeeks} label="מ'ס שבועות" onChange={e => setNumWeeks(+e.target.value)} />
+            <TextField fullWidth  id="num_weeks" type="number" required inputProps={{min: '1', step: '1'}} name='num_weeks' value={numWeeks} label="מ'ס שבועות" onChange={e => setNumWeeks(+e.target.value)} />
             <Button variant="contained" color="primary" type="submit">סידור חדש</Button>
         </form>
         </Box>

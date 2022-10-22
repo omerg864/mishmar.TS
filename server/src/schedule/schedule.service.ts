@@ -152,6 +152,10 @@ export class ScheduleService {
         return names;
     }
 
+    async excelToSchedule(weeks: Shift[][]) {
+
+    }
+
     async scheduleTable(id: string): Promise<{counts: {name: string, night: number, weekend: number, [key: string]: number|string}[], total: {night: number, weekend: number, [key: string]: number}, weeksKeys: string[]}> {
         let schedule: Schedule = await this.scheduleModel.findById(id);
         if (!schedule) {
