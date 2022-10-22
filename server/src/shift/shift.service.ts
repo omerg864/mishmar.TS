@@ -301,18 +301,7 @@ export class ShiftService {
             .string(value).style(workbook.createStyle(headerStyle))
         }
         const buffer: Buffer = await workbook.writeToBuffer();
-        fs.writeFile(join(process.cwd(), `shifts ${dateToStringShort(new Date(days[0][0]))}.xlsx`)
-        , buffer, 'utf8', function(err) {
-            if(err)
-                console.log(err);
-        });
-        const file = fs.createReadStream(join(process.cwd(), `shifts ${dateToStringShort(new Date(days[0][0]))}.xlsx`));
-        fs.unlink(join(process.cwd(), `shifts ${dateToStringShort(new Date(days[0][0]))}.xlsx`)
-        , function(err) {
-            if(err)
-                console.log(err);
-        });
-        return new StreamableFile(file)
+        return new StreamableFile(buffer)
     }
 
     async createNewShift(userId: string, scheduleId: string): Promise<Shift> {

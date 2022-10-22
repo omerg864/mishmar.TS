@@ -17,8 +17,6 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const excel = require("excel4node");
-const fs = require("fs");
-const path_1 = require("path");
 const functions_1 = require("../functions/functions");
 let ShiftService = class ShiftService {
     constructor(shiftModel, userModel, scheduleModel, settingsModel) {
@@ -304,16 +302,7 @@ let ShiftService = class ShiftService {
                 .string(value).style(workbook.createStyle(headerStyle));
         }
         const buffer = await workbook.writeToBuffer();
-        fs.writeFile((0, path_1.join)(process.cwd(), `shifts ${(0, functions_1.dateToStringShort)(new Date(days[0][0]))}.xlsx`), buffer, 'utf8', function (err) {
-            if (err)
-                console.log(err);
-        });
-        const file = fs.createReadStream((0, path_1.join)(process.cwd(), `shifts ${(0, functions_1.dateToStringShort)(new Date(days[0][0]))}.xlsx`));
-        fs.unlink((0, path_1.join)(process.cwd(), `shifts ${(0, functions_1.dateToStringShort)(new Date(days[0][0]))}.xlsx`), function (err) {
-            if (err)
-                console.log(err);
-        });
-        return new common_1.StreamableFile(file);
+        return new common_1.StreamableFile(buffer);
     }
     async createNewShift(userId, scheduleId) {
         let weeks = [];
