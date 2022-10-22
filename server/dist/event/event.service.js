@@ -41,6 +41,11 @@ let EventService = class EventService {
         const events = await this.eventModel.find({ users: userId, date: { $gte: schedule.date, $lte: (0, functions_1.addDays)(schedule.date, schedule.num_weeks * 7) } }).sort({ date: -1 });
         return events;
     }
+    async getEventsSchedule(scheduleId) {
+        const schedule = await this.ScheduleModel.findById(scheduleId);
+        const events = await this.eventModel.find({ date: { $gte: schedule.date, $lte: (0, functions_1.addDays)(schedule.date, schedule.num_weeks * 7) } }).sort({ date: -1 }).populate('users');
+        return events;
+    }
     async getEvent(id) {
         const event = await this.eventModel.findById(id);
         if (!event) {

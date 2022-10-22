@@ -15,6 +15,7 @@ export declare class EventService {
         pages: number;
     }>;
     getUserEventsSchedule(scheduleId: string, userId: string): Promise<EventInterface[]>;
+    getEventsSchedule(scheduleId: string): Promise<EventInterface[]>;
     getEvent(id: string): Promise<EventInterface>;
     deleteEvent(eventId: string): Promise<{
         id: string;

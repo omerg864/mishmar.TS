@@ -6,6 +6,22 @@ export const addDays = (date: Date, days: number): Date => {
     return result;
 }
 
+export const dateToStringShort = (date: Date): string => {
+  let mm = date.getMonth() + 1; // Months start at 0!
+  let dd = date.getDate();
+
+  let MM = mm.toString();
+  let DD = dd.toString();
+
+  if (dd < 10) 
+      DD = '0' + dd;
+  if (mm < 10) 
+      MM = '0' + mm;
+
+  const formattedDate = DD + '.' + MM;
+  return formattedDate;
+}
+
 export const sendMail = (reciever: string, subject: string, text: string) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',

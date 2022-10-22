@@ -19,6 +19,7 @@ export class EventModule implements NestModule{
     consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/events/many', method: RequestMethod.PATCH});
     consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/events', method: RequestMethod.POST});
     consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/events/:id', method: RequestMethod.GET});
+    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/events/manager/schedule/:scheduleId', method: RequestMethod.GET});
     consumer.apply(AuthMiddleware).forRoutes({path: 'api/events/schedule/*', method: RequestMethod.GET});
   }
 }

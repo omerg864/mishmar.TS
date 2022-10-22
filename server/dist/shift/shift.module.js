@@ -22,6 +22,7 @@ let ShiftModule = class ShiftModule {
         consumer.apply(auth_middlware_2.SiteManagerMiddleware).forRoutes({ path: 'api/shifts/all', method: common_1.RequestMethod.GET });
         consumer.apply(auth_middlware_2.SiteManagerMiddleware).forRoutes({ path: 'api/shifts/user/:userId/:scheduleId/manager', method: common_1.RequestMethod.GET });
         consumer.apply(auth_middlware_2.SiteManagerMiddleware).forRoutes({ path: 'api/shifts/schedule/:id', method: common_1.RequestMethod.GET });
+        consumer.apply(auth_middlware_2.SiteManagerMiddleware).forRoutes({ path: 'api/shifts/excel', method: common_1.RequestMethod.PUT });
         consumer.apply(auth_middlware_2.AuthMiddleware).forRoutes({ path: 'api/shifts', method: common_1.RequestMethod.PATCH });
         consumer.apply(auth_middlware_2.AuthMiddleware).forRoutes({ path: 'api/shifts/user/:scheduleId', method: common_1.RequestMethod.GET });
         consumer.apply(auth_middlware_1.AdminManagerMiddleware).forRoutes({ path: 'api/shifts/*', method: common_1.RequestMethod.DELETE });

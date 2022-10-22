@@ -50,11 +50,9 @@ const TableBody2 = (props: IProps) => {
         <TableCell align="center">{row}</TableCell>
     {numberToArray(7).map(num => (
             <TableCell  key={`${row}-${props.week}-${num}`} style={{padding: '1px'}} align="center">
-              <Typography>
             <pre style={{ fontFamily: 'inherit' }}>
             {props.data[props.week][row as keyof ShiftScheduleWeek][num]}
             </pre>
-            </Typography>
             </TableCell>
     ))}
     </TableRow>

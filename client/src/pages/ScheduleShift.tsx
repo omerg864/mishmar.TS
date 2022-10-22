@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import { toast } from 'react-toastify';
 import { addDays, dateToString, dateToStringShort, numberToArray } from '../functions/functions';
-import { ScheduleUser, ShiftWeek } from '../types/types';
+import { EventType, ScheduleUser, ShiftWeek, User } from '../types/types';
 import TableHead2 from '../components/TableHead';
 import TableBodyShift from '../components/TableBodyShift';
 
@@ -32,13 +32,14 @@ const ScheduleShift = (props: IProps) => {
 
     const { id } = useParams();
     const [loading, setLoading] = useState<boolean>(true);
-    const [data, setData] = useState<ShiftScheduleWeek[]>([]);
+    const [weeks, setWeeks] = useState<ShiftScheduleWeek[]>([]);
     const [users, setUsers] = useState<{nickname: string, id: string}[]>([]);
     const [noUsers, setNoUsers] = useState<{nickname: string, id: string}[]>([]);
     const [minUsers, setMinUsers] = useState<{nickname: string, id: string, noon: number[], morning: number[]}[]>([]);
     const [schedule, setSchedule] = useState<ScheduleUser>({num_weeks: 0, date: new Date(), days: [] as string[][], _id: '1'});
     const [weeksNotes, setWeeksNotes] = useState<string[]>([]);
     const [generalNotes, setGeneralNotes] = useState<string>("");
+    const [events, setEvents] = useState<EventType[]>([]);
     const cookies = new Cookies();
 
 
@@ -49,12 +50,27 @@ const ScheduleShift = (props: IProps) => {
             if (data.error || data.statusCode) {
                 toast.error(data.message);
             } else {
-                setData(data.weeks);
+                setWeeks(data.weeks);
                 setUsers(data.users);
                 setNoUsers(data.noUsers);
                 setMinUsers(data.minUsers);
                 setWeeksNotes(data.weeksNotes);
                 setGeneralNotes(data.generalNotes);
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error('Internal Server Error');
+        }
+    }
+
+    const getEvents = async () => {
+        try {
+            const response = await fetch(`/api/events/manager/schedule/${id}`, {headers: { authorization: 'Bearer ' + cookies.get('userToken') }});
+            const data = await response.json();
+            if (data.error || data.statusCode) {
+                toast.error(data.message);
+            } else {
+                setEvents(data);
             }
         } catch (e) {
             console.log(e);
@@ -77,9 +93,32 @@ const ScheduleShift = (props: IProps) => {
         }
     }
 
+    const toExcel = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch('/api/shifts/excel', { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken')  },
+            method: 'PUT', body: JSON.stringify({weeks, days: schedule.days, num_users: users.length, weeksNotes, generalNotes, events}) });
+            const blob = await response.blob();
+            if (response.status === 200) {
+                let url = window.URL.createObjectURL(blob);
+                let a = document.createElement('a');
+                a.href = url;
+                a.download = `shifts ${dateToStringShort(new Date(schedule.date))}.xlsx`;
+                a.click();
+            } else {
+                toast.error('לא ניתו להוריד קובץ');
+            }
+        } catch (e) {
+            console.log(e);
+            toast.error("Internal Server error");
+        }
+        setLoading(false);
+    }
+
     const getRequests = async () => {
         setLoading(true);
         getData();
+        getEvents();
         await getSchedule();
         setLoading(false);
     }
@@ -106,7 +145,7 @@ const ScheduleShift = (props: IProps) => {
         <h1>{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
         <div style={{display: "flex", width: "100%", padding: "10px", gap: "5%"}}>
         <div style={{display: "flex", alignItems: "center"}}>
-        <Button variant="contained" sx={{height: "fit-content"}} color="primary" >יצא לאקסל</Button>
+        <Button variant="contained" sx={{height: "fit-content"}} onClick={toExcel} color="primary" >יצא לאקסל</Button>
         </div>
         <div>
             <h4>הגישו סידור: {users.length} </h4>
@@ -128,24 +167,32 @@ const ScheduleShift = (props: IProps) => {
         </div>
         </div>
         <div style={{display: 'flex', width: '100%'}}>
-        <Typography>
             <pre style={{ fontFamily: 'inherit' }}>
                 הערות כלליות:{"\n"}{generalNotes}
             </pre>
-            </Typography>
+        </div>
+        <div style={{display: 'flex', width: '100%'}}>
+            <pre style={{ fontFamily: 'inherit' }}>
+                 אירועים:{"\n"}
+                 {events.map(event => (
+                    <pre style={{ fontFamily: 'inherit' }} key={event._id}>
+                        <span>{dateToStringShort(new Date(event.date))}: {event.content} - {event.users.map((user, index) => (
+                            <span key={(user as User)._id}>{(user as User).nickname}{index === event.users.length - 1 ? "" : ','}</span>
+                        ))}</span>
+                    </pre>
+                 ))}
+            </pre>
         </div>
         {numberToArray(schedule.num_weeks).map((week, index1) => (
-            <>
-            <TableHead2 key={`week-${week}`} days={schedule.days[week]} 
-            children={<TableBodyShift rows={rows} week={week} data={data} update={false} disabled={false}/>}/>
+            <div style={{width: '100%'}} key={`week-${week}`}>
+            <TableHead2 days={schedule.days[week]} 
+            children={<TableBodyShift rows={rows} week={week} data={weeks} update={false} disabled={false}/>}/>
             <div style={{display: 'flex', width: '100%'}}>
-            <Typography>
             <pre style={{ fontFamily: 'inherit' }}>
                 הערות שבוע {week + 1}:{"\n"}{weeksNotes[week]}
             </pre>
-            </Typography>
             </div>
-            </>
+            </div>
         ))}
     </main>
   )

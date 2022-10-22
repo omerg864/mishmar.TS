@@ -16,6 +16,10 @@ exports.ShiftService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const excel = require("excel4node");
+const fs = require("fs");
+const path_1 = require("path");
+const functions_1 = require("../functions/functions");
 let ShiftService = class ShiftService {
     constructor(shiftModel, userModel, scheduleModel, settingsModel) {
         this.shiftModel = shiftModel;
@@ -126,6 +130,190 @@ let ShiftService = class ShiftService {
         let noUsers = await this.userModel.find({ _id: { $nin: userids } }).select(["nickname", "id"]);
         noUsers = noUsers.map(user => { return Object.assign(Object.assign({}, user["_doc"]), { id: user._id.toString() }); });
         return { weeks, users, weeksNotes: notesWeeks, generalNotes, noUsers: noUsers, minUsers: userMins };
+    }
+    async toExcel(weeks, days, num_users, weeksNotes, generalNotes, events) {
+        const workbook = new excel.Workbook();
+        const worksheetOptions = {
+            sheetView: {
+                rightToLeft: true,
+            },
+        };
+        const border = {
+            border: {
+                left: {
+                    style: 'thin',
+                    color: '#000000'
+                },
+                right: {
+                    style: 'thin',
+                    color: '#000000'
+                },
+                top: {
+                    style: 'thin',
+                    color: '#000000'
+                },
+                bottom: {
+                    style: 'thin',
+                    color: '#000000'
+                },
+            }
+        };
+        const ws = workbook.addWorksheet('Schedule', worksheetOptions);
+        const headerStyle = Object.assign({ alignment: {
+                horizontal: 'center',
+                vertical: 'center',
+            }, fill: {
+                type: 'pattern',
+                fgColor: '#FFFFFF'
+            } }, border);
+        const cellStyle = {
+            alignment: {
+                horizontal: 'center',
+                vertical: 'center',
+            },
+        };
+        const topBorder = {
+            border: {
+                top: {
+                    style: 'thick',
+                    color: '#000000'
+                }
+            }
+        };
+        const leftBorder = {
+            border: {
+                left: {
+                    style: 'thick',
+                    color: '#000000'
+                }
+            }
+        };
+        ws.cell(1, 1, 2, weeks.length * 7 + 2, true).string('הגשות')
+            .style(workbook.createStyle(Object.assign(Object.assign({}, headerStyle), { font: { size: 24, bold: true } })));
+        ws.cell(1, weeks.length * 7 + 3, 2, weeks.length * 7 + 10, true)
+            .string(`${(0, functions_1.dateToStringShort)(new Date(days[0][0]))} - ${(0, functions_1.dateToStringShort)(new Date(days.slice(-1)[0].slice(-1)[0]))}`)
+            .style(workbook.createStyle(Object.assign(Object.assign({}, headerStyle), { font: { size: 24, bold: true } })));
+        const days_names = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
+        ws.cell(3, 1).string('תאריך').style(workbook.createStyle(headerStyle));
+        ws.cell(4, 1).string('יום').style(workbook.createStyle(headerStyle));
+        ws.cell(5, 1, num_users + 8, 1, true).string('בוקר').style(headerStyle);
+        ws.cell(num_users + 9, 1, num_users * 2 + 12, 1, true).string('צהריים').style(headerStyle);
+        ws.cell(num_users + 9, 2, num_users + 9, weeks.length * 7 + 1, false)
+            .string('').style(Object.assign(Object.assign({}, cellStyle), topBorder));
+        ws.cell(num_users * 2 + 13, 2, num_users * 2 + 13, weeks.length * 7 + 1, false)
+            .string('').style(Object.assign(Object.assign({}, cellStyle), topBorder));
+        ws.cell(num_users * 2 + 13, 1, num_users * 3 + 16, 1, true).string('לילה').style(headerStyle);
+        let names = new Set();
+        for (let i = 0; i < weeks.length; i++) {
+            ws.cell(5, (i + 1) * 8, num_users * 3 + 16, (i + 1) * 8, false)
+                .string('').style(Object.assign(Object.assign({}, cellStyle), leftBorder));
+            for (let j = 0; j < 7; j++) {
+                ws.cell(3, 2 + j + (i * 7)).string((0, functions_1.dateToStringShort)(new Date(days[i][j])))
+                    .style(workbook.createStyle(headerStyle));
+                ws.cell(4, 2 + j + (i * 7)).string(days_names[j]).style(workbook.createStyle(headerStyle));
+                const monrningNames = weeks[i].morning[j].split('\n').filter(item => item != '');
+                for (let k = 0; k < monrningNames.length; k++) {
+                    if (!monrningNames[k].includes(' (לא משיכה) ')) {
+                        names.add(monrningNames[k]);
+                        ws.cell(5 + k, 2 + j + (i * 7))
+                            .string(monrningNames[k]).style(workbook.createStyle(cellStyle));
+                    }
+                    else {
+                        names.add(monrningNames[k].replace(' (לא משיכה) ', ''));
+                        ws.cell(5 + k, 2 + j + (i * 7)).string(monrningNames[k].replace(' (לא משיכה) ', '')).style(workbook.createStyle(Object.assign(Object.assign({}, cellStyle), { font: { color: '#ff0000' } })));
+                    }
+                }
+                const noonNames = weeks[i].noon[j].split('\n').filter(item => item != '');
+                for (let k = 0; k < noonNames.length; k++) {
+                    names.add(noonNames[k]);
+                    ws.cell(num_users + 9 + k, 2 + j + (i * 7))
+                        .string(noonNames[k]).style(workbook.createStyle(cellStyle));
+                }
+                const nightNames = weeks[i].night[j].split('\n').filter(item => item != '');
+                for (let k = 0; k < nightNames.length; k++) {
+                    names.add(nightNames[k]);
+                    ws.cell(num_users * 2 + 13 + k, 2 + j + (i * 7))
+                        .string(nightNames[k]).style(workbook.createStyle(cellStyle));
+                }
+            }
+            ws.cell(4, weeks.length * 7 + 5 + (i * 2)).string(`בוקר ${i + 1}`)
+                .style(workbook.createStyle(headerStyle));
+            ws.cell(4, weeks.length * 7 + 6 + (i * 2)).string(`צהריים ${i + 1}`)
+                .style(workbook.createStyle(headerStyle));
+        }
+        let shiftsWeeksEnd = weeks.length * 7 + 6 + ((weeks.length - 1) * 2);
+        ws.cell(4, weeks.length * 7 + 3, 4, weeks.length * 7 + 4, true).string('שם')
+            .style(workbook.createStyle(headerStyle));
+        ws.cell(4, shiftsWeeksEnd + 1).string(`לילה`).style(workbook.createStyle(headerStyle));
+        ws.cell(4, shiftsWeeksEnd + 2).string(`סופ״ש`).style(workbook.createStyle(headerStyle));
+        names.add('');
+        let namesArray = Array.from(names);
+        for (let i = 0; i < namesArray.length; i++) {
+            ws.cell(5 + i, weeks.length * 7 + 3, 5 + i, weeks.length * 7 + 4, true)
+                .string(namesArray[i]).style(workbook.createStyle(headerStyle));
+            ws.cell(5 + i, weeks.length * 7 + 5, 5 + i, shiftsWeeksEnd + 2, false)
+                .style(workbook.createStyle(headerStyle));
+        }
+        ws.cell(5 + namesArray.length, weeks.length * 7 + 3, 5 + namesArray.length, weeks.length * 7 + 4, true).string('סה״כ').style(workbook.createStyle(headerStyle));
+        for (let i = 0; i < weeks.length; i++) {
+            ws.cell(5 + namesArray.length, weeks.length * 7 + 5 + (i * 2))
+                .formula(`=SUM(${excel.getExcelAlpha(weeks.length * 7 + 5 + (i * 2))}5:${excel.getExcelAlpha(weeks.length * 7 + 5 + (i * 2))}${4 + namesArray.length})`)
+                .style(workbook.createStyle(headerStyle));
+            ws.cell(5 + namesArray.length, weeks.length * 7 + 6 + (i * 2))
+                .formula(`=SUM(${excel.getExcelAlpha(weeks.length * 7 + 6 + (i * 2))}5:${excel.getExcelAlpha(weeks.length * 7 + 6 + (i * 2))}${4 + namesArray.length})`)
+                .style(workbook.createStyle(headerStyle));
+        }
+        ws.cell(5 + namesArray.length, shiftsWeeksEnd + 1)
+            .formula(`=SUM(${excel.getExcelAlpha(shiftsWeeksEnd + 1)}5:${excel.getExcelAlpha(shiftsWeeksEnd + 1)}${4 + namesArray.length})`)
+            .style(workbook.createStyle(headerStyle));
+        ws.cell(5 + namesArray.length, shiftsWeeksEnd + 2)
+            .formula(`=SUM(${excel.getExcelAlpha(shiftsWeeksEnd + 2)}5:${excel.getExcelAlpha(shiftsWeeksEnd + 2)}${4 + namesArray.length})`)
+            .style(workbook.createStyle(headerStyle));
+        let notes_start = 8 + namesArray.length;
+        ws.cell(notes_start, weeks.length * 7 + 3, notes_start + 1, weeks.length * 7 + 10, true)
+            .string(`הערות`).style(workbook.createStyle(Object.assign(Object.assign({}, headerStyle), { font: { size: 24 } })));
+        let notes_array = generalNotes.split('\n');
+        for (let i = 0; i < notes_array.length; i++) {
+            ws.cell(notes_start + 2 + i, weeks.length * 7 + 3, notes_start + 2 + i, weeks.length * 7 + 10, true)
+                .string(notes_array[i]).style(workbook.createStyle(headerStyle));
+        }
+        notes_start += 2 + notes_array.length;
+        for (let i = 0; i < weeksNotes.length; i++) {
+            let week_notes = weeksNotes[i].split('\n');
+            ws.cell(notes_start, weeks.length * 7 + 3, notes_start + 1, weeks.length * 7 + 10, true)
+                .string(`הערות שבוע ${i + 1}`).style(workbook.createStyle(Object.assign(Object.assign({}, headerStyle), { font: { size: 24 } })));
+            notes_start += 2;
+            for (let j = 0; j < week_notes.length; j++) {
+                ws.cell(notes_start + j, weeks.length * 7 + 3, notes_start + j, weeks.length * 7 + 10, true)
+                    .string(week_notes[j]).style(workbook.createStyle(headerStyle));
+            }
+            notes_start += week_notes.length;
+        }
+        notes_start += 2;
+        ws.cell(notes_start, weeks.length * 7 + 3, notes_start + 1, weeks.length * 7 + 10, true)
+            .string(`אירועים`).style(workbook.createStyle(Object.assign(Object.assign({}, headerStyle), { font: { size: 24 } })));
+        notes_start += 2;
+        for (let i = 0; i < events.length; i++) {
+            let value = `${(0, functions_1.dateToStringShort)(new Date(events[i].date))}: ${events[i].content} - `;
+            for (let j = 0; j < events[i].users.length; j++) {
+                value += ` ${events[i].users[j].nickname}`;
+                if (j !== events[i].users.length - 1)
+                    value += `,`;
+            }
+            ws.cell(notes_start + i, weeks.length * 7 + 3, notes_start + i, weeks.length * 7 + 10, true)
+                .string(value).style(workbook.createStyle(headerStyle));
+        }
+        const buffer = await workbook.writeToBuffer();
+        fs.writeFile((0, path_1.join)(process.cwd(), `shifts ${(0, functions_1.dateToStringShort)(new Date(days[0][0]))}.xlsx`), buffer, 'utf8', function (err) {
+            if (err)
+                console.log(err);
+        });
+        const file = fs.createReadStream((0, path_1.join)(process.cwd(), `shifts ${(0, functions_1.dateToStringShort)(new Date(days[0][0]))}.xlsx`));
+        fs.unlink((0, path_1.join)(process.cwd(), `shifts ${(0, functions_1.dateToStringShort)(new Date(days[0][0]))}.xlsx`), function (err) {
+            if (err)
+                console.log(err);
+        });
+        return new common_1.StreamableFile(file);
     }
     async createNewShift(userId, scheduleId) {
         let weeks = [];

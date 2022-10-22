@@ -30,6 +30,12 @@ export class EventService {
         return events;
     }
 
+    async getEventsSchedule(scheduleId: string): Promise<EventInterface[]> {
+        const schedule = await this.ScheduleModel.findById(scheduleId);
+        const events = await this.eventModel.find({ date: { $gte : schedule.date, $lte: addDays(schedule.date, schedule.num_weeks * 7)}}).sort( { date: -1}).populate('users');
+        return events;
+    }
+
     async getEvent(id: string): Promise<EventInterface> {
         const event = await this.eventModel.findById(id);
         if (!event){

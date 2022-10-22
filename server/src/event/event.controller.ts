@@ -20,6 +20,11 @@ export class EventController {
         return await this.eventService.getUserEventsSchedule(scheduleId, userId);
     }
 
+    @Get('/manager/schedule/:scheduleId')
+    async getEventsSchedule(@Param('scheduleId') scheduleId: string): Promise<EventInterface[]> {
+        return await this.eventService.getEventsSchedule(scheduleId);
+    }
+
 
     @Get(':id')
     async getEvent(@Param('id') id: string): Promise<EventInterface> {

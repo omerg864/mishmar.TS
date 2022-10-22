@@ -1,3 +1,5 @@
+import { StreamableFile } from '@nestjs/common';
+import { EventInterface } from '../event/event.model';
 import { Shift, ShiftScheduleWeek } from './shift.model';
 import { ShiftService } from './shift.service';
 export declare class ShiftController {
@@ -28,6 +30,7 @@ export declare class ShiftController {
     }>;
     getUserScheduleShiftManager(userId: string, scheduleId: string): Promise<Shift>;
     getUserScheduleShift(userId: string, scheduleId: string): Promise<Shift>;
+    toExcel(weeks: ShiftScheduleWeek[], days: string[][], num_users: number, weeksNotes: string[], generalNotes: string, events: EventInterface[]): Promise<StreamableFile>;
     deleteShift(id: string): Promise<{
         id: string;
     }>;

@@ -12,6 +12,7 @@ export declare class EventController {
         pages: number;
     }>;
     getUserEventsSchedule(scheduleId: string, userId: string): Promise<EventInterface[]>;
+    getEventsSchedule(scheduleId: string): Promise<EventInterface[]>;
     getEvent(id: string): Promise<EventInterface>;
     createEvent(body: EventInterface): Promise<EventInterface>;
     patchManyEvents(body: EventInterface[]): Promise<EventInterface[]>;

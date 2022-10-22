@@ -22,6 +22,7 @@ let EventModule = class EventModule {
         consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/events/many', method: common_1.RequestMethod.PATCH });
         consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/events', method: common_1.RequestMethod.POST });
         consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/events/:id', method: common_1.RequestMethod.GET });
+        consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/events/manager/schedule/:scheduleId', method: common_1.RequestMethod.GET });
         consumer.apply(auth_middlware_1.AuthMiddleware).forRoutes({ path: 'api/events/schedule/*', method: common_1.RequestMethod.GET });
     }
 };

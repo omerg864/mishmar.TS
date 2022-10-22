@@ -1,8 +1,10 @@
 import { Settings } from '../settings/settings.model';
+import { StreamableFile } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Schedule } from '../schedule/schedule.model';
 import { User } from '../user/user.model';
 import { Shift, ShiftScheduleWeek } from './shift.model';
+import { EventInterface } from '../event/event.model';
 export declare class ShiftService {
     private readonly shiftModel;
     private readonly userModel;
@@ -32,6 +34,7 @@ export declare class ShiftService {
             noon: number[];
         }[];
     }>;
+    toExcel(weeks: ShiftScheduleWeek[], days: string[][], num_users: number, weeksNotes: string[], generalNotes: string, events: EventInterface[]): Promise<StreamableFile>;
     createNewShift(userId: string, scheduleId: string): Promise<Shift>;
     getUserScheduleShift(userId: string, scheduleId: string): Promise<Shift>;
     update(shift: Shift, userId: string): Promise<Shift>;

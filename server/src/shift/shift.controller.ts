@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, StreamableFile } from '@nestjs/common';
+import { EventInterface } from '../event/event.model';
 import { UserID } from '../middleware/auth.middlware';
 import { Shift, ShiftScheduleWeek } from './shift.model';
 import { ShiftService } from './shift.service';
@@ -27,6 +28,12 @@ export class ShiftController {
     @Get('user/:scheduleId')
     async getUserScheduleShift(@UserID() userId: string, @Param('scheduleId') scheduleId: string): Promise<Shift> {
         return this.shiftService.getUserScheduleShift(userId, scheduleId);
+    }
+
+    @Put('excel')
+    async toExcel(@Body('weeks') weeks: ShiftScheduleWeek[], @Body('days') days: string[][], @Body('num_users') num_users: number
+    , @Body('weeksNotes') weeksNotes: string[], @Body('generalNotes') generalNotes: string, @Body('events') events: EventInterface[]): Promise<StreamableFile> {
+        return await this.shiftService.toExcel(weeks, days, num_users, weeksNotes, generalNotes, events);
     }
 
     @Delete(':id')

@@ -19,6 +19,7 @@ export class ShiftModule implements NestModule {
     consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/shifts/all', method: RequestMethod.GET});
     consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/shifts/user/:userId/:scheduleId/manager', method: RequestMethod.GET});
     consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/shifts/schedule/:id', method: RequestMethod.GET});
+    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/shifts/excel', method: RequestMethod.PUT});
     consumer.apply(AuthMiddleware).forRoutes({path: 'api/shifts', method: RequestMethod.PATCH});
     consumer.apply(AuthMiddleware).forRoutes({path: 'api/shifts/user/:scheduleId', method: RequestMethod.GET});
     consumer.apply(AdminManagerMiddleware).forRoutes({path: 'api/shifts/*', method: RequestMethod.DELETE});

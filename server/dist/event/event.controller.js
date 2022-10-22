@@ -26,6 +26,9 @@ let EventController = class EventController {
     async getUserEventsSchedule(scheduleId, userId) {
         return await this.eventService.getUserEventsSchedule(scheduleId, userId);
     }
+    async getEventsSchedule(scheduleId) {
+        return await this.eventService.getEventsSchedule(scheduleId);
+    }
     async getEvent(id) {
         return this.eventService.getEvent(id);
     }
@@ -57,6 +60,13 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], EventController.prototype, "getUserEventsSchedule", null);
+__decorate([
+    (0, common_1.Get)('/manager/schedule/:scheduleId'),
+    __param(0, (0, common_1.Param)('scheduleId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], EventController.prototype, "getEventsSchedule", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),

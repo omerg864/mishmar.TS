@@ -1,4 +1,5 @@
 import * as mongoose from "mongoose";
+import { User } from "../user/user.model";
 
 
 export const EventScheme = new mongoose.Schema<EventInterface>({
@@ -25,5 +26,5 @@ export interface EventInterface {
     _id: string|mongoose.Schema.Types.ObjectId;
     date: Date;
     content: string;
-    users: mongoose.Types.ObjectId[];
+    users: mongoose.Types.ObjectId[]|User[];
 }
