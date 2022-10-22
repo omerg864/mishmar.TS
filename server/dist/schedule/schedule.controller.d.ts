@@ -18,6 +18,20 @@ export declare class ScheduleController {
     getLastDataSchedule(): Promise<Schedule>;
     getLastSchedule(): Promise<Schedule>;
     scheduleValid(weeks: Shift[][]): Promise<string[]>;
+    getScheduleTable(id: string): Promise<{
+        counts: {
+            name: string;
+            night: number;
+            weekend: number;
+            [key: string]: number | string;
+        }[];
+        total: {
+            night: number;
+            weekend: number;
+            [key: string]: number;
+        };
+        weeksKeys: string[];
+    }>;
     getSchedule(id: string): Promise<Schedule>;
     createSchedule(schedule: Schedule): Promise<Schedule>;
     deleteSchedule(id: string): Promise<{

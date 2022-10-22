@@ -27,6 +27,7 @@ import Profile from './pages/Profile';
 import ScheduleView from './pages/ScheduleView';
 import ResetPassword from './pages/ResetPassword';
 import Settings from './pages/Settings';
+import ScheduleTable from './pages/ScheduleTable';
 
 
 function App() {
@@ -51,6 +52,7 @@ function App() {
       <Route path="/structure" element={<Structures manager={manager}/>} />
       <Route path="/shift" element={<Shift authenticated={authenticated}/>} />
       <Route path="/schedule/:id/shifts" element={<ScheduleShift manager={manager}/>} />
+      <Route path="/schedule/:id/table" element={<ScheduleTable manager={manager}/>} />
       <Route path="/schedule/:id/view" element={<ScheduleView authenticated={authenticated}/>} />
       <Route path="/shift/schedule/:scheduleId/user/:userId" element={<ScheduleShiftUser manager={manager}/>} />
       <Route path="/events" element={<Events manager={manager}/>} />

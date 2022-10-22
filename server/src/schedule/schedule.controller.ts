@@ -33,6 +33,11 @@ export class ScheduleController {
         return await this.scheduleService.scheduleValid(weeks);
     }
 
+    @Get('table/:id')
+    async getScheduleTable(@Param('id') id: string): Promise<{counts: {name: string, night: number, weekend: number, [key: string]: number|string}[], total: {night: number, weekend: number, [key: string]: number}, weeksKeys: string[]}> {
+        return await this.scheduleService.scheduleTable(id);
+    }
+
     @Get(':id')
     async getSchedule(@Param('id') id: string): Promise<Schedule> {
         return await this.scheduleService.getSchedule(id);

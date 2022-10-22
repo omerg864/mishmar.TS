@@ -153,6 +153,71 @@ let ScheduleService = class ScheduleService {
         }
         return names;
     }
+    async scheduleTable(id) {
+        let schedule = await this.scheduleModel.findById(id);
+        if (!schedule) {
+            throw new common_1.NotFoundException('סידור לא נמצא');
+        }
+        schedule = await this.populateSchedule(schedule);
+        let counts = [];
+        let total = { night: 0, weekend: 0 };
+        let names = [];
+        let resetObj = {};
+        for (let i = 0; i < schedule.num_weeks; i++) {
+            resetObj[`morning${i}`] = 0;
+            resetObj[`noon${i}`] = 0;
+            total[`morning${i}`] = 0;
+            total[`noon${i}`] = 0;
+        }
+        for (let i = 0; i < schedule.weeks.length; i++) {
+            for (let j = 0; j < schedule.weeks[i].length; j++) {
+                let structure = schedule.weeks[i][j].shift;
+                for (let k = 0; k < schedule.weeks[i][j].days.length; k++) {
+                    let shift_names = schedule.weeks[i][j].days[k].split('\n').filter(name => name !== '');
+                    for (let l = 0; l < shift_names.length; l++) {
+                        if (!names.includes(shift_names[l])) {
+                            names.push(shift_names[l]);
+                            counts.push(Object.assign({ name: shift_names[l], night: 0, weekend: 0 }, resetObj));
+                        }
+                        let index = names.indexOf(shift_names[l]);
+                        switch (structure.shift) {
+                            case 0:
+                                if (k !== 6) {
+                                    counts[index][`morning${i}`] = +counts[index][`morning${i}`] + 1;
+                                    total[`morning${i}`] += 1;
+                                }
+                                else {
+                                    counts[index].weekend += 1;
+                                    total.weekend += 1;
+                                }
+                                break;
+                            case 1:
+                                if (k < 5) {
+                                    counts[index][`noon${i}`] = +counts[index][`noon${i}`] + 1;
+                                    total[`noon${i}`] += 1;
+                                }
+                                else {
+                                    counts[index].weekend += 1;
+                                    total.weekend += 1;
+                                }
+                                break;
+                            case 2:
+                                if (k < 5) {
+                                    counts[index].night += 1;
+                                    total.night += 1;
+                                }
+                                else {
+                                    counts[index].weekend += 1;
+                                    total.weekend += 1;
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+        return { counts, total, weeksKeys: Object.keys(resetObj) };
+    }
     async scheduleValid(weeks) {
         let notifications = new Set();
         for (let i = 0; i < weeks.length; i++) {

@@ -34,6 +34,9 @@ let ScheduleController = class ScheduleController {
     async scheduleValid(weeks) {
         return await this.scheduleService.scheduleValid(weeks);
     }
+    async getScheduleTable(id) {
+        return await this.scheduleService.scheduleTable(id);
+    }
     async getSchedule(id) {
         return await this.scheduleService.getSchedule(id);
     }
@@ -80,6 +83,13 @@ __decorate([
     __metadata("design:paramtypes", [Array]),
     __metadata("design:returntype", Promise)
 ], ScheduleController.prototype, "scheduleValid", null);
+__decorate([
+    (0, common_1.Get)('table/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ScheduleController.prototype, "getScheduleTable", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),

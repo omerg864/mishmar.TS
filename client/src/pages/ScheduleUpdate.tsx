@@ -167,6 +167,11 @@ const ScheduleUpdate = (props: IProps) => {
         navigate(`/schedule/${id}/view`)
     }
 
+    const scheduleTable = async () => {
+        await saveSchedule();
+        navigate(`/schedule/${id}/table`)
+    }
+
     useEffect(() => {
         getSchedule();
     }, []);
@@ -185,7 +190,7 @@ const ScheduleUpdate = (props: IProps) => {
         { icon: <CheckIcon color="info" />, name: 'בדיקה', onClick: checkSchedule },
         { icon: <UploadFileIcon htmlColor="#9A8B4F" />, name: 'העלאה', onClick: () =>  {return;} },
         { icon: <DatasetIcon htmlColor='#45B8AC' />, name: 'תצוגה', onClick: scheduleView },
-        { icon: <TableChartIcon htmlColor="#009B77" />, name: 'טבלת משמרות', onClick: () =>  {return;} },
+        { icon: <TableChartIcon htmlColor="#009B77" />, name: 'טבלת משמרות', onClick: scheduleTable },
         { icon: <RestartAltIcon color='error' />, name: 'איפוס', onClick: resetSchedule },
         { icon: <DeleteIcon color='error' />, name: 'מחיקה', onClick: deleteSchedule },
       ];
