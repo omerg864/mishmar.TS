@@ -33,7 +33,7 @@ let EventService = class EventService {
         const eventCount = await this.eventModel.find().count();
         const pages = eventCount > 0 ? Math.ceil(eventCount / 4) : 1;
         const events = await this.eventModel.find().sort({ date: -1 }).skip(query.page * 4).limit(4);
-        const users = await this.userModel.find();
+        const users = await this.userModel.find({ username: { $ne: "admin" } });
         return { events, users, pages };
     }
     async getUserEventsSchedule(scheduleId, userId) {

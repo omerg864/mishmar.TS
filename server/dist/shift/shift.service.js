@@ -125,7 +125,7 @@ let ShiftService = class ShiftService {
             }
             return false;
         });
-        let noUsers = await this.userModel.find({ _id: { $nin: userids } }).select(["nickname", "id"]);
+        let noUsers = await this.userModel.find({ _id: { $nin: userids }, username: { $ne: "admin" } }).select(["nickname", "id"]);
         noUsers = noUsers.map(user => { return Object.assign(Object.assign({}, user["_doc"]), { id: user._id.toString() }); });
         return { weeks, users, weeksNotes: notesWeeks, generalNotes, noUsers: noUsers, minUsers: userMins };
     }

@@ -117,7 +117,7 @@ export class ShiftService {
             }
             return false;
         })
-        let noUsers = await this.userModel.find({ _id: {$nin: userids}}).select(["nickname", "id"]);
+        let noUsers = await this.userModel.find({ _id: {$nin: userids}, username: {$ne: "admin"}}).select(["nickname", "id"]);
         noUsers = noUsers.map(user => {return {...user["_doc"], id: user._id.toString()}});
         return {weeks, users, weeksNotes: notesWeeks, generalNotes , noUsers: (noUsers as {nickname: string, id: string }[]), minUsers: userMins};
     }

@@ -146,7 +146,7 @@ export class UserService {
     }
 
     async getAll(): Promise<User[]>{
-        const users = await this.userModel.find().select(['-password', '-reset_token']);
+        const users = await this.userModel.find({ username: {$ne: "admin"}}).select(['-password', '-reset_token']);
         return users;
     }
 
