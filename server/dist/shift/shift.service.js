@@ -329,6 +329,7 @@ let ShiftService = class ShiftService {
         return shiftFound;
     }
     async update(shift, userId) {
+        var _a, _b, _c, _d;
         const shiftFound = await this.shiftModel.findById(shift._id);
         if (!shiftFound) {
             throw new common_1.NotFoundException('משמרת לא נמצאה');
@@ -341,6 +342,21 @@ let ShiftService = class ShiftService {
             const settings = await this.settingsModel.findOne();
             if (!settings.submit) {
                 throw new common_1.UnauthorizedException('אין אפשרות לשנות הגשות יותר');
+            }
+            if (((_a = shiftFound.updatedAt) === null || _a === void 0 ? void 0 : _a.getTime()) === ((_b = shiftFound.createdAt) === null || _b === void 0 ? void 0 : _b.getTime())) {
+                const managers = await this.userModel.find({ role: { $in: ["ADMIN", "SITE_MANAGER"] } });
+                let emails = [];
+                for (let i = 0; i < managers.length; i++) {
+                    emails.push(managers[i].email);
+                }
+                let shiftsCreated = await this.shiftModel.find({ scheduleId: shift.scheduleId });
+                let shiftsSubmitted = 0;
+                for (let i = 0; i < shiftsCreated.length; i++) {
+                    if (((_c = shiftsCreated[i].updatedAt) === null || _c === void 0 ? void 0 : _c.getTime()) === ((_d = shiftsCreated[i].updatedAt) === null || _d === void 0 ? void 0 : _d.getTime())) {
+                        shiftsSubmitted++;
+                    }
+                }
+                (0, functions_1.sendMail)(emails, `הגשת משמרות`, `עד עכשיו בתאריך ${(0, functions_1.dateToString)(new Date())} בשעה ${(0, functions_1.DateTimeToString)(new Date())} הגישו ${shiftsSubmitted} אנשים`);
             }
         }
         return await this.shiftModel.findByIdAndUpdate(shift._id, shift, { new: true });

@@ -22,12 +22,43 @@ export const dateToStringShort = (date: Date): string => {
   return formattedDate;
 }
 
+export const DateTimeToString = (date: Date): string => {
+  let mm = date.getMinutes();
+  let hh = date.getHours();
+
+  let MM = mm.toString();
+  let HH = hh.toString();
+
+  if (hh < 10) 
+      HH = '0' + hh;
+  if (mm < 10) 
+      MM = '0' + mm;
+
+  const formattedTime = HH + ':' + MM;
+  return formattedTime;
+}
+
+export const dateToString = (date: Date): string => {
+  const yyyy = date.getFullYear() % 100;
+  let mm = date.getMonth() + 1; // Months start at 0!
+  let dd = date.getDate();
+
+  let MM = mm.toString();
+  let DD = dd.toString();
+
+  if (dd < 10) DD = '0' + dd;
+  if (mm < 10) MM = '0' + mm;
+
+  const formattedDate = DD + '/' + MM + '/' + yyyy;
+  return formattedDate;
+}
+
 export const numberToDay = (num: number): string => {
   const days_names = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
   return days_names[num];
 }
 
-export const sendMail = (reciever: string, subject: string, text: string) => {
+export const sendMail = (receiver: string|string[], subject: string, text: string) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -37,7 +68,7 @@ export const sendMail = (reciever: string, subject: string, text: string) => {
       });
     var mailOptions = {
         from: process.env.EMAIL_ADDRESS,
-        to: reciever,
+        to: receiver,
         subject,
         text
     };

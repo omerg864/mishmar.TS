@@ -55,5 +55,5 @@ exports.ShiftScheme = new mongoose.Schema({
                     default: "",
                 }]
         }]
-});
+}, { timestamps: true });
 //# sourceMappingURL=shift.model.js.map

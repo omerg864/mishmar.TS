@@ -35,7 +35,7 @@ const ScheduleNew = (props: IProps) => {
             if (data.error || data.statusCode) {
                 toast.error(data.message);
             } else {
-                toast.success('Schedule created');
+                toast.success('ויהיה סידור');
                 navigate(`/schedule/${data._id}/update`);
             }
         } catch (e) {

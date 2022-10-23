@@ -55,7 +55,7 @@ export const ShiftScheme = new mongoose.Schema<Shift>({
             default: "",
         }]
     }]
-});
+}, {timestamps: true});
 
 
 export interface Shift {
@@ -67,6 +67,8 @@ export interface Shift {
     scheduleId: mongoose.Schema.Types.ObjectId;
     notes: string;
     weeks: {morning: boolean[], noon: boolean[], night: boolean[], pull: boolean[], reinforcement: boolean[], notes: string[]}[];
+    updatedAt?: Date;
+    createdAt?: Date;
 }
 
 export interface ShiftScheduleWeek {

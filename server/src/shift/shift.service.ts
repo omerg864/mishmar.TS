@@ -6,9 +6,7 @@ import { Schedule } from '../schedule/schedule.model';
 import { User } from '../user/user.model';
 import { Shift, ShiftScheduleWeek } from './shift.model';
 import * as excel from 'excel4node';
-import * as fs from 'fs';
-import { join } from 'path';
-import { dateToStringShort } from '../functions/functions';
+import { DateTimeToString, dateToStringShort, sendMail, dateToString } from '../functions/functions';
 import { EventInterface } from '../event/event.model';
 
 
@@ -343,6 +341,21 @@ export class ShiftService {
             const settings = await this.settingsModel.findOne();
             if (!settings.submit) {
                 throw new UnauthorizedException('אין אפשרות לשנות הגשות יותר');
+            }
+            if (shiftFound.updatedAt?.getTime() === shiftFound.createdAt?.getTime()) {
+                const managers = await this.userModel.find({role: { $in: ["ADMIN", "SITE_MANAGER"]}});
+                let emails = [];
+                for (let i = 0; i < managers.length; i++) {
+                    emails.push(managers[i].email);
+                }
+                let shiftsCreated = await this.shiftModel.find({ scheduleId: shift.scheduleId});
+                let shiftsSubmitted = 0;
+                for (let i = 0; i < shiftsCreated.length; i++) {
+                    if (shiftsCreated[i].updatedAt?.getTime() === shiftsCreated[i].updatedAt?.getTime()) {
+                        shiftsSubmitted++;
+                    }
+                }
+                sendMail(emails, `הגשת משמרות`, `עד עכשיו בתאריך ${dateToString(new Date())} בשעה ${DateTimeToString(new Date())} הגישו ${shiftsSubmitted} אנשים`)
             }
         }
         return await this.shiftModel.findByIdAndUpdate(shift._id, shift, { new: true });

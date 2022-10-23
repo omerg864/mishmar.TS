@@ -17,6 +17,8 @@ export interface Shift {
         reinforcement: boolean[];
         notes: string[];
     }[];
+    updatedAt?: Date;
+    createdAt?: Date;
 }
 export interface ShiftScheduleWeek {
     morning: string[];
