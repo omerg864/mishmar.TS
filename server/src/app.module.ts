@@ -12,6 +12,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 
 var imports =[]
+console.log(join(__dirname, '..', '..', 'client', 'build'));
 if (process.env.NODE_ENV === 'production') {
   imports = [ServeStaticModule.forRoot({
     rootPath: join(__dirname, '..', '..', 'client', 'build'),
