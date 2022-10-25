@@ -1,3 +1,4 @@
+/// <reference types="multer" />
 import { Schedule } from './schedule.model';
 import { ScheduleService, Shift } from './schedule.service';
 export declare class ScheduleController {
@@ -17,6 +18,7 @@ export declare class ScheduleController {
     }>;
     getLastDataSchedule(): Promise<Schedule>;
     getLastSchedule(): Promise<Schedule>;
+    uploadFile(files: Express.Multer.File[]): Promise<void>;
     scheduleValid(weeks: Shift[][]): Promise<string[]>;
     getScheduleTable(id: string): Promise<{
         counts: {

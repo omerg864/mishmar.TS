@@ -17,6 +17,8 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const functions_1 = require("../functions/functions");
+const XLSX = require("xlsx");
+const fs = require("fs");
 let ScheduleService = class ScheduleService {
     constructor(scheduleModel, structureModel) {
         this.scheduleModel = scheduleModel;
@@ -153,7 +155,12 @@ let ScheduleService = class ScheduleService {
         }
         return names;
     }
-    async excelToSchedule(weeks) {
+    async excelToSchedule(files) {
+        console.log(files[0]);
+        await fs.writeFileSync('tempXLSX.xlsx', files[0].buffer);
+        const fileRead = XLSX.readFile('tempXLSX.xlsx', { cellStyles: true });
+        const ws = fileRead.Sheets["Sheet1"];
+        console.table(ws);
     }
     async scheduleTable(id) {
         let schedule = await this.scheduleModel.findById(id);

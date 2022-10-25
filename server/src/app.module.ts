@@ -14,7 +14,7 @@ import { join } from 'path';
 var imports =[]
 if (process.env.NODE_ENV === 'production') {
   imports = [ServeStaticModule.forRoot({
-    rootPath: join(__dirname, '../..', 'client/build'),
+    rootPath: join(__dirname, 'client', 'build'),
   }) ,UserModule, ScheduleModule, ShiftModule, EventModule, PostModule, SettingsModule, StructureModule, ConfigModule.forRoot() , MongooseModule.forRoot(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_NAME}.wkjalhp.mongodb.net/${process.env.DB_TYPE}?retryWrites=true&w=majority`)]
 } else {
   imports = [UserModule, ScheduleModule, ShiftModule, EventModule, PostModule, SettingsModule, StructureModule, ConfigModule.forRoot() , MongooseModule.forRoot(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_NAME}.wkjalhp.mongodb.net/${process.env.DB_TYPE}?retryWrites=true&w=majority`)]

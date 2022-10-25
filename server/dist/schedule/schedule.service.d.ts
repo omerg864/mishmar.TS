@@ -1,3 +1,4 @@
+/// <reference types="multer" />
 import { Model } from 'mongoose';
 import { Structure } from '../structure/structure.model';
 import { Schedule } from './schedule.model';
@@ -9,7 +10,7 @@ export declare class ScheduleService {
     private readonly scheduleModel;
     private readonly structureModel;
     constructor(scheduleModel: Model<Schedule>, structureModel: Model<Structure>);
-    sortStructures: (a: Shift, b: Shift) => 1 | 0 | -1;
+    sortStructures: (a: Shift, b: Shift) => 0 | 1 | -1;
     populateSchedule(schedule: Schedule): Promise<Schedule>;
     getViewSchedule(query: {
         page?: number;
@@ -29,7 +30,7 @@ export declare class ScheduleService {
     arrayDuplicates: (arr: string[]) => string[];
     toShiftNamesArray: (shifts: Shift[], day: number) => string[];
     compareTwoArrays(arr1: string[], arr2: string[]): string[];
-    excelToSchedule(weeks: Shift[][]): Promise<void>;
+    excelToSchedule(files: Express.Multer.File[]): Promise<void>;
     scheduleTable(id: string): Promise<{
         counts: {
             name: string;

@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { Schedule } from './schedule.model';
 import { ScheduleService, Shift } from './schedule.service';
 
@@ -26,6 +27,12 @@ export class ScheduleController {
     @Get('auth/last')
     async getLastSchedule(): Promise<Schedule> {
         return await this.scheduleService.getLast();
+    }
+
+    @Put('upload')
+    @UseInterceptors(FilesInterceptor('file'))
+    async uploadFile(@UploadedFiles() files: Express.Multer.File[]) {
+        return await this.scheduleService.excelToSchedule(files);
     }
 
     @Put('check')

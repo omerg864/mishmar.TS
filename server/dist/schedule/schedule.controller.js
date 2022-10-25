@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ScheduleController = void 0;
 const common_1 = require("@nestjs/common");
+const platform_express_1 = require("@nestjs/platform-express");
 const schedule_service_1 = require("./schedule.service");
 let ScheduleController = class ScheduleController {
     constructor(scheduleService) {
@@ -30,6 +31,9 @@ let ScheduleController = class ScheduleController {
     }
     async getLastSchedule() {
         return await this.scheduleService.getLast();
+    }
+    async uploadFile(files) {
+        return await this.scheduleService.excelToSchedule(files);
     }
     async scheduleValid(weeks) {
         return await this.scheduleService.scheduleValid(weeks);
@@ -76,6 +80,14 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], ScheduleController.prototype, "getLastSchedule", null);
+__decorate([
+    (0, common_1.Put)('upload'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('file')),
+    __param(0, (0, common_1.UploadedFiles)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Array]),
+    __metadata("design:returntype", Promise)
+], ScheduleController.prototype, "uploadFile", null);
 __decorate([
     (0, common_1.Put)('check'),
     __param(0, (0, common_1.Body)()),

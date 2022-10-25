@@ -6,6 +6,10 @@ import { Schedule } from './schedule.model';
 import { Document } from 'mongoose';
 import { findIndex } from 'rxjs';
 import { addDays, numberToDay } from '../functions/functions';
+import xlsxFile from 'read-excel-file/node'
+import * as XLSX from 'xlsx';
+import * as fs from 'fs';
+import { Readable } from 'stream';
 
 export type Shift = { shift: string|Structure, days: string[]}
 
@@ -152,7 +156,12 @@ export class ScheduleService {
         return names;
     }
 
-    async excelToSchedule(weeks: Shift[][]) {
+    async excelToSchedule(files: Express.Multer.File[]) {
+        console.log(files[0]);
+        await fs.writeFileSync('tempXLSX.xlsx', files[0].buffer);
+        const fileRead = XLSX.readFile('tempXLSX.xlsx', { cellStyles: true});
+        const ws = fileRead.Sheets["Sheet1"]
+        console.table(ws)
 
     }
 
