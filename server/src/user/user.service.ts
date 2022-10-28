@@ -19,7 +19,7 @@ export class UserService {
 
 
     async login(username: string, password: string): Promise<{user: User, token: string}> {
-        const user = await this.userModel.findOne({ username: { $regex : new RegExp(username, "i") }}).select('-reset_token');
+        const user = await this.userModel.findOne({ username }).select('-reset_token');
         if (!user) {
             throw new NotFoundException('משתמש לא נמצא');
         }

@@ -3,13 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Structure } from '../structure/structure.model';
 import { Schedule } from './schedule.model';
-import { Document } from 'mongoose';
-import { findIndex } from 'rxjs';
 import { addDays, numberToDay } from '../functions/functions';
-import xlsxFile from 'read-excel-file/node'
 import * as XLSX from 'xlsx';
+import * as excel from 'excel4node';
 import * as fs from 'fs';
-import { Readable } from 'stream';
 
 export type Shift = { shift: string|Structure, days: string[]}
 
@@ -156,12 +153,106 @@ export class ScheduleService {
         return names;
     }
 
-    async excelToSchedule(files: Express.Multer.File[]) {
-        console.log(files[0]);
-        await fs.writeFileSync('tempXLSX.xlsx', files[0].buffer);
-        const fileRead = XLSX.readFile('tempXLSX.xlsx', { cellStyles: true});
+    getEndShiftExcel(ws: XLSX.WorkSheet, cell: {v?: string}|undefined, index: number, stop: string): {cell: {v?: string}|undefined, index: number} {
+        while (cell) {
+            index += 1;
+            cell = ws[`A${index}`]
+            if (stop === "") {
+                if (!cell) {
+                    return { cell, index};
+                }
+            } else {
+                if (cell.v === stop) {
+                    return { cell, index};
+                }
+            }
+            if (index === 1000) {
+                throw new ConflictException('שינוי במבנה קובץ אקסל');
+            }
+        }
+    }
+
+    getEmptyWeeksArrayShifts(num_weeks: number): {morning: {name: string, pull: boolean}[], noon: {name: string, pull: boolean}[], night: {name: string, pull: boolean}[]}[][] {
+        let weeks: {morning: {name: string, pull: boolean}[], noon: {name: string, pull: boolean}[], night: {name: string, pull: boolean}[]}[][]  = [];
+        for (let i = 0; i < num_weeks; i ++) {
+            weeks.push([]);
+            for(let j = 0; j < 7; j++) {
+                weeks[i].push({morning: [], noon: [], night: []});
+            }
+        }
+        return weeks;
+    }
+
+    extractDataFromExcel(file: Express.Multer.File, num_weeks: number): {morning: {name: string, pull: boolean}[], noon: {name: string, pull: boolean}[], night: {name: string, pull: boolean}[]}[][] {
+        /* 
+        ws[<ColCharRow>].v == value 
+        ws[<ColCharRow>].s.fgColor == cell color 
+        excel.getExcelAlpha(number); == excel number to char
+        green color - C6EFCE
+        orange color - FFEB9C
+        */
+        const fileRead = XLSX.read(file.buffer, { type: 'buffer' ,cellStyles: true});
         const ws = fileRead.Sheets["Sheet1"]
-        console.table(ws)
+        let endNames = { morning: 5, noon: 5, night: 5};
+        let temps = {cell: ws.A5, index: 5}
+        temps = this.getEndShiftExcel(ws, temps.cell, temps.index, "צהריים");
+        endNames.morning = temps.index - 1;
+        temps = this.getEndShiftExcel(ws, temps.cell, temps.index, "לילה");
+        endNames.noon = temps.index - 1;
+        temps = this.getEndShiftExcel(ws, temps.cell, temps.index, "");
+        endNames.night = temps.index - 1;
+        let extractedData = this.getEmptyWeeksArrayShifts(num_weeks);
+        let weekNumber = 0;
+        for(let i = 2; i < num_weeks * 7 + 2; i ++) {
+            // i - col number
+            if ((weekNumber === 0 ? i - 1 : i) % 8 === 0)
+                weekNumber += 1;
+            let day = i - 2 - weekNumber * 7;
+            // TODO: Create generic function
+            for (let j = 5; j <= endNames.morning; j++) {
+                // j - row number morning
+                let cell = ws[`${excel.getExcelAlpha(i)}${j}`];
+                if (cell?.s?.fgColor?.rgb === 'C6EFCE'){
+                    extractedData[weekNumber][day].morning.push({name: cell?.v as string, pull: true});
+                }
+                if (cell?.s?.fgColor?.rgb === 'FFEB9C'){
+                    extractedData[weekNumber][day].morning.push({name: cell?.v as string, pull: false});
+                }
+            }
+            for (let j = endNames.morning + 1; j <= endNames.noon; j++) {
+                // j - row number noon
+                let cell = ws[`${excel.getExcelAlpha(i)}${j}`];
+                if (cell?.s?.fgColor?.rgb === 'C6EFCE'){
+                    extractedData[weekNumber][day].noon.push({name: cell?.v as string, pull: true});
+                }
+                if (cell?.s?.fgColor?.rgb === 'FFEB9C'){
+                    extractedData[weekNumber][day].noon.push({name: cell?.v as string, pull: false});
+                }
+            }
+            for (let j = endNames.noon + 1; j <= endNames.night; j++) {
+                // j - row number night
+                let cell = ws[`${excel.getExcelAlpha(i)}${j}`];
+                if (cell?.s?.fgColor?.rgb === 'C6EFCE'){
+                    extractedData[weekNumber][day].night.push({name: cell?.v as string, pull: true});
+                }
+                if (cell?.s?.fgColor?.rgb === 'FFEB9C'){
+                    extractedData[weekNumber][day].night.push({name: cell?.v as string, pull: false});
+                }
+            }
+        }
+        return extractedData;
+    }
+
+    async excelToSchedule(files: Express.Multer.File[], scheduleId: string) {
+        console.log(files[0]);
+        if (!files[0]) {
+            throw new NotFoundException('אין קובץ');
+        }
+        const schedule = await this.scheduleModel.findById(scheduleId);
+        if (!schedule) {
+            throw new NotFoundException('לא נמצא סידור')
+        }
+        const extractedData = this.extractDataFromExcel(files[0], schedule.num_weeks);
 
     }
 

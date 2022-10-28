@@ -32,8 +32,8 @@ let ScheduleController = class ScheduleController {
     async getLastSchedule() {
         return await this.scheduleService.getLast();
     }
-    async uploadFile(files) {
-        return await this.scheduleService.excelToSchedule(files);
+    async uploadFile(files, scheduleId) {
+        return await this.scheduleService.excelToSchedule(files, scheduleId);
     }
     async scheduleValid(weeks) {
         return await this.scheduleService.scheduleValid(weeks);
@@ -84,8 +84,9 @@ __decorate([
     (0, common_1.Put)('upload'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('file')),
     __param(0, (0, common_1.UploadedFiles)()),
+    __param(1, (0, common_1.Body)('scheduleId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Array]),
+    __metadata("design:paramtypes", [Array, String]),
     __metadata("design:returntype", Promise)
 ], ScheduleController.prototype, "uploadFile", null);
 __decorate([

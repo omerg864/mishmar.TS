@@ -18,7 +18,7 @@ export declare class ScheduleController {
     }>;
     getLastDataSchedule(): Promise<Schedule>;
     getLastSchedule(): Promise<Schedule>;
-    uploadFile(files: Express.Multer.File[]): Promise<void>;
+    uploadFile(files: Express.Multer.File[], scheduleId: string): Promise<void>;
     scheduleValid(weeks: Shift[][]): Promise<string[]>;
     getScheduleTable(id: string): Promise<{
         counts: {

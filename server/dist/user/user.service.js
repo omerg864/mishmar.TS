@@ -29,7 +29,7 @@ let UserService = class UserService {
         return jwt.sign({ id }, "ABC", { expiresIn: '30d' });
     }
     async login(username, password) {
-        const user = await this.userModel.findOne({ username: { $regex: new RegExp(username, "i") } }).select('-reset_token');
+        const user = await this.userModel.findOne({ username }).select('-reset_token');
         if (!user) {
             throw new common_1.NotFoundException('משתמש לא נמצא');
         }

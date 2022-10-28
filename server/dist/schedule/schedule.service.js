@@ -18,7 +18,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const functions_1 = require("../functions/functions");
 const XLSX = require("xlsx");
-const fs = require("fs");
+const excel = require("excel4node");
 let ScheduleService = class ScheduleService {
     constructor(scheduleModel, structureModel) {
         this.scheduleModel = scheduleModel;
@@ -155,12 +155,93 @@ let ScheduleService = class ScheduleService {
         }
         return names;
     }
-    async excelToSchedule(files) {
-        console.log(files[0]);
-        await fs.writeFileSync('tempXLSX.xlsx', files[0].buffer);
-        const fileRead = XLSX.readFile('tempXLSX.xlsx', { cellStyles: true });
+    getEndShiftExcel(ws, cell, index, stop) {
+        while (cell) {
+            index += 1;
+            cell = ws[`A${index}`];
+            if (stop === "") {
+                if (!cell) {
+                    return { cell, index };
+                }
+            }
+            else {
+                if (cell.v === stop) {
+                    return { cell, index };
+                }
+            }
+            if (index === 1000) {
+                throw new common_1.ConflictException('שינוי במבנה קובץ אקסל');
+            }
+        }
+    }
+    getEmptyWeeksArrayShifts(num_weeks) {
+        let weeks = [];
+        for (let i = 0; i < num_weeks; i++) {
+            weeks.push([]);
+            for (let j = 0; j < 7; j++) {
+                weeks[i].push({ morning: [], noon: [], night: [] });
+            }
+        }
+        return weeks;
+    }
+    extractDataFromExcel(file, num_weeks) {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+        const fileRead = XLSX.read(file.buffer, { type: 'buffer', cellStyles: true });
         const ws = fileRead.Sheets["Sheet1"];
-        console.table(ws);
+        let endNames = { morning: 5, noon: 5, night: 5 };
+        let temps = { cell: ws.A5, index: 5 };
+        temps = this.getEndShiftExcel(ws, temps.cell, temps.index, "צהריים");
+        endNames.morning = temps.index - 1;
+        temps = this.getEndShiftExcel(ws, temps.cell, temps.index, "לילה");
+        endNames.noon = temps.index - 1;
+        temps = this.getEndShiftExcel(ws, temps.cell, temps.index, "");
+        endNames.night = temps.index - 1;
+        let extractedData = this.getEmptyWeeksArrayShifts(num_weeks);
+        let weekNumber = 0;
+        for (let i = 2; i < num_weeks * 7 + 2; i++) {
+            if ((weekNumber === 0 ? i - 1 : i) % 8 === 0)
+                weekNumber += 1;
+            let day = i - 2 - weekNumber * 7;
+            for (let j = 5; j <= endNames.morning; j++) {
+                let cell = ws[`${excel.getExcelAlpha(i)}${j}`];
+                if (((_b = (_a = cell === null || cell === void 0 ? void 0 : cell.s) === null || _a === void 0 ? void 0 : _a.fgColor) === null || _b === void 0 ? void 0 : _b.rgb) === 'C6EFCE') {
+                    extractedData[weekNumber][day].morning.push({ name: cell === null || cell === void 0 ? void 0 : cell.v, pull: true });
+                }
+                if (((_d = (_c = cell === null || cell === void 0 ? void 0 : cell.s) === null || _c === void 0 ? void 0 : _c.fgColor) === null || _d === void 0 ? void 0 : _d.rgb) === 'FFEB9C') {
+                    extractedData[weekNumber][day].morning.push({ name: cell === null || cell === void 0 ? void 0 : cell.v, pull: false });
+                }
+            }
+            for (let j = endNames.morning + 1; j <= endNames.noon; j++) {
+                let cell = ws[`${excel.getExcelAlpha(i)}${j}`];
+                if (((_f = (_e = cell === null || cell === void 0 ? void 0 : cell.s) === null || _e === void 0 ? void 0 : _e.fgColor) === null || _f === void 0 ? void 0 : _f.rgb) === 'C6EFCE') {
+                    extractedData[weekNumber][day].noon.push({ name: cell === null || cell === void 0 ? void 0 : cell.v, pull: true });
+                }
+                if (((_h = (_g = cell === null || cell === void 0 ? void 0 : cell.s) === null || _g === void 0 ? void 0 : _g.fgColor) === null || _h === void 0 ? void 0 : _h.rgb) === 'FFEB9C') {
+                    extractedData[weekNumber][day].noon.push({ name: cell === null || cell === void 0 ? void 0 : cell.v, pull: false });
+                }
+            }
+            for (let j = endNames.noon + 1; j <= endNames.night; j++) {
+                let cell = ws[`${excel.getExcelAlpha(i)}${j}`];
+                if (((_k = (_j = cell === null || cell === void 0 ? void 0 : cell.s) === null || _j === void 0 ? void 0 : _j.fgColor) === null || _k === void 0 ? void 0 : _k.rgb) === 'C6EFCE') {
+                    extractedData[weekNumber][day].night.push({ name: cell === null || cell === void 0 ? void 0 : cell.v, pull: true });
+                }
+                if (((_m = (_l = cell === null || cell === void 0 ? void 0 : cell.s) === null || _l === void 0 ? void 0 : _l.fgColor) === null || _m === void 0 ? void 0 : _m.rgb) === 'FFEB9C') {
+                    extractedData[weekNumber][day].night.push({ name: cell === null || cell === void 0 ? void 0 : cell.v, pull: false });
+                }
+            }
+        }
+        return extractedData;
+    }
+    async excelToSchedule(files, scheduleId) {
+        console.log(files[0]);
+        if (!files[0]) {
+            throw new common_1.NotFoundException('אין קובץ');
+        }
+        const schedule = await this.scheduleModel.findById(scheduleId);
+        if (!schedule) {
+            throw new common_1.NotFoundException('לא נמצא סידור');
+        }
+        const extractedData = this.extractDataFromExcel(files[0], schedule.num_weeks);
     }
     async scheduleTable(id) {
         let schedule = await this.scheduleModel.findById(id);

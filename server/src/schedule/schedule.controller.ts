@@ -31,8 +31,8 @@ export class ScheduleController {
 
     @Put('upload')
     @UseInterceptors(FilesInterceptor('file'))
-    async uploadFile(@UploadedFiles() files: Express.Multer.File[]) {
-        return await this.scheduleService.excelToSchedule(files);
+    async uploadFile(@UploadedFiles() files: Express.Multer.File[],@Body('scheduleId') scheduleId: string) {
+        return await this.scheduleService.excelToSchedule(files, scheduleId);
     }
 
     @Put('check')
