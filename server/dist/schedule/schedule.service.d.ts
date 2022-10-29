@@ -59,7 +59,14 @@ export declare class ScheduleService {
     getEmptyWeeksArrayShifts(num_weeks: number): ExcelWeeksData;
     searchExcelShift(ws: XLSX.WorkSheet, start: number, end: number, column: number, week: number, day: number, extractedData: ExcelWeeksData, shift: dayShifts): ExcelWeeksData;
     extractDataFromExcel(file: Express.Multer.File, num_weeks: number): ExcelWeeksData;
-    excelToSchedule(files: Express.Multer.File[], scheduleId: string): Promise<void>;
+    assignToShifts(shiftType: dayShifts, shifts: Shift[], data: ExcelWeeksData, inShift: string[], day: number, week: number, managers_names: string[], weeks_tmp: Shift[][]): {
+        data: ExcelWeeksData;
+        inShift: string[];
+        weeks_tmp: Shift[][];
+    };
+    excelToSchedule(files: Express.Multer.File[], scheduleId: string): Promise<{
+        message: string;
+    }>;
     scheduleTable(id: string): Promise<{
         counts: {
             name: string;
