@@ -17,7 +17,7 @@ export class ScheduleModule implements NestModule {
     consumer.apply(AuthMiddleware).forRoutes({path: 'api/schedules/auth/*', method: RequestMethod.GET});
     consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/schedules/:id', method: RequestMethod.GET});
     consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/schedules/table/:id', method: RequestMethod.GET});
-    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/schedules/check', method: RequestMethod.PUT});
+    consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/schedules/*', method: RequestMethod.PUT});
     consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/schedules', method: RequestMethod.POST});
     consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/schedules', method: RequestMethod.PATCH});
     consumer.apply(SiteManagerMiddleware).forRoutes({path: 'api/schedules/*', method: RequestMethod.DELETE});

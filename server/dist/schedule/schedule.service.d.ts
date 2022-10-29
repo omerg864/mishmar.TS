@@ -3,14 +3,31 @@ import { Model } from 'mongoose';
 import { Structure } from '../structure/structure.model';
 import { Schedule } from './schedule.model';
 import * as XLSX from 'xlsx';
+import { User } from 'src/user/user.model';
 export declare type Shift = {
     shift: string | Structure;
     days: string[];
 };
+declare type dayShifts = "morning" | "noon" | "night";
+declare type ExcelWeeksData = {
+    morning: {
+        name: string;
+        pull: boolean;
+    }[];
+    noon: {
+        name: string;
+        pull: boolean;
+    }[];
+    night: {
+        name: string;
+        pull: boolean;
+    }[];
+}[][];
 export declare class ScheduleService {
     private readonly scheduleModel;
     private readonly structureModel;
-    constructor(scheduleModel: Model<Schedule>, structureModel: Model<Structure>);
+    private readonly userModel;
+    constructor(scheduleModel: Model<Schedule>, structureModel: Model<Structure>, userModel: Model<User>);
     sortStructures: (a: Shift, b: Shift) => 0 | 1 | -1;
     populateSchedule(schedule: Schedule): Promise<Schedule>;
     getViewSchedule(query: {
@@ -39,34 +56,9 @@ export declare class ScheduleService {
         } | undefined;
         index: number;
     };
-    getEmptyWeeksArrayShifts(num_weeks: number): {
-        morning: {
-            name: string;
-            pull: boolean;
-        }[];
-        noon: {
-            name: string;
-            pull: boolean;
-        }[];
-        night: {
-            name: string;
-            pull: boolean;
-        }[];
-    }[][];
-    extractDataFromExcel(file: Express.Multer.File, num_weeks: number): {
-        morning: {
-            name: string;
-            pull: boolean;
-        }[];
-        noon: {
-            name: string;
-            pull: boolean;
-        }[];
-        night: {
-            name: string;
-            pull: boolean;
-        }[];
-    }[][];
+    getEmptyWeeksArrayShifts(num_weeks: number): ExcelWeeksData;
+    searchExcelShift(ws: XLSX.WorkSheet, start: number, end: number, column: number, week: number, day: number, extractedData: ExcelWeeksData, shift: dayShifts): ExcelWeeksData;
+    extractDataFromExcel(file: Express.Multer.File, num_weeks: number): ExcelWeeksData;
     excelToSchedule(files: Express.Multer.File[], scheduleId: string): Promise<void>;
     scheduleTable(id: string): Promise<{
         counts: {
@@ -90,3 +82,4 @@ export declare class ScheduleService {
         id: string;
     }>;
 }
+export {};

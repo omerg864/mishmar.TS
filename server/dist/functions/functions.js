@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendMail = exports.numberToDay = exports.dateToString = exports.DateTimeToString = exports.dateToStringShort = exports.addDays = void 0;
+exports.sendMail = exports.getRandomIndex = exports.compareTwoArrays = exports.stringInArray = exports.numberToDay = exports.dateToString = exports.DateTimeToString = exports.dateToStringShort = exports.addDays = void 0;
 const nodemailer = require("nodemailer");
 const addDays = (date, days) => {
     var result = new Date(date);
@@ -53,6 +53,24 @@ const numberToDay = (num) => {
     return days_names[num];
 };
 exports.numberToDay = numberToDay;
+const stringInArray = (name, array) => {
+    return array.filter(item => item === name).length > 0;
+};
+exports.stringInArray = stringInArray;
+const compareTwoArrays = (arr1, arr2) => {
+    let names = [];
+    for (let i = 0; i < arr1.length; i++) {
+        if (!arr2.every((x) => x !== arr1[i])) {
+            names.push(arr1[i]);
+        }
+    }
+    return names;
+};
+exports.compareTwoArrays = compareTwoArrays;
+const getRandomIndex = (arrayLength) => {
+    return Math.floor(Math.random() * arrayLength);
+};
+exports.getRandomIndex = getRandomIndex;
 const sendMail = (receiver, subject, text) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',

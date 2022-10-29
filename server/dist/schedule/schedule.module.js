@@ -20,7 +20,7 @@ let ScheduleModule = class ScheduleModule {
         consumer.apply(auth_middlware_1.AuthMiddleware).forRoutes({ path: 'api/schedules/auth/*', method: common_1.RequestMethod.GET });
         consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/schedules/:id', method: common_1.RequestMethod.GET });
         consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/schedules/table/:id', method: common_1.RequestMethod.GET });
-        consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/schedules/check', method: common_1.RequestMethod.PUT });
+        consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/schedules/*', method: common_1.RequestMethod.PUT });
         consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/schedules', method: common_1.RequestMethod.POST });
         consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/schedules', method: common_1.RequestMethod.PATCH });
         consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/schedules/*', method: common_1.RequestMethod.DELETE });

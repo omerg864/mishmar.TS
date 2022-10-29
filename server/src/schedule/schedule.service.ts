@@ -3,17 +3,20 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Structure } from '../structure/structure.model';
 import { Schedule } from './schedule.model';
-import { addDays, numberToDay } from '../functions/functions';
+import { addDays, getRandomIndex, numberToDay } from '../functions/functions';
 import * as XLSX from 'xlsx';
 import * as excel from 'excel4node';
 import * as fs from 'fs';
+import { User } from 'src/user/user.model';
 
 export type Shift = { shift: string|Structure, days: string[]}
+type dayShifts = "morning" | "noon" | "night";
+type ExcelWeeksData = {morning: {name: string, pull: boolean}[], noon: {name: string, pull: boolean}[], night: {name: string, pull: boolean}[]}[][]
 
 @Injectable()
 export class ScheduleService {
 
-    constructor(@InjectModel('Schedule') private readonly scheduleModel: Model<Schedule>, @InjectModel('Structure') private readonly structureModel: Model<Structure>) {}
+    constructor(@InjectModel('Schedule') private readonly scheduleModel: Model<Schedule>, @InjectModel('Structure') private readonly structureModel: Model<Structure>, @InjectModel('User') private readonly userModel: Model<User>) {}
 
 
     sortStructures = (a: Shift, b: Shift) => {
@@ -28,10 +31,9 @@ export class ScheduleService {
                 return 1;
             } else if (first.index < second.index) {
                 return -1;
-            } else {
-                return 0;
             }
         }
+        return 0;
     }
 
 
@@ -172,7 +174,7 @@ export class ScheduleService {
         }
     }
 
-    getEmptyWeeksArrayShifts(num_weeks: number): {morning: {name: string, pull: boolean}[], noon: {name: string, pull: boolean}[], night: {name: string, pull: boolean}[]}[][] {
+    getEmptyWeeksArrayShifts(num_weeks: number): ExcelWeeksData {
         let weeks: {morning: {name: string, pull: boolean}[], noon: {name: string, pull: boolean}[], night: {name: string, pull: boolean}[]}[][]  = [];
         for (let i = 0; i < num_weeks; i ++) {
             weeks.push([]);
@@ -183,7 +185,21 @@ export class ScheduleService {
         return weeks;
     }
 
-    extractDataFromExcel(file: Express.Multer.File, num_weeks: number): {morning: {name: string, pull: boolean}[], noon: {name: string, pull: boolean}[], night: {name: string, pull: boolean}[]}[][] {
+    searchExcelShift(ws: XLSX.WorkSheet,start: number, end: number,column: number, week: number, day: number, extractedData: ExcelWeeksData, shift: dayShifts): ExcelWeeksData {
+        for (let j = start; j <= end; j++) {
+            // j - row number morning
+            let cell = ws[`${excel.getExcelAlpha(column)}${j}`];
+            if (cell?.s?.fgColor?.rgb === 'C6EFCE'){
+                extractedData[week][day][shift].push({name: cell?.v as string, pull: true});
+            }
+            if (cell?.s?.fgColor?.rgb === 'FFEB9C'){
+                extractedData[week][day][shift].push({name: cell?.v as string, pull: false});
+            }
+        }
+        return extractedData;
+    }
+
+    extractDataFromExcel(file: Express.Multer.File, num_weeks: number): ExcelWeeksData {
         /* 
         ws[<ColCharRow>].v == value 
         ws[<ColCharRow>].s.fgColor == cell color 
@@ -193,6 +209,9 @@ export class ScheduleService {
         */
         const fileRead = XLSX.read(file.buffer, { type: 'buffer' ,cellStyles: true});
         const ws = fileRead.Sheets["Sheet1"]
+        if (!ws) {
+            throw new NotFoundException('שם העמוד צריך להיות Sheet1');
+        }
         let endNames = { morning: 5, noon: 5, night: 5};
         let temps = {cell: ws.A5, index: 5}
         temps = this.getEndShiftExcel(ws, temps.cell, temps.index, "צהריים");
@@ -208,37 +227,9 @@ export class ScheduleService {
             if ((weekNumber === 0 ? i - 1 : i) % 8 === 0)
                 weekNumber += 1;
             let day = i - 2 - weekNumber * 7;
-            // TODO: Create generic function
-            for (let j = 5; j <= endNames.morning; j++) {
-                // j - row number morning
-                let cell = ws[`${excel.getExcelAlpha(i)}${j}`];
-                if (cell?.s?.fgColor?.rgb === 'C6EFCE'){
-                    extractedData[weekNumber][day].morning.push({name: cell?.v as string, pull: true});
-                }
-                if (cell?.s?.fgColor?.rgb === 'FFEB9C'){
-                    extractedData[weekNumber][day].morning.push({name: cell?.v as string, pull: false});
-                }
-            }
-            for (let j = endNames.morning + 1; j <= endNames.noon; j++) {
-                // j - row number noon
-                let cell = ws[`${excel.getExcelAlpha(i)}${j}`];
-                if (cell?.s?.fgColor?.rgb === 'C6EFCE'){
-                    extractedData[weekNumber][day].noon.push({name: cell?.v as string, pull: true});
-                }
-                if (cell?.s?.fgColor?.rgb === 'FFEB9C'){
-                    extractedData[weekNumber][day].noon.push({name: cell?.v as string, pull: false});
-                }
-            }
-            for (let j = endNames.noon + 1; j <= endNames.night; j++) {
-                // j - row number night
-                let cell = ws[`${excel.getExcelAlpha(i)}${j}`];
-                if (cell?.s?.fgColor?.rgb === 'C6EFCE'){
-                    extractedData[weekNumber][day].night.push({name: cell?.v as string, pull: true});
-                }
-                if (cell?.s?.fgColor?.rgb === 'FFEB9C'){
-                    extractedData[weekNumber][day].night.push({name: cell?.v as string, pull: false});
-                }
-            }
+            extractedData = this.searchExcelShift(ws, 5, endNames.morning, i, weekNumber, day, extractedData, "morning");
+            extractedData = this.searchExcelShift(ws, endNames.morning + 1, endNames.noon, i, weekNumber, day, extractedData, "noon");
+            extractedData = this.searchExcelShift(ws, endNames.noon + 1, endNames.night, i, weekNumber, day, extractedData, "night");
         }
         return extractedData;
     }
@@ -252,8 +243,74 @@ export class ScheduleService {
         if (!schedule) {
             throw new NotFoundException('לא נמצא סידור')
         }
+        let weeks_tmp: Shift[][] = [];
+        for( let i = 0; i < schedule.weeks.length; i++ ) {
+            let week_tmp: Shift[] = [];
+            for( let j = 0; j < schedule.weeks[i].length; j++ ) {
+                let structureModel = await this.structureModel.findById( schedule.weeks[i][j].shift );
+                if (structureModel) {
+                    week_tmp.push({ shift: structureModel, days: ["", "", "", "", "", "", ""]});
+                }
+            }
+            week_tmp.sort(this.sortStructures);
+            weeks_tmp.push(week_tmp);
+        }
+        let managers = await this.userModel.find({ username: {$ne: "admin"}, role: 'SHIFT_MANAGER' });
+        let managers_names = managers.map(user => user.nickname);
         const extractedData = this.extractDataFromExcel(files[0], schedule.num_weeks);
-
+        console.log("🚀 ~ file: schedule.service.ts ~ line 261 ~ ScheduleService ~ excelToSchedule ~ extractedData", extractedData[0][0])
+        for(let i = 0; i < extractedData.length; i++) {
+            // i - week number
+            let morningShifts = weeks_tmp[i].filter(structure => (structure.shift as Structure).shift === 0);
+            let noonShifts = weeks_tmp[i].filter(structure => (structure.shift as Structure).shift === 1);
+            let nightShifts = weeks_tmp[i].filter(structure => (structure.shift as Structure).shift === 2);
+            for(let j = 0; j < extractedData[i].length; j++) {
+                // j - day number
+                let inShift: string[] = [];
+                if (this.compareTwoArrays(managers_names, extractedData[i][j].morning.map(user => user.name)).length) {
+                    let managerShifts = morningShifts.filter(structure => (structure.shift as Structure).manager);
+                    let temp_names = this.compareTwoArrays(managers_names, extractedData[i][j].morning.map(user => user.name));
+                    for(let k = 0; k < managerShifts.length; k++) {
+                        if (temp_names.length !== 0) {
+                            let rndIndex = getRandomIndex(temp_names.length);
+                            weeks_tmp[i] = weeks_tmp[i].map(shift => {
+                                if((shift.shift as Structure)._id === (managerShifts[k].shift as Structure)._id) {
+                                    let split = shift.days[j].split("\n");
+                                    split.push(temp_names[rndIndex]);
+                                    shift.days[j] = split.join('\n');
+                                    inShift.push(temp_names[rndIndex]);
+                                    extractedData[i][j].morning = extractedData[i][j].morning.filter(user => user.name !== temp_names[rndIndex]);
+                                    temp_names = temp_names.filter((_, index) => index !== rndIndex);
+                                }
+                                return shift
+                            })
+                        }
+                    }   
+                }
+                if (extractedData[i][j].morning.length > 0) {
+                    // TODO: try first without managers
+                    let openingShifts = morningShifts.filter(structure => (structure.shift as Structure).opening);
+                    for(let k = 0; k < openingShifts.length; k++) {
+                        let rndIndex = getRandomIndex(extractedData[i][j].morning.length);
+                        weeks_tmp[i] = weeks_tmp[i].map(shift => {
+                            if((shift.shift as Structure)._id === (openingShifts[k].shift as Structure)._id) {
+                                let split = shift.days[j].split("\n");
+                                split.push(extractedData[i][j].morning[rndIndex].name);
+                                shift.days[j] = split.join('\n');
+                                inShift.push(extractedData[i][j].morning[rndIndex].name);
+                                extractedData[i][j].morning = extractedData[i][j].morning.filter(user => user.name !== extractedData[i][j].morning[rndIndex].name);
+                            }
+                            return shift
+                        })
+                    }
+                }
+                if (extractedData[i][j].morning.length > 0) {
+                    let pullShifts = morningShifts.filter(structure => (structure.shift as Structure).pull);
+                    
+                }
+            }
+        }
+        console.log(weeks_tmp[0]);
     }
 
     async scheduleTable(id: string): Promise<{counts: {name: string, night: number, weekend: number, [key: string]: number|string}[], total: {night: number, weekend: number, [key: string]: number}, weeksKeys: string[]}> {

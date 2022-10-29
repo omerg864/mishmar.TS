@@ -20,9 +20,10 @@ const functions_1 = require("../functions/functions");
 const XLSX = require("xlsx");
 const excel = require("excel4node");
 let ScheduleService = class ScheduleService {
-    constructor(scheduleModel, structureModel) {
+    constructor(scheduleModel, structureModel, userModel) {
         this.scheduleModel = scheduleModel;
         this.structureModel = structureModel;
+        this.userModel = userModel;
         this.sortStructures = (a, b) => {
             const first = a.shift;
             const second = b.shift;
@@ -39,10 +40,8 @@ let ScheduleService = class ScheduleService {
                 else if (first.index < second.index) {
                     return -1;
                 }
-                else {
-                    return 0;
-                }
             }
+            return 0;
         };
         this.arrayDuplicates = (arr) => {
             return arr.filter((item, index) => arr.indexOf(item) != index);
@@ -184,10 +183,25 @@ let ScheduleService = class ScheduleService {
         }
         return weeks;
     }
+    searchExcelShift(ws, start, end, column, week, day, extractedData, shift) {
+        var _a, _b, _c, _d;
+        for (let j = start; j <= end; j++) {
+            let cell = ws[`${excel.getExcelAlpha(column)}${j}`];
+            if (((_b = (_a = cell === null || cell === void 0 ? void 0 : cell.s) === null || _a === void 0 ? void 0 : _a.fgColor) === null || _b === void 0 ? void 0 : _b.rgb) === 'C6EFCE') {
+                extractedData[week][day][shift].push({ name: cell === null || cell === void 0 ? void 0 : cell.v, pull: true });
+            }
+            if (((_d = (_c = cell === null || cell === void 0 ? void 0 : cell.s) === null || _c === void 0 ? void 0 : _c.fgColor) === null || _d === void 0 ? void 0 : _d.rgb) === 'FFEB9C') {
+                extractedData[week][day][shift].push({ name: cell === null || cell === void 0 ? void 0 : cell.v, pull: false });
+            }
+        }
+        return extractedData;
+    }
     extractDataFromExcel(file, num_weeks) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
         const fileRead = XLSX.read(file.buffer, { type: 'buffer', cellStyles: true });
         const ws = fileRead.Sheets["Sheet1"];
+        if (!ws) {
+            throw new common_1.NotFoundException('שם העמוד צריך להיות Sheet1');
+        }
         let endNames = { morning: 5, noon: 5, night: 5 };
         let temps = { cell: ws.A5, index: 5 };
         temps = this.getEndShiftExcel(ws, temps.cell, temps.index, "צהריים");
@@ -202,33 +216,9 @@ let ScheduleService = class ScheduleService {
             if ((weekNumber === 0 ? i - 1 : i) % 8 === 0)
                 weekNumber += 1;
             let day = i - 2 - weekNumber * 7;
-            for (let j = 5; j <= endNames.morning; j++) {
-                let cell = ws[`${excel.getExcelAlpha(i)}${j}`];
-                if (((_b = (_a = cell === null || cell === void 0 ? void 0 : cell.s) === null || _a === void 0 ? void 0 : _a.fgColor) === null || _b === void 0 ? void 0 : _b.rgb) === 'C6EFCE') {
-                    extractedData[weekNumber][day].morning.push({ name: cell === null || cell === void 0 ? void 0 : cell.v, pull: true });
-                }
-                if (((_d = (_c = cell === null || cell === void 0 ? void 0 : cell.s) === null || _c === void 0 ? void 0 : _c.fgColor) === null || _d === void 0 ? void 0 : _d.rgb) === 'FFEB9C') {
-                    extractedData[weekNumber][day].morning.push({ name: cell === null || cell === void 0 ? void 0 : cell.v, pull: false });
-                }
-            }
-            for (let j = endNames.morning + 1; j <= endNames.noon; j++) {
-                let cell = ws[`${excel.getExcelAlpha(i)}${j}`];
-                if (((_f = (_e = cell === null || cell === void 0 ? void 0 : cell.s) === null || _e === void 0 ? void 0 : _e.fgColor) === null || _f === void 0 ? void 0 : _f.rgb) === 'C6EFCE') {
-                    extractedData[weekNumber][day].noon.push({ name: cell === null || cell === void 0 ? void 0 : cell.v, pull: true });
-                }
-                if (((_h = (_g = cell === null || cell === void 0 ? void 0 : cell.s) === null || _g === void 0 ? void 0 : _g.fgColor) === null || _h === void 0 ? void 0 : _h.rgb) === 'FFEB9C') {
-                    extractedData[weekNumber][day].noon.push({ name: cell === null || cell === void 0 ? void 0 : cell.v, pull: false });
-                }
-            }
-            for (let j = endNames.noon + 1; j <= endNames.night; j++) {
-                let cell = ws[`${excel.getExcelAlpha(i)}${j}`];
-                if (((_k = (_j = cell === null || cell === void 0 ? void 0 : cell.s) === null || _j === void 0 ? void 0 : _j.fgColor) === null || _k === void 0 ? void 0 : _k.rgb) === 'C6EFCE') {
-                    extractedData[weekNumber][day].night.push({ name: cell === null || cell === void 0 ? void 0 : cell.v, pull: true });
-                }
-                if (((_m = (_l = cell === null || cell === void 0 ? void 0 : cell.s) === null || _l === void 0 ? void 0 : _l.fgColor) === null || _m === void 0 ? void 0 : _m.rgb) === 'FFEB9C') {
-                    extractedData[weekNumber][day].night.push({ name: cell === null || cell === void 0 ? void 0 : cell.v, pull: false });
-                }
-            }
+            extractedData = this.searchExcelShift(ws, 5, endNames.morning, i, weekNumber, day, extractedData, "morning");
+            extractedData = this.searchExcelShift(ws, endNames.morning + 1, endNames.noon, i, weekNumber, day, extractedData, "noon");
+            extractedData = this.searchExcelShift(ws, endNames.noon + 1, endNames.night, i, weekNumber, day, extractedData, "night");
         }
         return extractedData;
     }
@@ -241,7 +231,70 @@ let ScheduleService = class ScheduleService {
         if (!schedule) {
             throw new common_1.NotFoundException('לא נמצא סידור');
         }
+        let weeks_tmp = [];
+        for (let i = 0; i < schedule.weeks.length; i++) {
+            let week_tmp = [];
+            for (let j = 0; j < schedule.weeks[i].length; j++) {
+                let structureModel = await this.structureModel.findById(schedule.weeks[i][j].shift);
+                if (structureModel) {
+                    week_tmp.push({ shift: structureModel, days: ["", "", "", "", "", "", ""] });
+                }
+            }
+            week_tmp.sort(this.sortStructures);
+            weeks_tmp.push(week_tmp);
+        }
+        let managers = await this.userModel.find({ username: { $ne: "admin" }, role: 'SHIFT_MANAGER' });
+        let managers_names = managers.map(user => user.nickname);
         const extractedData = this.extractDataFromExcel(files[0], schedule.num_weeks);
+        console.log("🚀 ~ file: schedule.service.ts ~ line 261 ~ ScheduleService ~ excelToSchedule ~ extractedData", extractedData[0][0]);
+        for (let i = 0; i < extractedData.length; i++) {
+            let morningShifts = weeks_tmp[i].filter(structure => structure.shift.shift === 0);
+            let noonShifts = weeks_tmp[i].filter(structure => structure.shift.shift === 1);
+            let nightShifts = weeks_tmp[i].filter(structure => structure.shift.shift === 2);
+            for (let j = 0; j < extractedData[i].length; j++) {
+                let inShift = [];
+                if (this.compareTwoArrays(managers_names, extractedData[i][j].morning.map(user => user.name)).length) {
+                    let managerShifts = morningShifts.filter(structure => structure.shift.manager);
+                    let temp_names = this.compareTwoArrays(managers_names, extractedData[i][j].morning.map(user => user.name));
+                    for (let k = 0; k < managerShifts.length; k++) {
+                        if (temp_names.length !== 0) {
+                            let rndIndex = (0, functions_1.getRandomIndex)(temp_names.length);
+                            weeks_tmp[i] = weeks_tmp[i].map(shift => {
+                                if (shift.shift._id === managerShifts[k].shift._id) {
+                                    let split = shift.days[j].split("\n");
+                                    split.push(temp_names[rndIndex]);
+                                    shift.days[j] = split.join('\n');
+                                    inShift.push(temp_names[rndIndex]);
+                                    extractedData[i][j].morning = extractedData[i][j].morning.filter(user => user.name !== temp_names[rndIndex]);
+                                    temp_names = temp_names.filter((_, index) => index !== rndIndex);
+                                }
+                                return shift;
+                            });
+                        }
+                    }
+                }
+                if (extractedData[i][j].morning.length > 0) {
+                    let openingShifts = morningShifts.filter(structure => structure.shift.opening);
+                    for (let k = 0; k < openingShifts.length; k++) {
+                        let rndIndex = (0, functions_1.getRandomIndex)(extractedData[i][j].morning.length);
+                        weeks_tmp[i] = weeks_tmp[i].map(shift => {
+                            if (shift.shift._id === openingShifts[k].shift._id) {
+                                let split = shift.days[j].split("\n");
+                                split.push(extractedData[i][j].morning[rndIndex].name);
+                                shift.days[j] = split.join('\n');
+                                inShift.push(extractedData[i][j].morning[rndIndex].name);
+                                extractedData[i][j].morning = extractedData[i][j].morning.filter(user => user.name !== extractedData[i][j].morning[rndIndex].name);
+                            }
+                            return shift;
+                        });
+                    }
+                }
+                if (extractedData[i][j].morning.length > 0) {
+                    let pullShifts = morningShifts.filter(structure => structure.shift.pull);
+                }
+            }
+        }
+        console.log(weeks_tmp[0]);
     }
     async scheduleTable(id) {
         let schedule = await this.scheduleModel.findById(id);
@@ -402,7 +455,8 @@ ScheduleService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)('Schedule')),
     __param(1, (0, mongoose_1.InjectModel)('Structure')),
-    __metadata("design:paramtypes", [mongoose_2.Model, mongoose_2.Model])
+    __param(2, (0, mongoose_1.InjectModel)('User')),
+    __metadata("design:paramtypes", [mongoose_2.Model, mongoose_2.Model, mongoose_2.Model])
 ], ScheduleService);
 exports.ScheduleService = ScheduleService;
 //# sourceMappingURL=schedule.service.js.map

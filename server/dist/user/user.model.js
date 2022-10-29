@@ -47,8 +47,7 @@ exports.UserScheme = new mongoose.Schema({
     },
     reset_token: {
         type: String,
-        required: false,
-        unique: true
+        required: false
     },
     role: [
         { type: String,

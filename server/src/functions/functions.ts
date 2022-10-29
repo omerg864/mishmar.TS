@@ -58,6 +58,25 @@ export const numberToDay = (num: number): string => {
   return days_names[num];
 }
 
+export const stringInArray = (name: string, array: string[]): boolean => {
+  return array.filter(item => item === name).length > 0;
+}
+
+export const compareTwoArrays = (arr1: string[], arr2: string[]) => {
+  let names: string[] = []
+  for (let i = 0; i < arr1.length; i++) {
+      if (!arr2.every((x: string) => x !== arr1[i])) {
+          names.push(arr1[i]);
+      }
+  }
+  return names;
+}
+
+export const getRandomIndex = (arrayLength: number): number => {
+  return Math.floor(Math.random() * arrayLength);
+}
+
+
 export const sendMail = (receiver: string|string[], subject: string, text: string) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
