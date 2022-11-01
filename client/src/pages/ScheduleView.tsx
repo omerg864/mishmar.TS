@@ -27,17 +27,18 @@ const ScheduleView = (props: IProps) => {
 
   const getSchedule = async () => {
     setIsLoading(true);
+    let url = "";
+    if (id) {
+      url = `/api/schedules/${id}`;
+    } else {
+      let page = searchParams.get('page') ? parseInt(searchParams.get('page') as string) : 1;
+      url = `/api/schedules/auth/view?page=${page}`;
+    }
     try {
-        let url = "";
-        if (id) {
-          url = `/api/schedules/${id}`;
-        } else {
-          let page = searchParams.get('page') ? parseInt(searchParams.get('page') as string) : 1;
-          url = `/api/schedules/auth/view?page=${page}`;
-        }
         const response = await fetch(url, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
         const data = await response.json();
         if (data.error || data.statusCode) {
+          fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: url, component: "ScheduleView" })})
           toast.error(data.message);
         } else {
           if (!id){
@@ -48,7 +49,7 @@ const ScheduleView = (props: IProps) => {
           }
         }
     } catch (err) {
-        console.log(err);
+      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: url, component: "ScheduleView" })})
         toast.error("Internal Server Error");
     }
     setIsLoading(false);

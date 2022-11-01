@@ -25,12 +25,13 @@ const SettingsPage = (props: IProps) => {
           const response = await fetch('/api/settings/', { headers: { authorization: 'Bearer ' + cookies.get('userToken')}})
           const data = await response.json();
           if (data.error || data.statusCode) {
+            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `settings`, component: "Settings" })})
             toast.error(data.message);
           } else {
             setSettings(data);
           }
         } catch (err) {
-          console.error(err);
+          fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `settings`, component: "Settings" })})
           toast.error("Internal Server Error");
         }
         setIsLoading(false);
@@ -44,13 +45,14 @@ const SettingsPage = (props: IProps) => {
             method: 'PATCH', body: JSON.stringify(settings)})
           const data = await response.json();
           if (data.error || data.statusCode) {
+            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `settings`, component: "Settings" })})
             toast.error(data.message);
           } else {
             toast.success("הגדרות נשמרו");
             props.setSettingsChange(!props.settingsChange);
           }
         } catch (err) {
-          console.error(err);
+          fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `settings`, component: "Settings" })})
           toast.error("Internal Server Error");
         }
         setIsLoading(false);

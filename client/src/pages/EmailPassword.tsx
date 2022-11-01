@@ -5,6 +5,7 @@ import { Box, Button, TextField, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { email_regex } from '../types/regularExpressions'
 import LogoutMessage from '../components/LogoutMessage';
+import Cookies from 'universal-cookie';
 
 interface IProps {
   authenticated: boolean;
@@ -15,6 +16,7 @@ const EmailPassword = (props: IProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [email, setEmail] = useState<string>('');
   const navigate = useNavigate();
+  const cookies = new Cookies();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,13 +29,14 @@ const EmailPassword = (props: IProps) => {
       const response = await fetch(`/api/users/forgot`, { headers: { 'Content-Type': 'application/json'}, method: 'POST', body: JSON.stringify({email})});
       const data = await response.json();
       if (data.error || data.statusCode) {
+        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: 'users/forgot', component: "EmailPassword" })})
         toast.error(data.message);
       } else {
         toast.success("נשלח כתובת לאיפוס סיסמה למייל");
         navigate("/");
       }
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: 'users/forgot', component: "EmailPassword" })})
       toast.error('Internal Server Error');
     }
     setIsLoading(false);

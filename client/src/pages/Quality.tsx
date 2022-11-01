@@ -26,13 +26,14 @@ const Quality = (props: IProps) => {
         try {
           const response = await fetch(`/api/users/all`, { headers: { authorization: 'Bearer ' + cookies.get('userToken')}});
           const data = await response.json();
-          if (data.error) {
+          if (data.error || data.statusCode) {
+            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/all`, component: "Quality" })})
             toast.error(data.message);
           } else {
             setUsers(data);
           }
-        } catch (e) {
-          console.log(e);
+        } catch (err) {
+          fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/all`, component: "Quality" })})
           toast.error('Internal Server Error');
         }
         setIsLoading(false);
@@ -85,15 +86,16 @@ const Quality = (props: IProps) => {
           const response = await fetch(`/api/users/many`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
           method: 'PATCH', body: JSON.stringify(users)});
           const data = await response.json();
-          if (data.error) {
+          if (data.error || data.statusCode) {
+            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/many`, component: "Quality" })})
             toast.error(data.message);
           } else {
             toast.success("איכויות נשמרו");
             const userID = cookies.get('user')._id;
             cookies.set('user', users.find(user => user._id === userID));
           }
-        } catch (e) {
-          console.log(e);
+        } catch (err) {
+          fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/many`, component: "Quality" })})
           toast.error('Internal Server Error');
         }
         if (loading)

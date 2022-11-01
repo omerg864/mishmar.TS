@@ -30,6 +30,7 @@ export declare class UserController {
     authUser(id: string): Promise<{
         user: boolean;
         manager: boolean;
+        userCookie: User;
     }>;
     getUser(userId: string): Promise<User>;
 }

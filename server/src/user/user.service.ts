@@ -158,15 +158,16 @@ export class UserService {
         return user;
     }
 
-    async authUser(id: string): Promise<{user: boolean, manager: boolean}> {
-        const user = await this.userModel.findById(id);
+    async authUser(id: string): Promise<{user: boolean, manager: boolean, userCookie: User}> {
+        const user = await this.userModel.findById(id).select(['-password', '-reset_token']);
         let manager = false;
         if (user.role.includes('ADMIN') || user.role.includes('SITE_MANAGER')) {
             manager = true;
         }
         return {
             user: true,
-            manager
+            manager,
+            userCookie: user
         };
     }
 

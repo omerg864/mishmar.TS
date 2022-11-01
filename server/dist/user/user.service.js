@@ -160,14 +160,15 @@ let UserService = class UserService {
         return user;
     }
     async authUser(id) {
-        const user = await this.userModel.findById(id);
+        const user = await this.userModel.findById(id).select(['-password', '-reset_token']);
         let manager = false;
         if (user.role.includes('ADMIN') || user.role.includes('SITE_MANAGER')) {
             manager = true;
         }
         return {
             user: true,
-            manager
+            manager,
+            userCookie: user
         };
     }
 };

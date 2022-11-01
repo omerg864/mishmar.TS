@@ -33,5 +33,6 @@ export declare class UserService {
     authUser(id: string): Promise<{
         user: boolean;
         manager: boolean;
+        userCookie: User;
     }>;
 }

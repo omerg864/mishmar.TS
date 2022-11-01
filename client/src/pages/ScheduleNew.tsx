@@ -33,13 +33,14 @@ const ScheduleNew = (props: IProps) => {
             ,method: 'POST', body: JSON.stringify({ date, num_weeks: numWeeks})});
             const data = await response.json();
             if (data.error || data.statusCode) {
+                fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules`, component: "ScheduleNew" })})
                 toast.error(data.message);
             } else {
                 toast.success('ויהיה סידור');
                 navigate(`/schedule/${data._id}/update`);
             }
-        } catch (e) {
-            console.log(e);
+        } catch (err) {
+            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules`, component: "ScheduleNew" })})
             toast.error("Internal Server Error");
         }
         setLoading(false);
@@ -53,12 +54,13 @@ const ScheduleNew = (props: IProps) => {
             {headers: {'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken')}});
             const data = await response.json();
             if (data.error || data.statusCode) {
+                fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/auth/last`, component: "ScheduleNew" })})
                 toast.error(data.message);
             } else {
                 setDate(addDays(new Date(data.date), data.num_weeks * 7))
             }
-        } catch (e) {
-            console.log(e);
+        } catch (err) {
+            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/auth/last`, component: "ScheduleNew" })})
             toast.error("Internal Server Error");
         }
         setLoading(false);

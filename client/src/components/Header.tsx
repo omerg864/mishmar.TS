@@ -103,12 +103,13 @@ const Header = (props: IProps) => {
       const response = await fetch('/api/settings/general')
       const data = await response.json();
       if (data.error || data.statusCode) {
+        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: 'settings/general', component: "Header" })})
         toast.error(data.message);
       } else {
         setTitle(data.title);
       }
     } catch (err) {
-      console.error(err);
+      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: 'settings/general', component: "Header" })})
       toast.error("Internal Server Error");
     }
     setIsLoading(false);
@@ -122,12 +123,15 @@ const Header = (props: IProps) => {
       if (data.error || data.statusCode) {
         props.setAuthenticated(false);
         props.setManager(false);
+        cookies.remove('userToken')
+        cookies.remove('user')
       } else {
         props.setAuthenticated(true);
         props.setManager(data.manager);
+        cookies.set('user', data.userCookie);
       }
     } catch (err) {
-      console.error(err);
+      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: 'users/auth', component: "Header" })})
       toast.error("Internal Server Error");
       props.setAuthenticated(false);
       props.setManager(false);

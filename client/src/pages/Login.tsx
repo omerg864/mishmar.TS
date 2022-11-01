@@ -32,9 +32,11 @@ const Login = (props: IProps) => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
-        const response = await fetch(`/api/users/login`, { headers: {"Content-type": "application/json"} ,method: 'POST', body: JSON.stringify(userData)})
+        try {
+          const response = await fetch(`/api/users/login`, { headers: {"Content-type": "application/json"} ,method: 'POST', body: JSON.stringify(userData)})
         const data = await response.json();
-        if (data.error || data.statusCode) {
+        if (data.error || data.statusCode) {          
+            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/login`, component: "Login" })})
             toast.error(data.message);
         } else {
             let date30 = addDays(new Date(), 30);
@@ -48,6 +50,10 @@ const Login = (props: IProps) => {
               props.setManager(false);
             }
             navigate('/');
+        }
+        } catch(err) {
+          fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/login`, component: "Login" })})
+          toast.error('Internal Server Error')
         }
         setIsLoading(false);
     }

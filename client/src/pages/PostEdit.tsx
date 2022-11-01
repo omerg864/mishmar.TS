@@ -32,12 +32,13 @@ const PostEdit = (props: IProps) => {
       const response = await fetch(`/api/posts/${id}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') }});
       const data = await response.json();
       if (data.error || data.statusCode) {
+        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `posts/${id}`, component: "PostEdit" })})
         toast.error(data.message);
       } else {
         setPost(data);
       }
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `posts/${id}`, component: "PostEdit" })})
       toast.error('Internal server error');
     }
     setLoading(false);
@@ -53,14 +54,15 @@ const PostEdit = (props: IProps) => {
       const response = await fetch(`/api/posts/`, { headers: { authorization: 'Bearer ' + cookies.get('userToken'), "Content-type": "application/json" },
       method: 'PATCH', body: JSON.stringify({...post, date: new Date() })});
       const data = await response.json();
-      if (data.error) {
+      if (data.error || data.statusCode) {
+        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `posts`, component: "PostEdit" })})
         toast.error(data.message);
       } else {
         toast.success("פוסט עודכן");
         navigate('/posts');
       }
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `posts`, component: "PostEdit" })})
       toast.error('Internal Server Error');
     }
     setLoading(false);
@@ -72,14 +74,15 @@ const PostEdit = (props: IProps) => {
       const response = await fetch(`/api/posts/${id}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') },
       method: 'DELETE'});
       const data = await response.json();
-      if (data.error) {
+      if (data.error || data.statusCode) {
+        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `posts/${id}`, component: "PostEdit" })})
         toast.error(data.message);
       } else {
         toast.success("פוסט נמחק");
         navigate('/posts');
       }
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `posts/${id}`, component: "PostEdit" })})
       toast.error('Internal Server Error');
     }
     setLoading(false);

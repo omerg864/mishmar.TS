@@ -7,6 +7,7 @@ import { password_regex, email_regex } from '../types/regularExpressions'
 import PasswordRules from '../components/PasswordRules'
 import PasswordInput from '../components/PasswordInput';
 import LogoutMessage from '../components/LogoutMessage';
+import Cookies from 'universal-cookie';
 
 interface IProps {
     authenticated: boolean;
@@ -17,6 +18,7 @@ const Register = (props: IProps) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [formData, setFormData] = useState<{ name: string, username: string, password: string, confirmPassword: string, email: string, pin_code: string}>({ name: '', username: '', password: '', confirmPassword: '', email: '', pin_code: ''});
     const navigate = useNavigate();
+    const cookies = new Cookies();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -33,14 +35,20 @@ const Register = (props: IProps) => {
             return;
         }
         setIsLoading(true);
-        const response = await fetch(`/api/users/register`, { headers: {"Content-type": "application/json"} ,method: 'POST', body: JSON.stringify({user: formData, pin_code: formData.pin_code})})
-        const data = await response.json();
-        if (data.error || data.statusCode) {
-            toast.error(data.message);
-        } else {
-            navigate('/login');
+        try {
+            const response = await fetch(`/api/users/register`, { headers: {"Content-type": "application/json"} ,method: 'POST', body: JSON.stringify({user: formData, pin_code: formData.pin_code})})
+            const data = await response.json();
+            if (data.error || data.statusCode) {
+                fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/register`, component: "Register" })})
+                toast.error(data.message);
+            } else {
+                navigate('/login');
+            }
+            setIsLoading(false);
+        } catch (err) {
+            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/register`, component: "Register" })})
+            toast.error('Internal Server Error')
         }
-        setIsLoading(false);
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

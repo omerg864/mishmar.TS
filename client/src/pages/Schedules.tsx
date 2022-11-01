@@ -25,18 +25,19 @@ const Schedules = (props: IProps) => {
 
     const getSchedules = async () => {
         setLoading(true);
+        let page = searchParams.get('page') ? searchParams.get('page') : 1;
         try {
-            let page = searchParams.get('page') ? searchParams.get('page') : 1;
             const response = await fetch(`/api/schedules/auth/all?page=${page}`, { headers: {authorization: 'Bearer ' + cookies.get('userToken')}});
             const data = await response.json();
-            if (data.error) {
+            if (data.error || data.statusCode) {
+                fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/auth/all?page=${page}`, component: "Schedules" })})
                 toast.error(data.message);
             } else {
                 setSchedules(data.schedules);
                 setPages(data.pages);
             }
         } catch (err) {
-            console.log(err);
+            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/auth/all?page=${page}`, component: "Schedules" })})
             toast.error("Internal Server Error");
         }
         setLoading(false);

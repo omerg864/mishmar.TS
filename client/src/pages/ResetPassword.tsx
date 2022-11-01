@@ -9,6 +9,7 @@ import { password_regex } from '../types/regularExpressions'
 import { Passwords } from '../types/types';
 import PasswordInput from '../components/PasswordInput';
 import LogoutMessage from '../components/LogoutMessage';
+import Cookies from 'universal-cookie';
 
 interface IProps {
   authenticated: boolean;
@@ -21,6 +22,7 @@ const ResetPassword = (props: IProps) => {
   const [token, setToken] = useState<boolean>(false);
   const { reset_token } = useParams();
   const navigate = useNavigate();
+  const cookies = new Cookies();
 
 
   const checkToken = async () => {
@@ -29,12 +31,13 @@ const ResetPassword = (props: IProps) => {
       const response = await fetch(`/api/users/resetPassword/${reset_token}`)
       const data = await response.json();
       if (data.error || data.statusCode) {
+        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/resetPassword/${reset_token}`, component: "ResetPassword" })})
         toast.error(data.message);
       } else {
         setToken(true);
       }
     } catch (err) {
-      console.log(err);
+      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/resetPassword/${reset_token}`, component: "ResetPassword" })})
       toast.error("Internal Server Error");
     }
     setIsLoading(false);
@@ -62,12 +65,13 @@ const ResetPassword = (props: IProps) => {
       const response = await fetch(`/api/users/resetPassword/${reset_token}`, { headers: { 'Content-Type': 'application/json' }, method: 'POST', body: JSON.stringify(passwordData) });
       const data = await response.json();
       if (data.error || data.statusCode) {
+        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/resetPassword/${reset_token}`, component: "ResetPassword" })})
         toast.error(data.message);
       } else {
         navigate('/login');
       }
     } catch (err) {
-      console.log(err);
+      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/resetPassword/${reset_token}`, component: "ResetPassword" })})
       toast.error("Internal Server Error");
     }
     setIsLoading(false);

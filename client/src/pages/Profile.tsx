@@ -40,13 +40,14 @@ const Profile = (props: IProps) => {
       method: 'PATCH', body: JSON.stringify(formData)});
       const data = await response.json();
       if (data.error || data.statusCode) {
+        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users`, component: "Profile" })})
         toast.error(data.message);
       } else {
         toast.success("הגדרות נשמרו");
         cookies.set('user', data);
       }
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users`, component: "Profile" })})
       toast.error('Internal Server Error');
     }
     setLoading(false);
@@ -75,13 +76,14 @@ const Profile = (props: IProps) => {
       method: 'PATCH', body: JSON.stringify(passwordData)});
       const data = await response.json();
       if (data.error || data.statusCode) {
+        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users`, component: "Profile" })})
         toast.error(data.message);
       } else {
         toast.success("סיסמה שונתה");
         closeModal();
       }
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users`, component: "Profile" })})
       toast.error('Internal Server Error');
     }
     setLoading(false);
