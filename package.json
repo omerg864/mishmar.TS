@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "add": "cd client && npm run build && cd .. && git add .",
-    "commit": "cd client && npm run build && cd .. && git add . && git commit -m"
+    "commit": "cd client && npm run build && cd ../server && nest build && cd .. && git add . && git commit -m"
   },
   "repository": {
     "type": "git",
