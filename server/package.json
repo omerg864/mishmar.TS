@@ -5,6 +5,7 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "homepage": "https://mishmar-ramla.vercel.app",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
