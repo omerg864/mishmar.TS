@@ -28,7 +28,7 @@ export declare class ScheduleService {
     private readonly structureModel;
     private readonly userModel;
     constructor(scheduleModel: Model<Schedule>, structureModel: Model<Structure>, userModel: Model<User>);
-    sortStructures: (a: Shift, b: Shift) => 0 | 1 | -1;
+    sortStructures: (a: Shift, b: Shift) => 1 | 0 | -1;
     populateSchedule(schedule: Schedule): Promise<Schedule>;
     getViewSchedule(query: {
         page?: number;
