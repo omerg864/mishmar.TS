@@ -88,7 +88,7 @@ const Structures = (props: IProps) => {
             const response = await fetch('/api/structures/all', {headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}});
             const data = await response.json();
             if (data.error || data.statusCode) {
-              fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `structures/all`, component: "Structures" })})
+              fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `structures/all`, component: "Structures" })})
               toast.error(data.message);
             } else {
                 setStructures(data);
@@ -99,7 +99,7 @@ const Structures = (props: IProps) => {
                 //setSavedStructures(data);
             }
         } catch (err) {
-          fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `structures/all`, component: "Structures" })})
+          fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `structures/all`, component: "Structures" })})
             toast.error("Internal Server Error");
         }
         setLoading(false);
@@ -124,13 +124,13 @@ const Structures = (props: IProps) => {
       })
         const data = await response.json();
         if (data.error || data.statusCode) {
-          fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `structures/many`, component: "Structures" })})
+          fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `structures/many`, component: "Structures" })})
           toast.error(data.message);
         } else {
           toast.success("שינויים נשמרו");
         }
       } catch (err) {
-        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `structures/many`, component: "Structures" })})
+        fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `structures/many`, component: "Structures" })})
         toast.error("Internal Server Error");
       }
       setLoading(false);
@@ -151,13 +151,13 @@ const Structures = (props: IProps) => {
         method: 'POST', body: JSON.stringify({structure: newStructure, scheduleAdd})});
         const data = await response.json();
         if (data.statusCode || data.error) {
-          fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `structures`, component: "Structures" })})
+          fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `structures`, component: "Structures" })})
           toast.error(data.message);
         } else {
           toast.success("נוצר בהצלחה");
         }
       } catch (err) {
-        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `structures`, component: "Structures" })})
+        fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `structures`, component: "Structures" })})
         toast.error("Internal Server Error");
       }
       setNewStructure(defaultValue);
@@ -171,13 +171,13 @@ const Structures = (props: IProps) => {
         const response = await fetch(`/api/structures/${(e.target as HTMLButtonElement).value}`, { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}, method: 'DELETE'});
         const data = await response.json();
         if (data.error || data.statusCode) {
-          fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `structures/${(e.target as HTMLButtonElement).value}`, component: "Structures" })})
+          fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `structures/${(e.target as HTMLButtonElement).value}`, component: "Structures" })})
           toast.error(data.message);
         } else {
           toast.success("נמחק בהצלחה");
         }
       } catch (err) {
-        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `structures/${(e.target as HTMLButtonElement).value}`, component: "Structures" })})
+        fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `structures/${(e.target as HTMLButtonElement).value}`, component: "Structures" })})
         toast.error("Internal Server Error");
       }
       setLoading(false);

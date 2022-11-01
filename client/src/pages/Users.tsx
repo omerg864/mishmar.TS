@@ -32,13 +32,13 @@ const Users = (props: IProps) => {
       const response = await fetch(`/api/users/all`, { headers: { authorization: 'Bearer ' + cookies.get('userToken')}});
       const data = await response.json();
       if (data.error || data.statusCode) {
-        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/all`, component: "Users" })})
+        fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/all`, component: "Users" })})
         toast.error(data.message);
       } else {
         setUsers(data);
       }
     } catch (err) {
-      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/all`, component: "Users" })})
+      fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/all`, component: "Users" })})
       toast.error('Internal Server Rrror');
     }
     if (loading)
@@ -104,7 +104,7 @@ const Users = (props: IProps) => {
       method: 'PATCH', body: JSON.stringify(users)});
       const data = await response.json();
       if (data.error || data.statusCode) {
-        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/many`, component: "Users" })})
+        fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/many`, component: "Users" })})
         toast.error(data.message);
       } else {
         toast.success("עודכן");
@@ -112,7 +112,7 @@ const Users = (props: IProps) => {
         cookies.set('user', users.find(user => user._id === userID));
       }
     } catch (err) {
-      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/many`, component: "Users" })})
+      fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/many`, component: "Users" })})
       toast.error('Internal Server Error');
     }
     setIsLoading(false);
@@ -141,14 +141,14 @@ const Users = (props: IProps) => {
       method: 'PATCH', body: JSON.stringify(modal.user)});
       const data = await response.json();
       if (data.error || data.statusCode) {
-        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/manager`, component: "Users" })})
+        fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/manager`, component: "Users" })})
         toast.error(data.message);
       } else {
         toast.success("סיסמה שונתה");
         setModal({open: false, user: {password: "", confirmPassword: ""} as User})
       }
     } catch (err) {
-      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/manager`, component: "Users" })})
+      fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/manager`, component: "Users" })})
       toast.error('Internal Server Error');
     }
     setIsLoading(false);
@@ -188,14 +188,14 @@ const Users = (props: IProps) => {
       method: 'DELETE'});
       const data = await response.json();
       if (data.error || data.statusCode) {
-        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/${(e.target as HTMLButtonElement).value}`, component: "Users" })})
+        fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/${(e.target as HTMLButtonElement).value}`, component: "Users" })})
         toast.error(data.message);
       } else {
         toast.success("User deleted");
         await getUsers(false);
       }
     } catch (err) {
-      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/${(e.target as HTMLButtonElement).value}`, component: "Users" })})
+      fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/${(e.target as HTMLButtonElement).value}`, component: "Users" })})
       toast.error('Internal server error');
     }
     setIsLoading(false);

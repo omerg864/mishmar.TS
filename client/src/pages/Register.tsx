@@ -39,14 +39,14 @@ const Register = (props: IProps) => {
             const response = await fetch(`/api/users/register`, { headers: {"Content-type": "application/json"} ,method: 'POST', body: JSON.stringify({user: formData, pin_code: formData.pin_code})})
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/register`, component: "Register" })})
+                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/register`, component: "Register" })})
                 toast.error(data.message);
             } else {
                 navigate('/login');
             }
             setIsLoading(false);
         } catch (err) {
-            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/register`, component: "Register" })})
+            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/register`, component: "Register" })})
             toast.error('Internal Server Error')
         }
     }

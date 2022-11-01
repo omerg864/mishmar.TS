@@ -30,14 +30,14 @@ const Schedules = (props: IProps) => {
             const response = await fetch(`/api/schedules/auth/all?page=${page}`, { headers: {authorization: 'Bearer ' + cookies.get('userToken')}});
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/auth/all?page=${page}`, component: "Schedules" })})
+                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/auth/all?page=${page}`, component: "Schedules" })})
                 toast.error(data.message);
             } else {
                 setSchedules(data.schedules);
                 setPages(data.pages);
             }
         } catch (err) {
-            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/auth/all?page=${page}`, component: "Schedules" })})
+            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/auth/all?page=${page}`, component: "Schedules" })})
             toast.error("Internal Server Error");
         }
         setLoading(false);

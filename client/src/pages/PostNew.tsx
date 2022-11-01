@@ -31,14 +31,14 @@ const PostNew = (props: IProps) => {
       method: 'POST', body: JSON.stringify({...post, date: new Date() })});
       const data = await response.json();
       if (data.error || data.statusCode) {
-        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `posts`, component: "PostNew" })})
+        fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `posts`, component: "PostNew" })})
         toast.error(data.message);
       } else {
         toast.success("פוסט נשמר");
         navigate('/posts');
       }
     } catch (err) {
-      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `posts`, component: "PostNew" })})
+      fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `posts`, component: "PostNew" })})
       toast.error('Internal Server Error');
     }
     setLoading(false);

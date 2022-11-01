@@ -30,14 +30,14 @@ const Posts = (props: IProps) => {
       const response = await fetch(`/api/posts/auth/all?page=${page}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
       const data = await response.json();
       if (data.error || data.statusCode) {
-        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `posts/auth/all?page=${page}`, component: "Posts" })})
+        fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `posts/auth/all?page=${page}`, component: "Posts" })})
         toast.error(data.message);
       } else {
         setPosts(data.posts);
         setPages(data.pages);
       }
     } catch (err) {
-      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `posts/auth/all?page=${page}`, component: "Posts" })})
+      fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `posts/auth/all?page=${page}`, component: "Posts" })})
       toast.error("Internal Server Error")
     }
     setLoading(false);

@@ -27,13 +27,13 @@ const Quality = (props: IProps) => {
           const response = await fetch(`/api/users/all`, { headers: { authorization: 'Bearer ' + cookies.get('userToken')}});
           const data = await response.json();
           if (data.error || data.statusCode) {
-            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/all`, component: "Quality" })})
+            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/all`, component: "Quality" })})
             toast.error(data.message);
           } else {
             setUsers(data);
           }
         } catch (err) {
-          fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/all`, component: "Quality" })})
+          fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/all`, component: "Quality" })})
           toast.error('Internal Server Error');
         }
         setIsLoading(false);
@@ -87,7 +87,7 @@ const Quality = (props: IProps) => {
           method: 'PATCH', body: JSON.stringify(users)});
           const data = await response.json();
           if (data.error || data.statusCode) {
-            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/many`, component: "Quality" })})
+            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/many`, component: "Quality" })})
             toast.error(data.message);
           } else {
             toast.success("איכויות נשמרו");
@@ -95,7 +95,7 @@ const Quality = (props: IProps) => {
             cookies.set('user', users.find(user => user._id === userID));
           }
         } catch (err) {
-          fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/many`, component: "Quality" })})
+          fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/many`, component: "Quality" })})
           toast.error('Internal Server Error');
         }
         if (loading)

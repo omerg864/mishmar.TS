@@ -31,13 +31,13 @@ const ResetPassword = (props: IProps) => {
       const response = await fetch(`/api/users/resetPassword/${reset_token}`)
       const data = await response.json();
       if (data.error || data.statusCode) {
-        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/resetPassword/${reset_token}`, component: "ResetPassword" })})
+        fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/resetPassword/${reset_token}`, component: "ResetPassword" })})
         toast.error(data.message);
       } else {
         setToken(true);
       }
     } catch (err) {
-      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/resetPassword/${reset_token}`, component: "ResetPassword" })})
+      fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/resetPassword/${reset_token}`, component: "ResetPassword" })})
       toast.error("Internal Server Error");
     }
     setIsLoading(false);
@@ -65,13 +65,13 @@ const ResetPassword = (props: IProps) => {
       const response = await fetch(`/api/users/resetPassword/${reset_token}`, { headers: { 'Content-Type': 'application/json' }, method: 'POST', body: JSON.stringify(passwordData) });
       const data = await response.json();
       if (data.error || data.statusCode) {
-        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/resetPassword/${reset_token}`, component: "ResetPassword" })})
+        fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/resetPassword/${reset_token}`, component: "ResetPassword" })})
         toast.error(data.message);
       } else {
         navigate('/login');
       }
     } catch (err) {
-      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/resetPassword/${reset_token}`, component: "ResetPassword" })})
+      fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/resetPassword/${reset_token}`, component: "ResetPassword" })})
       toast.error("Internal Server Error");
     }
     setIsLoading(false);

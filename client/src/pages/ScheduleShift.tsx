@@ -46,7 +46,7 @@ const ScheduleShift = (props: IProps) => {
             const response = await fetch(`/api/shifts/schedule/${id}`, {headers: { authorization: 'Bearer ' + cookies.get('userToken') }});
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `shifts/schedule/${id}`, component: "ScheduleShift" })})
+                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `shifts/schedule/${id}`, component: "ScheduleShift" })})
                 toast.error(data.message);
             } else {
                 setWeeks(data.weeks);
@@ -57,7 +57,7 @@ const ScheduleShift = (props: IProps) => {
                 setGeneralNotes(data.generalNotes);
             }
         } catch (err) {
-            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `shifts/schedule/${id}`, component: "ScheduleShift" })})
+            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `shifts/schedule/${id}`, component: "ScheduleShift" })})
             toast.error('Internal Server Error');
         }
     }
@@ -67,13 +67,13 @@ const ScheduleShift = (props: IProps) => {
             const response = await fetch(`/api/events/manager/schedule/${id}`, {headers: { authorization: 'Bearer ' + cookies.get('userToken') }});
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `events/manager/schedule/${id}`, component: "ScheduleShift" })})
+                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `events/manager/schedule/${id}`, component: "ScheduleShift" })})
                 toast.error(data.message);
             } else {
                 setEvents(data);
             }
         } catch (err) {
-            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `events/manager/schedule/${id}`, component: "ScheduleShift" })})
+            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `events/manager/schedule/${id}`, component: "ScheduleShift" })})
             toast.error('Internal Server Error');
         }
     }
@@ -83,13 +83,13 @@ const ScheduleShift = (props: IProps) => {
             const response = await fetch(`/api/schedules/${id}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') }});
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/${id}`, component: "ScheduleShift" })})
+                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/${id}`, component: "ScheduleShift" })})
                 toast.error(data.message);
             } else {
                 setSchedule(data);
             }
         } catch (err) {
-            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/${id}`, component: "ScheduleShift" })})
+            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/${id}`, component: "ScheduleShift" })})
             toast.error('Internal Server Error');
         }
     }
@@ -108,10 +108,10 @@ const ScheduleShift = (props: IProps) => {
                 a.click();
             } else {
                 toast.error('לא ניתו להוריד קובץ');
-                fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: response, path: `shifts/excel'`, component: "ScheduleShift" })})
+                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: response, path: `shifts/excel'`, component: "ScheduleShift" })})
             }
         } catch (err) {
-            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `shifts/excel'`, component: "ScheduleShift" })})
+            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `shifts/excel'`, component: "ScheduleShift" })})
             toast.error("Internal Server error");
         }
         setLoading(false);

@@ -38,7 +38,7 @@ const ScheduleView = (props: IProps) => {
         const response = await fetch(url, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
         const data = await response.json();
         if (data.error || data.statusCode) {
-          fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: url, component: "ScheduleView" })})
+          fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: url, component: "ScheduleView" })})
           toast.error(data.message);
         } else {
           if (!id){
@@ -49,7 +49,7 @@ const ScheduleView = (props: IProps) => {
           }
         }
     } catch (err) {
-      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: url, component: "ScheduleView" })})
+      fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: url, component: "ScheduleView" })})
         toast.error("Internal Server Error");
     }
     setIsLoading(false);

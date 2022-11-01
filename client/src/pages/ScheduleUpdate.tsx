@@ -42,13 +42,13 @@ const ScheduleUpdate = (props: IProps) => {
             const response = await fetch(`/api/schedules/${id}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken')}});
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/${id}`, component: "ScheduleUpdate" })})
+                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/${id}`, component: "ScheduleUpdate" })})
                 toast.error(data.message);
             } else {
                 setSchedule(data);
             }
         }catch (err) {
-            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/${id}`, component: "ScheduleUpdate" })})
+            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/${id}`, component: "ScheduleUpdate" })})
             toast.error("Internal Server Error");
         }
         if (loading)
@@ -74,13 +74,13 @@ const ScheduleUpdate = (props: IProps) => {
             method: 'PATCH', body: JSON.stringify(schedule) });
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules`, component: "ScheduleUpdate" })})
+                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules`, component: "ScheduleUpdate" })})
                 toast.error(data.message);
             } else {
                 toast.success("עודכן");
             }
         } catch (err) {
-            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules`, component: "ScheduleUpdate" })})
+            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules`, component: "ScheduleUpdate" })})
             toast.error("Internal Server error");
         }
         setIsLoading(false);
@@ -94,14 +94,14 @@ const ScheduleUpdate = (props: IProps) => {
             method: 'DELETE' });
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/${id}`, component: "ScheduleUpdate" })})
+                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/${id}`, component: "ScheduleUpdate" })})
                 toast.error(data.message);
             } else {
                 toast.success("סידור נמחק");
                 navigate('/schedules');
             }
         } catch (err) {
-            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/${id}`, component: "ScheduleUpdate" })})
+            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/${id}`, component: "ScheduleUpdate" })})
             toast.error("Internal Server Error");
         }
         setIsLoading(false);
@@ -132,13 +132,13 @@ const ScheduleUpdate = (props: IProps) => {
             method: 'PATCH', body: JSON.stringify({...schedule, weeks}) });
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules`, component: "ScheduleUpdate" })})
+                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules`, component: "ScheduleUpdate" })})
                 toast.error(data.message);
             } else {
                 toast.success("עודכן");
             }
         } catch (err) {
-            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules`, component: "ScheduleUpdate" })})
+            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules`, component: "ScheduleUpdate" })})
             toast.error("Internal Server Error");
         }
         setIsLoading(false);
@@ -152,7 +152,7 @@ const ScheduleUpdate = (props: IProps) => {
             method: 'PUT', body: JSON.stringify(schedule.weeks) });
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/check`, component: "ScheduleUpdate" })})
+                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/check`, component: "ScheduleUpdate" })})
                 toast.error(data.message);
             } else {
                 if (data.length > 0) {
@@ -164,7 +164,7 @@ const ScheduleUpdate = (props: IProps) => {
                 }
             }
         } catch (err) {
-            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/check`, component: "ScheduleUpdate" })})
+            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/check`, component: "ScheduleUpdate" })})
             toast.error("Internal Server Error");
         }
         setIsLoading(false);
@@ -225,14 +225,14 @@ const ScheduleUpdate = (props: IProps) => {
         ,method: 'PUT', body: form })
         const data = await response.json();
         if (data.error || data.statusCode) {
-            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/upload`, component: "ScheduleUpdate" })})
+            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/upload`, component: "ScheduleUpdate" })})
             toast.error(data.message);
         } else {
             closeModal();
             await getSchedule(false);
         }
         } catch (err) {
-            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/upload`, component: "ScheduleUpdate" })})
+            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/upload`, component: "ScheduleUpdate" })})
             toast.error("Internal Server Error");
         }
         setIsLoading(false);

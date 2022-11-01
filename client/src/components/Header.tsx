@@ -103,13 +103,13 @@ const Header = (props: IProps) => {
       const response = await fetch('/api/settings/general')
       const data = await response.json();
       if (data.error || data.statusCode) {
-        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: 'settings/general', component: "Header" })})
+        fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: 'settings/general', component: "Header" })})
         toast.error(data.message);
       } else {
         setTitle(data.title);
       }
     } catch (err) {
-      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: 'settings/general', component: "Header" })})
+      fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: 'settings/general', component: "Header" })})
       toast.error("Internal Server Error");
     }
     setIsLoading(false);
@@ -131,7 +131,7 @@ const Header = (props: IProps) => {
         cookies.set('user', data.userCookie);
       }
     } catch (err) {
-      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: 'users/auth', component: "Header" })})
+      fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: 'users/auth', component: "Header" })})
       toast.error("Internal Server Error");
       props.setAuthenticated(false);
       props.setManager(false);

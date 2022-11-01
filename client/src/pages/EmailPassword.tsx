@@ -29,14 +29,14 @@ const EmailPassword = (props: IProps) => {
       const response = await fetch(`/api/users/forgot`, { headers: { 'Content-Type': 'application/json'}, method: 'POST', body: JSON.stringify({email})});
       const data = await response.json();
       if (data.error || data.statusCode) {
-        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: 'users/forgot', component: "EmailPassword" })})
+        fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: 'users/forgot', component: "EmailPassword" })})
         toast.error(data.message);
       } else {
         toast.success("נשלח כתובת לאיפוס סיסמה למייל");
         navigate("/");
       }
     } catch (err) {
-      fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: 'users/forgot', component: "EmailPassword" })})
+      fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: 'users/forgot', component: "EmailPassword" })})
       toast.error('Internal Server Error');
     }
     setIsLoading(false);

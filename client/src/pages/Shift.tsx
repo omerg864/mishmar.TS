@@ -32,7 +32,7 @@ const Shift = (props: IProps) => {
             const response = await fetch(`/api/schedules/auth/last`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
             const data = await response.json();
             if (data.error || data.statusCode) {
-              fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/auth/last`, component: "Shift" })})
+              fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/auth/last`, component: "Shift" })})
               toast.error(data.message);
             } else {
               getShift(data._id);
@@ -40,7 +40,7 @@ const Shift = (props: IProps) => {
               setSchedule({...data, date: new Date(data.date)});
             }
         } catch (err) {
-          fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/auth/last`, component: "Shift" })})
+          fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/auth/last`, component: "Shift" })})
             toast.error("Internal Server Error");
         }
         setIsLoading(false);
@@ -51,13 +51,13 @@ const Shift = (props: IProps) => {
             const response = await fetch(`/api/settings/general`, { headers: { Authorization: 'Bearer ' + cookies.get('userToken') } });
             const data = await response.json();
             if (data.error || data.statusCode) {
-              fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `settings/general`, component: "Shift" })})
+              fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `settings/general`, component: "Shift" })})
                 toast.error(data.message);
             } else {
                 setSubmitting(data.submit);
             }
         } catch (err) {
-          fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `settings/general`, component: "Shift" })})
+          fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `settings/general`, component: "Shift" })})
             toast.error("Internal Server Error");
         }
       }
@@ -67,13 +67,13 @@ const Shift = (props: IProps) => {
             const response = await fetch(`/api/shifts/user/${id}`, { headers: { Authorization: 'Bearer ' + cookies.get('userToken') } });
             const data = await response.json();
             if (data.error || data.statusCode) {
-              fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `shifts/user/${id}`, component: "Shift" })})
+              fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `shifts/user/${id}`, component: "Shift" })})
                 toast.error(data.message);
             } else {
                 setShift(data);
             }
         } catch (err) {
-          fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `shifts/user/${id}`, component: "Shift" })})
+          fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `shifts/user/${id}`, component: "Shift" })})
             toast.error("Internal Server Error");
         }
       }
@@ -83,7 +83,7 @@ const Shift = (props: IProps) => {
           const response = await fetch(`/api/events/schedule/${id}`, { headers: { Authorization: 'Bearer ' + cookies.get('userToken') } });
           const data = await response.json();
           if (data.error || data.statusCode) {
-            fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `events/schedule/${id}`, component: "Shift" })})
+            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `events/schedule/${id}`, component: "Shift" })})
               toast.error(data.message);
           } else {
             for ( let i = 0; i < data.length; i++) {
@@ -91,7 +91,7 @@ const Shift = (props: IProps) => {
             }
           }
       } catch (err) {
-        fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `events/schedule/${id}`, component: "Shift" })})
+        fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `events/schedule/${id}`, component: "Shift" })})
           toast.error("Internal Server Error");
       }
       }
@@ -125,13 +125,13 @@ const Shift = (props: IProps) => {
         method: 'PATCH', body: JSON.stringify(shift) });
             const data = await response.json();
             if (data.error || data.statusCode) {
-              fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `shifts`, component: "Shift" })})
+              fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `shifts`, component: "Shift" })})
                 toast.error(data.message);
             } else {
                 toast.success("משמרות עודכנו");
             }
         } catch (err) {
-          fetch('/api/logs', {method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `shifts`, component: "Shift" })})
+          fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `shifts`, component: "Shift" })})
             toast.error("Internal Server Error");
         }
         setIsLoading(false);

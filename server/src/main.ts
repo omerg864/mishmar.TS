@@ -11,7 +11,7 @@ async function bootstrap() {
     if (process.env.NODE_ENV === 'production') {
       app.use(express.static(join(__dirname, '..', '..', 'client', 'build')))
     }
-  await app.listen(process.env.PORT, () => {
+  await app.listen(process.env.PORT || 3000, () => {
     if (process.env.NODE_ENV === 'production') {
       console.log(`Server is running on production mode`);
     } else {
