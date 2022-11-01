@@ -68,7 +68,6 @@ function App() {
       <Route path="/profile" element={<Profile authenticated={authenticated}/>} />
       <Route path="/schedule" element={<ScheduleView authenticated={authenticated}/>} />
       <Route path="/settings" element={<Settings settingsChange={settingsChange} setSettingsChange={setSettingsChange} manager={manager}/>} />
-      <Route path="*" element={<Page404 />} />
     </Routes>
     </>
   );
