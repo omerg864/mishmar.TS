@@ -47,6 +47,8 @@ function App() {
       <Route path="/" element={<Home authenticated={authenticated} />} />
       <Route path="/login" element={<Login authenticated={authenticated} setAuthenticated={setAuthenticated} setManager={setManager}/>} />
       <Route path="/register" element={<Register authenticated={authenticated} />} />
+      <Route path="/management" element={<Manager manager={manager}/>} />
+      <Route path="/schedules" element={<Schedules manager={manager}/>} />
       <Route path="/schedule/new" element={<ScheduleNew manager={manager}/>} />
       <Route path="/schedule/:id/update" element={<ScheduleUpdate manager={manager}/>} />
       <Route path="/structure" element={<Structures manager={manager}/>} />
