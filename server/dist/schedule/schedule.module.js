@@ -15,6 +15,7 @@ const schedule_service_1 = require("./schedule.service");
 const mongoose_1 = require("@nestjs/mongoose");
 const user_model_1 = require("../user/user.model");
 const auth_middlware_1 = require("../middleware/auth.middlware");
+const settings_model_1 = require("../settings/settings.model");
 let ScheduleModule = class ScheduleModule {
     configure(consumer) {
         consumer.apply(auth_middlware_1.AuthMiddleware).forRoutes({ path: 'api/schedules/auth/*', method: common_1.RequestMethod.GET });
@@ -28,7 +29,10 @@ let ScheduleModule = class ScheduleModule {
 };
 ScheduleModule = __decorate([
     (0, common_1.Module)({
-        imports: [mongoose_1.MongooseModule.forFeature([{ name: 'Schedule', schema: schedule_model_1.ScheduleScheme }, { name: 'User', schema: user_model_1.UserScheme }, { name: 'Structure', schema: structure_model_1.StructureScheme }])],
+        imports: [mongoose_1.MongooseModule.forFeature([{ name: 'Schedule', schema: schedule_model_1.ScheduleScheme },
+                { name: 'User', schema: user_model_1.UserScheme },
+                { name: 'Structure', schema: structure_model_1.StructureScheme },
+                { name: 'Settings', schema: settings_model_1.SettingsScheme }])],
         controllers: [schedule_controller_1.ScheduleController],
         providers: [schedule_service_1.ScheduleService]
     })

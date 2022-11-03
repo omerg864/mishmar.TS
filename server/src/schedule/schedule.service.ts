@@ -7,7 +7,8 @@ import { addDays, getRandomIndex, numberToDay } from '../functions/functions';
 import * as XLSX from 'xlsx';
 import * as excel from 'excel4node';
 import * as fs from 'fs';
-import { User } from 'src/user/user.model';
+import { User } from '../user/user.model';
+import { Settings } from '../settings/settings.model';
 
 export type Shift = { shift: string|Structure, days: string[]}
 type dayShifts = "morning" | "noon" | "night";
@@ -16,7 +17,10 @@ type ExcelWeeksData = {morning: {name: string, pull: boolean}[], noon: {name: st
 @Injectable()
 export class ScheduleService {
 
-    constructor(@InjectModel('Schedule') private readonly scheduleModel: Model<Schedule>, @InjectModel('Structure') private readonly structureModel: Model<Structure>, @InjectModel('User') private readonly userModel: Model<User>) {}
+    constructor(@InjectModel('Schedule') private readonly scheduleModel: Model<Schedule>
+    , @InjectModel('Structure') private readonly structureModel: Model<Structure>
+    , @InjectModel('User') private readonly userModel: Model<User>
+    , @InjectModel('Settings') private readonly settingsModel: Model<Settings>) {}
 
 
     sortStructures = (a: Shift, b: Shift) => {
@@ -234,9 +238,9 @@ export class ScheduleService {
         return extractedData;
     }
 
-    assignToShifts(shiftType: dayShifts, shifts: Shift[], data: ExcelWeeksData, inShift: string[], day: number, week: number, managers_names: string[], weeks_tmp: Shift[][]) {
+    assignToShifts(shiftType: dayShifts, shifts: Shift[], data: ExcelWeeksData, inShift: string[], day: number, week: number, managers_names: string[], weeks_tmp: Shift[][], settings: Settings) {
+        let managerShifts = shifts.filter(structure => (structure.shift as Structure).manager);
         if (this.compareTwoArrays(managers_names, data[week][day][shiftType].map(user => user.name)).length) {
-            let managerShifts = shifts.filter(structure => (structure.shift as Structure).manager);
             let temp_names = this.compareTwoArrays(managers_names, data[week][day][shiftType].map(user => user.name));
             for(let k = 0; k < managerShifts.length; k++) {
                 if (temp_names.length !== 0) {
@@ -254,19 +258,34 @@ export class ScheduleService {
                     })
                 }
             }   
+        } else if (data[week][day][shiftType].filter(user => user.name === settings.officer).length && settings.officer) {
+            weeks_tmp[week] = weeks_tmp[week].map(shift => {
+                if((shift.shift as Structure)._id === (managerShifts[0].shift as Structure)._id) {
+                    let split = shift.days[day].split("\n").filter(name => name != '');
+                    split.push(settings.officer);
+                    shift.days[day] = split.join('\n');
+                    inShift.push(settings.officer);
+                    data[week][day][shiftType] = data[week][day][shiftType].filter(user => user.name !== settings.officer);
+                }
+                return shift
+            })
         }
         if (data[week][day][shiftType].length > 0) {
-            // TODO: try first without managers
             let openingShifts = shifts.filter(structure => (structure.shift as Structure).opening);
+            let temp_names = data[week][day][shiftType].filter(user => !managers_names.includes(user.name))
+            if (temp_names.length < openingShifts.length) {
+                temp_names = data[week][day][shiftType];
+            }
             for(let k = 0; k < openingShifts.length; k++) {
-                let rndIndex = getRandomIndex(data[week][day][shiftType].length);
+                let rndIndex = getRandomIndex(temp_names.length);
                 weeks_tmp[week] = weeks_tmp[week].map(shift => {
                     if((shift.shift as Structure)._id === (openingShifts[k].shift as Structure)._id) {
                         let split = shift.days[day].split("\n").filter(name => name != '');
-                        split.push(data[week][day][shiftType][rndIndex].name);
+                        split.push(temp_names[rndIndex].name);
                         shift.days[day] = split.join('\n');
-                        inShift.push(data[week][day][shiftType][rndIndex].name);
-                        data[week][day][shiftType] = data[week][day][shiftType].filter(user => user.name !== data[week][day][shiftType][rndIndex].name);
+                        inShift.push(temp_names[rndIndex].name);
+                        data[week][day][shiftType] = data[week][day][shiftType].filter(user => user.name !== temp_names[rndIndex].name);
+                        temp_names = temp_names.filter((_, index) => index !== rndIndex);
                     }
                     return shift
                 })
@@ -285,6 +304,7 @@ export class ScheduleService {
                             shift.days[day] = split.join('\n');
                             inShift.push(temp_names[rndIndex].name);
                             data[week][day][shiftType] = data[week][day][shiftType].filter(user => user.name !== temp_names[rndIndex].name);
+                            temp_names = temp_names.filter((_, index) => index !== rndIndex);
                         }
                         return shift
                     })
@@ -350,6 +370,7 @@ export class ScheduleService {
             weeks_tmp.push(week_tmp);
         }
         let managers = await this.userModel.find({ username: {$ne: "admin"}, role: 'SHIFT_MANAGER' });
+        let settings = await this.settingsModel.findOne();
         let managers_names = managers.map(user => user.nickname);
         let extractedData = this.extractDataFromExcel(files[0], schedule.num_weeks);
         console.log("🚀 ~ file: schedule.service.ts ~ line 261 ~ ScheduleService ~ excelToSchedule ~ extractedData", extractedData[0][0])
@@ -361,15 +382,15 @@ export class ScheduleService {
             for(let j = 0; j < extractedData[i].length; j++) {
                 // j - day number
                 let inShift: string[] = [];
-                let assigned = this.assignToShifts("morning", morningShifts, extractedData, inShift, j, i, managers_names, weeks_tmp);
+                let assigned = this.assignToShifts("morning", morningShifts, extractedData, inShift, j, i, managers_names, weeks_tmp, settings);
                 extractedData = assigned.data;
                 inShift = assigned.inShift;
                 weeks_tmp = assigned.weeks_tmp;
-                assigned = this.assignToShifts("noon", noonShifts, extractedData, inShift, j, i, managers_names, weeks_tmp);
+                assigned = this.assignToShifts("noon", noonShifts, extractedData, inShift, j, i, managers_names, weeks_tmp, settings);
                 extractedData = assigned.data;
                 inShift = assigned.inShift;
                 weeks_tmp = assigned.weeks_tmp;
-                assigned = this.assignToShifts("night", nightShifts, extractedData, inShift, j, i, managers_names, weeks_tmp);
+                assigned = this.assignToShifts("night", nightShifts, extractedData, inShift, j, i, managers_names, weeks_tmp, settings);
                 extractedData = assigned.data;
                 inShift = assigned.inShift;
                 weeks_tmp = assigned.weeks_tmp;

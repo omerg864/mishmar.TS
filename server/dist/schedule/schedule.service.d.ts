@@ -3,7 +3,8 @@ import { Model } from 'mongoose';
 import { Structure } from '../structure/structure.model';
 import { Schedule } from './schedule.model';
 import * as XLSX from 'xlsx';
-import { User } from 'src/user/user.model';
+import { User } from '../user/user.model';
+import { Settings } from '../settings/settings.model';
 export declare type Shift = {
     shift: string | Structure;
     days: string[];
@@ -27,8 +28,9 @@ export declare class ScheduleService {
     private readonly scheduleModel;
     private readonly structureModel;
     private readonly userModel;
-    constructor(scheduleModel: Model<Schedule>, structureModel: Model<Structure>, userModel: Model<User>);
-    sortStructures: (a: Shift, b: Shift) => 1 | 0 | -1;
+    private readonly settingsModel;
+    constructor(scheduleModel: Model<Schedule>, structureModel: Model<Structure>, userModel: Model<User>, settingsModel: Model<Settings>);
+    sortStructures: (a: Shift, b: Shift) => 0 | 1 | -1;
     populateSchedule(schedule: Schedule): Promise<Schedule>;
     getViewSchedule(query: {
         page?: number;
@@ -59,7 +61,7 @@ export declare class ScheduleService {
     getEmptyWeeksArrayShifts(num_weeks: number): ExcelWeeksData;
     searchExcelShift(ws: XLSX.WorkSheet, start: number, end: number, column: number, week: number, day: number, extractedData: ExcelWeeksData, shift: dayShifts): ExcelWeeksData;
     extractDataFromExcel(file: Express.Multer.File, num_weeks: number): ExcelWeeksData;
-    assignToShifts(shiftType: dayShifts, shifts: Shift[], data: ExcelWeeksData, inShift: string[], day: number, week: number, managers_names: string[], weeks_tmp: Shift[][]): {
+    assignToShifts(shiftType: dayShifts, shifts: Shift[], data: ExcelWeeksData, inShift: string[], day: number, week: number, managers_names: string[], weeks_tmp: Shift[][], settings: Settings): {
         data: ExcelWeeksData;
         inShift: string[];
         weeks_tmp: Shift[][];

@@ -6,9 +6,13 @@ import { ScheduleService } from './schedule.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserScheme } from '../user/user.model';
 import { AuthMiddleware, SiteManagerMiddleware } from '../middleware/auth.middlware';
+import { SettingsScheme } from '../settings/settings.model';
 
 @Module({
-  imports: [MongooseModule.forFeature([{name: 'Schedule', schema: ScheduleScheme}, { name: 'User', schema: UserScheme}, { name: 'Structure', schema: StructureScheme}])],
+  imports: [MongooseModule.forFeature([{name: 'Schedule', schema: ScheduleScheme}, 
+  { name: 'User', schema: UserScheme}, 
+  { name: 'Structure', schema: StructureScheme},
+  { name: 'Settings', schema: SettingsScheme}])],
   controllers: [ScheduleController],
   providers: [ScheduleService]
 })

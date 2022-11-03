@@ -20,10 +20,11 @@ const functions_1 = require("../functions/functions");
 const XLSX = require("xlsx");
 const excel = require("excel4node");
 let ScheduleService = class ScheduleService {
-    constructor(scheduleModel, structureModel, userModel) {
+    constructor(scheduleModel, structureModel, userModel, settingsModel) {
         this.scheduleModel = scheduleModel;
         this.structureModel = structureModel;
         this.userModel = userModel;
+        this.settingsModel = settingsModel;
         this.sortStructures = (a, b) => {
             const first = a.shift;
             const second = b.shift;
@@ -222,9 +223,9 @@ let ScheduleService = class ScheduleService {
         }
         return extractedData;
     }
-    assignToShifts(shiftType, shifts, data, inShift, day, week, managers_names, weeks_tmp) {
+    assignToShifts(shiftType, shifts, data, inShift, day, week, managers_names, weeks_tmp, settings) {
+        let managerShifts = shifts.filter(structure => structure.shift.manager);
         if (this.compareTwoArrays(managers_names, data[week][day][shiftType].map(user => user.name)).length) {
-            let managerShifts = shifts.filter(structure => structure.shift.manager);
             let temp_names = this.compareTwoArrays(managers_names, data[week][day][shiftType].map(user => user.name));
             for (let k = 0; k < managerShifts.length; k++) {
                 if (temp_names.length !== 0) {
@@ -243,17 +244,34 @@ let ScheduleService = class ScheduleService {
                 }
             }
         }
+        else if (data[week][day][shiftType].filter(user => user.name === settings.officer).length && settings.officer) {
+            weeks_tmp[week] = weeks_tmp[week].map(shift => {
+                if (shift.shift._id === managerShifts[0].shift._id) {
+                    let split = shift.days[day].split("\n").filter(name => name != '');
+                    split.push(settings.officer);
+                    shift.days[day] = split.join('\n');
+                    inShift.push(settings.officer);
+                    data[week][day][shiftType] = data[week][day][shiftType].filter(user => user.name !== settings.officer);
+                }
+                return shift;
+            });
+        }
         if (data[week][day][shiftType].length > 0) {
             let openingShifts = shifts.filter(structure => structure.shift.opening);
+            let temp_names = data[week][day][shiftType].filter(user => !managers_names.includes(user.name));
+            if (temp_names.length < openingShifts.length) {
+                temp_names = data[week][day][shiftType];
+            }
             for (let k = 0; k < openingShifts.length; k++) {
-                let rndIndex = (0, functions_1.getRandomIndex)(data[week][day][shiftType].length);
+                let rndIndex = (0, functions_1.getRandomIndex)(temp_names.length);
                 weeks_tmp[week] = weeks_tmp[week].map(shift => {
                     if (shift.shift._id === openingShifts[k].shift._id) {
                         let split = shift.days[day].split("\n").filter(name => name != '');
-                        split.push(data[week][day][shiftType][rndIndex].name);
+                        split.push(temp_names[rndIndex].name);
                         shift.days[day] = split.join('\n');
-                        inShift.push(data[week][day][shiftType][rndIndex].name);
-                        data[week][day][shiftType] = data[week][day][shiftType].filter(user => user.name !== data[week][day][shiftType][rndIndex].name);
+                        inShift.push(temp_names[rndIndex].name);
+                        data[week][day][shiftType] = data[week][day][shiftType].filter(user => user.name !== temp_names[rndIndex].name);
+                        temp_names = temp_names.filter((_, index) => index !== rndIndex);
                     }
                     return shift;
                 });
@@ -272,6 +290,7 @@ let ScheduleService = class ScheduleService {
                             shift.days[day] = split.join('\n');
                             inShift.push(temp_names[rndIndex].name);
                             data[week][day][shiftType] = data[week][day][shiftType].filter(user => user.name !== temp_names[rndIndex].name);
+                            temp_names = temp_names.filter((_, index) => index !== rndIndex);
                         }
                         return shift;
                     });
@@ -337,6 +356,7 @@ let ScheduleService = class ScheduleService {
             weeks_tmp.push(week_tmp);
         }
         let managers = await this.userModel.find({ username: { $ne: "admin" }, role: 'SHIFT_MANAGER' });
+        let settings = await this.settingsModel.findOne();
         let managers_names = managers.map(user => user.nickname);
         let extractedData = this.extractDataFromExcel(files[0], schedule.num_weeks);
         console.log("🚀 ~ file: schedule.service.ts ~ line 261 ~ ScheduleService ~ excelToSchedule ~ extractedData", extractedData[0][0]);
@@ -346,15 +366,15 @@ let ScheduleService = class ScheduleService {
             let nightShifts = weeks_tmp[i].filter(structure => structure.shift.shift === 2);
             for (let j = 0; j < extractedData[i].length; j++) {
                 let inShift = [];
-                let assigned = this.assignToShifts("morning", morningShifts, extractedData, inShift, j, i, managers_names, weeks_tmp);
+                let assigned = this.assignToShifts("morning", morningShifts, extractedData, inShift, j, i, managers_names, weeks_tmp, settings);
                 extractedData = assigned.data;
                 inShift = assigned.inShift;
                 weeks_tmp = assigned.weeks_tmp;
-                assigned = this.assignToShifts("noon", noonShifts, extractedData, inShift, j, i, managers_names, weeks_tmp);
+                assigned = this.assignToShifts("noon", noonShifts, extractedData, inShift, j, i, managers_names, weeks_tmp, settings);
                 extractedData = assigned.data;
                 inShift = assigned.inShift;
                 weeks_tmp = assigned.weeks_tmp;
-                assigned = this.assignToShifts("night", nightShifts, extractedData, inShift, j, i, managers_names, weeks_tmp);
+                assigned = this.assignToShifts("night", nightShifts, extractedData, inShift, j, i, managers_names, weeks_tmp, settings);
                 extractedData = assigned.data;
                 inShift = assigned.inShift;
                 weeks_tmp = assigned.weeks_tmp;
@@ -527,7 +547,11 @@ ScheduleService = __decorate([
     __param(0, (0, mongoose_1.InjectModel)('Schedule')),
     __param(1, (0, mongoose_1.InjectModel)('Structure')),
     __param(2, (0, mongoose_1.InjectModel)('User')),
-    __metadata("design:paramtypes", [mongoose_2.Model, mongoose_2.Model, mongoose_2.Model])
+    __param(3, (0, mongoose_1.InjectModel)('Settings')),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model,
+        mongoose_2.Model,
+        mongoose_2.Model])
 ], ScheduleService);
 exports.ScheduleService = ScheduleService;
 //# sourceMappingURL=schedule.service.js.map
