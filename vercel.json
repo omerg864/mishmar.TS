@@ -23,7 +23,7 @@
         "headers" : [
           {
             "key" : "Cache-Control",
-            "value" : "no-cache"
+            "value" : "public, max-age=0, must-revalidate"
           }
         ]
       }
