@@ -8,7 +8,7 @@ async function bootstrap() {
      cors: true 
     });
   if (process.env.NODE_ENV === 'production') {
-    app.use('/' ,express.static(join(__dirname, "../../client/build")))
+    app.use(express.static(join(__dirname, "../../client/build")))
   }
   await app.listen(process.env.PORT || 3000, () => {
     if (process.env.NODE_ENV === 'production') {
