@@ -73,7 +73,7 @@ const TableBody2 = (props: IProps) => {
                     value={props.data[props.week].notes[num]}
                     onChange={props.notesChange}
                     name={`notes-${props.week}-${num}`}
-                    style={{ minWidth: 200 }} /></TableCell>
+                    style={{ minWidth: '100px' }} /></TableCell>
             ))}
             </TableRow>
         </TableBody>
