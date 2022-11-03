@@ -12,7 +12,7 @@ import { Settings } from '../settings/settings.model';
 
 export type Shift = { shift: string|Structure, days: string[]}
 type dayShifts = "morning" | "noon" | "night";
-type ExcelWeeksData = {morning: {name: string, pull: boolean}[], noon: {name: string, pull: boolean}[], night: {name: string, pull: boolean}[]}[][]
+type ExcelWeeksData = {morning: {name: string, pull: boolean, seq: false}[], noon: {name: string, pull: boolean, seq: false}[], night: {name: string, pull: boolean, seq: false}[]}[][]
 
 @Injectable()
 export class ScheduleService {
@@ -179,7 +179,7 @@ export class ScheduleService {
     }
 
     getEmptyWeeksArrayShifts(num_weeks: number): ExcelWeeksData {
-        let weeks: {morning: {name: string, pull: boolean}[], noon: {name: string, pull: boolean}[], night: {name: string, pull: boolean}[]}[][]  = [];
+        let weeks: {morning: {name: string, pull: boolean, seq: false}[], noon: {name: string, pull: boolean, seq: false}[], night: {name: string, pull: boolean, seq: false}[]}[][]  = [];
         for (let i = 0; i < num_weeks; i ++) {
             weeks.push([]);
             for(let j = 0; j < 7; j++) {
@@ -194,10 +194,10 @@ export class ScheduleService {
             // j - row number morning
             let cell = ws[`${excel.getExcelAlpha(column)}${j}`];
             if (cell?.s?.fgColor?.rgb === 'C6EFCE'){
-                extractedData[week][day][shift].push({name: cell?.v as string, pull: true});
+                extractedData[week][day][shift].push({name: cell?.v as string, pull: true, seq: false});
             }
             if (cell?.s?.fgColor?.rgb === 'FFEB9C'){
-                extractedData[week][day][shift].push({name: cell?.v as string, pull: false});
+                extractedData[week][day][shift].push({name: cell?.v as string, pull: false, seq: false});
             }
         }
         return extractedData;
@@ -258,7 +258,7 @@ export class ScheduleService {
                     })
                 }
             }   
-        } else if (data[week][day][shiftType].filter(user => user.name === settings.officer).length && settings.officer) {
+        } else if (data[week][day][shiftType].filter(user => user.name === settings.officer).length && managerShifts.length && settings.officer) {
             weeks_tmp[week] = weeks_tmp[week].map(shift => {
                 if((shift.shift as Structure)._id === (managerShifts[0].shift as Structure)._id) {
                     let split = shift.days[day].split("\n").filter(name => name != '');

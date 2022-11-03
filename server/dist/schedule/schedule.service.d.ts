@@ -14,14 +14,17 @@ declare type ExcelWeeksData = {
     morning: {
         name: string;
         pull: boolean;
+        seq: false;
     }[];
     noon: {
         name: string;
         pull: boolean;
+        seq: false;
     }[];
     night: {
         name: string;
         pull: boolean;
+        seq: false;
     }[];
 }[][];
 export declare class ScheduleService {

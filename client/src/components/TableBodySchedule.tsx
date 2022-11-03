@@ -27,7 +27,7 @@ const TableBodySchedule = (props: IProps) => {
                     value={day}
                     onChange={props.onChange}
                     name={`${props.week}-${index2}-${index}`}
-                    style={{ width: 200 }}
+                    style={{ maxWidth: '90px' }}
                   /> : <Typography>{day} </Typography>}
                   </TableCell>
                 ))}

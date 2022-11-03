@@ -108,12 +108,14 @@ th {
   background: #333;
   color: white;
   font-weight: bold;
+  min-width: 15px;
 }
 td, th {
   padding: 6px;
   border: 1px solid #ccc;
   text-align: center;
 	white-space: pre-line;
+  min-width: 15px;
 }
 
 .save-btn-container {

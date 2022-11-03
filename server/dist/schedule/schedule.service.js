@@ -189,10 +189,10 @@ let ScheduleService = class ScheduleService {
         for (let j = start; j <= end; j++) {
             let cell = ws[`${excel.getExcelAlpha(column)}${j}`];
             if (((_b = (_a = cell === null || cell === void 0 ? void 0 : cell.s) === null || _a === void 0 ? void 0 : _a.fgColor) === null || _b === void 0 ? void 0 : _b.rgb) === 'C6EFCE') {
-                extractedData[week][day][shift].push({ name: cell === null || cell === void 0 ? void 0 : cell.v, pull: true });
+                extractedData[week][day][shift].push({ name: cell === null || cell === void 0 ? void 0 : cell.v, pull: true, seq: false });
             }
             if (((_d = (_c = cell === null || cell === void 0 ? void 0 : cell.s) === null || _c === void 0 ? void 0 : _c.fgColor) === null || _d === void 0 ? void 0 : _d.rgb) === 'FFEB9C') {
-                extractedData[week][day][shift].push({ name: cell === null || cell === void 0 ? void 0 : cell.v, pull: false });
+                extractedData[week][day][shift].push({ name: cell === null || cell === void 0 ? void 0 : cell.v, pull: false, seq: false });
             }
         }
         return extractedData;
@@ -244,7 +244,7 @@ let ScheduleService = class ScheduleService {
                 }
             }
         }
-        else if (data[week][day][shiftType].filter(user => user.name === settings.officer).length && settings.officer) {
+        else if (data[week][day][shiftType].filter(user => user.name === settings.officer).length && managerShifts.length && settings.officer) {
             weeks_tmp[week] = weeks_tmp[week].map(shift => {
                 if (shift.shift._id === managerShifts[0].shift._id) {
                     let split = shift.days[day].split("\n").filter(name => name != '');
