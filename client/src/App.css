@@ -1,4 +1,3 @@
-
 main {
   display: flex;
   flex-direction: column;
@@ -68,6 +67,7 @@ main {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -100,21 +100,25 @@ table {
   width: 100%;
   border-collapse: collapse;
 }
+
 /* Zebra striping */
 tr:nth-of-type(odd) {
   background: rgb(179, 179, 179);
 }
+
 th {
   background: #333;
   color: white;
   font-weight: bold;
   min-width: 15px;
 }
-td, th {
+
+td,
+th {
   padding: 6px;
   border: 1px solid #ccc;
   text-align: center;
-	white-space: pre-line;
+  white-space: pre-line;
   min-width: 15px;
 }
 
@@ -167,25 +171,32 @@ td, th {
   gap: 10px;
 }
 
+.css-ahj2mt-MuiTypography-root {
+  font-size: 1.3rem;
+}
 
-@media only screen and (max-width: 899px){
+
+@media only screen and (max-width: 899px) {
   .posts-home {
     width: 100%;
   }
+
   .user-data {
     width: 100%;
-    
+
   }
+
   .box-container {
     width: 100%;
   }
+
   .shift-user {
     flex-direction: column;
     justify-content: flex-start;
   }
 }
 
-@media only screen and (max-width: 700px){
+@media only screen and (max-width: 700px) {
   .schedule-shift-info {
     flex-direction: column;
     justify-content: flex-start;

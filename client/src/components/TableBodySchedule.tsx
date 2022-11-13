@@ -13,28 +13,28 @@ interface IProps {
 const TableBodySchedule = (props: IProps) => {
   return (
     <>
-    <TableBody>
-            {props.data.map((shift, index2) => (
-                <TableRow
-                key={(shift.shift as Structure)._id}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                <TableCell align="center" scope="row"><p>{(shift.shift as Structure).title}</p><p>{(shift.shift as Structure).description}</p></TableCell>
-                {shift.days.map((day, index) => (
-                    <TableCell key={`${(shift.shift as Structure)._id}-${index}`} align="center" scope="row">
-                        {props.update ? <TextareaAutosize
-                    minRows={3}
-                    value={day}
-                    onChange={props.onChange}
-                    name={`${props.week}-${index2}-${index}`}
-                    style={{ maxWidth: '90px' }}
-                  /> : <Typography>{day} </Typography>}
-                  </TableCell>
-                ))}
-                </TableRow>
+      <TableBody>
+        {props.data.map((shift, index2) => (
+          <TableRow
+            key={(shift.shift as Structure)._id}
+            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+          >
+            <TableCell align="center" scope="row"><p style={{ fontSize: '1.2rem' }}>{(shift.shift as Structure).title}</p><p style={{ fontSize: '1.2rem' }}>{(shift.shift as Structure).description}</p></TableCell>
+            {shift.days.map((day, index) => (
+              <TableCell key={`${(shift.shift as Structure)._id}-${index}`} align="center" scope="row">
+                {props.update ? <TextareaAutosize
+                  minRows={3}
+                  value={day}
+                  onChange={props.onChange}
+                  name={`${props.week}-${index2}-${index}`}
+                  style={{ maxWidth: '90px' }}
+                /> : <Typography sx={{ fontSize: '1.2rem' }}>{day} </Typography>}
+              </TableCell>
             ))}
-    </TableBody>
-</>
+          </TableRow>
+        ))}
+      </TableBody>
+    </>
   )
 }
 

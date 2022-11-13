@@ -45,6 +45,17 @@ let ShiftService = class ShiftService {
         let userIn;
         let notesWeeks = [];
         let generalNotes = "";
+        for (let i = 0; i < schedule.num_weeks; i++) {
+            notesWeeks.push("");
+            weeks.push({
+                morning: ["", "", "", "", "", "", ""],
+                noon: ["", "", "", "", "", "", ""],
+                night: ["", "", "", "", "", "", ""],
+                pull: ["", "", "", "", "", "", ""],
+                reinforcement: ["", "", "", "", "", "", ""],
+                notes: ["", "", "", "", "", "", ""]
+            });
+        }
         for (let i = 0; i < shifts.length; i++) {
             userIn = false;
             let nickname = shifts[i].userId.nickname;
@@ -59,15 +70,6 @@ let ShiftService = class ShiftService {
             }
             counters = { morning: [], noon: [] };
             for (let j = 0; j < shifts[i].weeks.length; j++) {
-                notesWeeks.push("");
-                weeks.push({
-                    morning: ["", "", "", "", "", "", ""],
-                    noon: ["", "", "", "", "", "", ""],
-                    night: ["", "", "", "", "", "", ""],
-                    pull: ["", "", "", "", "", "", ""],
-                    reinforcement: ["", "", "", "", "", "", ""],
-                    notes: ["", "", "", "", "", "", ""]
-                });
                 counters.morning[j] = 0;
                 counters.noon[j] = 0;
                 for (let h = 0; h < params.length; h++) {
