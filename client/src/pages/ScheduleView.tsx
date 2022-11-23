@@ -1,14 +1,15 @@
-import { Pagination, Paper, Table, TableContainer } from '@mui/material'
+import { Button, Pagination, Paper, Table, TableContainer } from '@mui/material'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Spinner from '../components/Spinner'
 import TableBodySchedule from '../components/TableBodySchedule'
 import TableHeadSchedule from '../components/TableHeadSchedule'
-import { addDays, dateToString, numberToArray } from '../functions/functions'
+import { addDays, dateToString, numberToArray, dateToStringShort } from '../functions/functions'
 import { Schedule } from '../types/types'
 import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
 import { useParams, useSearchParams } from 'react-router-dom';
-import NotAuthorized from '../components/NotAuthorized'
+import NotAuthorized from '../components/NotAuthorized';
+import html2canvas from 'html2canvas';
 
 
 interface IProps {
@@ -139,12 +140,29 @@ const ScheduleView = (props: IProps) => {
     }
   }
 
+  const getPicture = () => {
+    const tables = document.querySelector<HTMLDivElement>("#tables");
+    if (tables && schedule.num_weeks !== 0) {
+      html2canvas(tables).then(canvas => {
+        let a = document.createElement('a');
+        a.href = canvas.toDataURL();
+        a.download = `schedule${dateToStringShort(new Date(schedule.date))}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    });
+    }
+  }
+
   return (
     <main>
         {schedule.num_weeks !== 0 && <>
         <h1>{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
+        <div style={{marginBottom: '10px'}}>
+          <Button variant="contained" onClick={getPicture}>הורדה כתמונה</Button>
+        </div>
         <TableContainer ref={containerRef} style={{minHeight: height, paddingBottom: '10px'}} component={Paper}>
-        <div className={overflow ? 'tables' : 'tables-center'}>
+        <div id="tables" className={overflow ? 'tables' : 'tables-center'}>
         {numberToArray(schedule.num_weeks).map((week, index1) => (
           <Table style={{width: 'fit-content'}} ref={changeRef} key={`week-${week}`}>
           <TableHeadSchedule days={schedule.days[index1]} >
