@@ -27,17 +27,6 @@ const ScheduleView = (props: IProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pages, setPages] = useState(1);
 
-
-  const getHeights = (schedule: Schedule) => {
-    let heights_temp: number[] = [];
-    for ( let i = 0; i < schedule.num_weeks ; i++ ) {
-      for (let j = 0; j < schedule.weeks[i].length; j++ ) {
-        heights_temp.push(20);
-      }
-    }
-    return heights_temp;
-  }
-
   const getSchedule = async () => {
     setIsLoading(true);
     let url = "";
