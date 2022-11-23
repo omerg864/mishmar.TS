@@ -10,8 +10,6 @@ interface IProps {
 }
 
 const TableHeadSchedule = (props: IProps) => {
-
-
   return (
     <>
         <TableHead>
