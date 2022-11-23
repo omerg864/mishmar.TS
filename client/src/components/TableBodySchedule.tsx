@@ -11,6 +11,8 @@ interface IProps {
 
 
 const TableBodySchedule = (props: IProps) => {
+  
+
   return (
     <>
       <TableBody>
@@ -18,16 +20,16 @@ const TableBodySchedule = (props: IProps) => {
           <TableRow
             key={(shift.shift as Structure)._id}
           >
-            <TableCell align="center" scope="row"><Typography>{(shift.shift as Structure).title}</Typography><Typography>{(shift.shift as Structure).description}</Typography></TableCell>
+            <TableCell style={{padding: '4px'}} align="center" ><Typography>{(shift.shift as Structure).title} <br/>{(shift.shift as Structure).description}</Typography></TableCell>
             {shift.days.map((day, index) => (
-              <TableCell key={`${(shift.shift as Structure)._id}-${index}`} align="center" scope="row">
+              <TableCell style={{padding: '4px'}} key={`${(shift.shift as Structure)._id}-${index}`} align="center">
                 {props.update ? <TextareaAutosize
                   minRows={3}
                   value={day}
                   onChange={props.onChange}
                   name={`${props.week}-${index2}-${index}`}
                   style={{ maxWidth: '90px' }}
-                /> : <Typography>{day} </Typography>}
+                /> : <Typography>{day}</Typography>}
               </TableCell>
             ))}
           </TableRow>

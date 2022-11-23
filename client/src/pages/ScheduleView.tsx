@@ -27,6 +27,17 @@ const ScheduleView = (props: IProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pages, setPages] = useState(1);
 
+
+  const getHeights = (schedule: Schedule) => {
+    let heights_temp: number[] = [];
+    for ( let i = 0; i < schedule.num_weeks ; i++ ) {
+      for (let j = 0; j < schedule.weeks[i].length; j++ ) {
+        heights_temp.push(20);
+      }
+    }
+    return heights_temp;
+  }
+
   const getSchedule = async () => {
     setIsLoading(true);
     let url = "";
@@ -89,6 +100,35 @@ const ScheduleView = (props: IProps) => {
     checkOverflow(containerRef.current)
   }, [height])
 
+  useEffect(() => {
+    if (schedule.num_weeks !== 0) {
+      let rows = Array.from(document.querySelectorAll<HTMLTableRowElement>('tbody tr'))
+      const rowsWeeks = [];
+      const shifts = rows.length / schedule.num_weeks;
+      while(rows.length) 
+        rowsWeeks.push(rows.splice(0, shifts));
+      console.log(rowsWeeks)
+      let heights: number[] = [];
+      for (let i = 0; i < rowsWeeks.length; i++) { 
+        for (let j = 0; j < rowsWeeks[i].length; j++) {
+          if ( i === 0) {
+            heights[j] = rowsWeeks[i][j].clientHeight;
+          } else {
+            if (heights[j] < rowsWeeks[i][j].clientHeight) {
+              heights[j] = rowsWeeks[i][j].clientHeight;
+            }
+          }
+        }
+      }
+      rows = Array.from(document.querySelectorAll('tbody tr'))
+      for (let i = 0; i < rowsWeeks.length; i++) { 
+        for (let j = 0; j < rowsWeeks[i].length; j++) {
+          rowsWeeks[i][j].style.height = heights[j] + 'px';
+        }
+      }
+    }
+  }, [schedule])
+
 
   if (isLoading) {
     return <Spinner />;
@@ -113,7 +153,9 @@ const ScheduleView = (props: IProps) => {
         <div className={overflow ? 'tables' : 'tables-center'}>
         {numberToArray(schedule.num_weeks).map((week, index1) => (
           <Table style={{width: 'fit-content'}} ref={changeRef} key={`week-${week}`}>
-          <TableHeadSchedule days={schedule.days[index1]} children={<TableBodySchedule week={week} data={schedule.weeks[index1]} update={false} />} />
+          <TableHeadSchedule days={schedule.days[index1]} >
+          </TableHeadSchedule>
+          <TableBodySchedule week={week} data={schedule.weeks[index1]} update={false} />
           </Table>
         ))} 
         </div>
