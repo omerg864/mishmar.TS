@@ -29,8 +29,8 @@ tr > .css-1yhpg23-MuiTableCell-root {
   padding: 6px;
 }
 
-th.css-og52vs-MuiTableCell-root {
-  padding: 10px;
+.css-og52vs-MuiTableCell-root.MuiTableCell-head {
+  padding: 6px;
 }
 
 .tables-center {

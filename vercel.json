@@ -23,7 +23,7 @@
         "headers" : [
           {
             "key" : "Cache-Control",
-            "value" : "no-cache"
+            "value" : "public, s-maxage=0"
           }
         ]
       }

@@ -100,8 +100,8 @@ const ScheduleView = (props: IProps) => {
 
   const changeRef = (el: HTMLTableElement) => {
     if (el){
-      if (el.clientHeight as number + 10 > height)
-        setHeight(el.clientHeight as number + 10);
+      if (el.clientHeight as number > height)
+        setHeight(el.clientHeight as number);
     }
   }
 
