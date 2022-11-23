@@ -5,12 +5,12 @@ import { Schedule } from './schedule.model';
 import * as XLSX from 'xlsx';
 import { User } from '../user/user.model';
 import { Settings } from '../settings/settings.model';
-export declare type Shift = {
+export type Shift = {
     shift: string | Structure;
     days: string[];
 };
-declare type dayShifts = "morning" | "noon" | "night";
-declare type ExcelWeeksData = {
+type dayShifts = "morning" | "noon" | "night";
+type ExcelWeeksData = {
     morning: {
         name: string;
         pull: boolean;
@@ -33,7 +33,7 @@ export declare class ScheduleService {
     private readonly userModel;
     private readonly settingsModel;
     constructor(scheduleModel: Model<Schedule>, structureModel: Model<Structure>, userModel: Model<User>, settingsModel: Model<Settings>);
-    sortStructures: (a: Shift, b: Shift) => 0 | 1 | -1;
+    sortStructures: (a: Shift, b: Shift) => 1 | 0 | -1;
     populateSchedule(schedule: Schedule): Promise<Schedule>;
     getViewSchedule(query: {
         page?: number;

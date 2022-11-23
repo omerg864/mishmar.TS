@@ -19,11 +19,17 @@ const mongoose_1 = require("@nestjs/mongoose");
 const config_1 = require("@nestjs/config");
 const serve_static_1 = require("@nestjs/serve-static");
 const log_module_1 = require("./log/log.module");
-const path_1 = require("path");
+const path = require("path");
+const dotenv = require("dotenv");
+if (process.env.NODE_ENV !== 'production') {
+    dotenv.config({
+        path: path.resolve(__dirname, '../.env')
+    });
+}
 const imports = [user_module_1.UserModule, schedule_module_1.ScheduleModule, shift_module_1.ShiftModule, event_module_1.EventModule, post_module_1.PostModule, settings_module_1.SettingsModule, structure_module_1.StructureModule, log_module_1.LogModule, config_1.ConfigModule.forRoot(), mongoose_1.MongooseModule.forRoot(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_NAME}.wkjalhp.mongodb.net/${process.env.DB_TYPE}?retryWrites=true&w=majority`)];
 if (process.env.NODE_ENV === 'production') {
     imports.push(serve_static_1.ServeStaticModule.forRoot({
-        rootPath: (0, path_1.join)(__dirname, "../../client/build")
+        rootPath: path.join(__dirname, "../../client/build")
     }));
 }
 let AppModule = class AppModule {

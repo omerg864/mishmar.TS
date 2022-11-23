@@ -25,6 +25,14 @@ main {
   background-color: lightgray;
 }
 
+tr > .css-1yhpg23-MuiTableCell-root {
+  padding: 6px;
+}
+
+th.css-og52vs-MuiTableCell-root {
+  padding: 10px;
+}
+
 .container form {
   display: flex;
   flex-direction: column;
