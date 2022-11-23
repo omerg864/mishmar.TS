@@ -1,5 +1,5 @@
 import { Pagination, Paper, Table, TableContainer } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Spinner from '../components/Spinner'
 import TableBodySchedule from '../components/TableBodySchedule'
 import TableHeadSchedule from '../components/TableHeadSchedule'
@@ -23,6 +23,8 @@ const ScheduleView = (props: IProps) => {
   const [height, setHeight] = useState<number>(100);
   const { id } = useParams(); 
   const [searchParams, setSearchParams] = useSearchParams();
+  const [overflow, setOverflow] = useState<boolean>(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [pages, setPages] = useState(1);
 
   const getSchedule = async () => {
@@ -59,12 +61,33 @@ const ScheduleView = (props: IProps) => {
     setSearchParams(`?page=${value}`);
   }
 
+  const checkOverflow = (el: HTMLDivElement | null) => {
+    if (el) {
+      if (el.clientWidth < el.scrollWidth) {
+        setOverflow(true);
+      } else {
+        setOverflow(false);
+      }
+    }
+  }
+
 
   useEffect(() => {
     if (props.authenticated) {
       getSchedule();
     }
   },[props.authenticated, searchParams] );
+
+  useLayoutEffect(() => {
+    function updateSize() {
+      checkOverflow(containerRef.current);
+    }
+    window.addEventListener('resize', updateSize);
+  }, []);
+
+  useEffect(() => { 
+    checkOverflow(containerRef.current)
+  }, [height])
 
 
   if (isLoading) {
@@ -86,8 +109,8 @@ const ScheduleView = (props: IProps) => {
     <main>
         {schedule.num_weeks !== 0 && <>
         <h1>{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
-        <TableContainer style={{minHeight: height, paddingBottom: '10px'}} component={Paper}>
-        <div style={{display: 'flex', justifyContent: 'center'}}>
+        <TableContainer ref={containerRef} style={{minHeight: height, paddingBottom: '10px'}} component={Paper}>
+        <div className={overflow ? 'tables' : 'tables-center'}>
         {numberToArray(schedule.num_weeks).map((week, index1) => (
           <Table style={{width: 'fit-content'}} ref={changeRef} key={`week-${week}`}>
           <TableHeadSchedule days={schedule.days[index1]} children={<TableBodySchedule week={week} data={schedule.weeks[index1]} update={false} />} />

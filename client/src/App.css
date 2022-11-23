@@ -33,6 +33,15 @@ th.css-og52vs-MuiTableCell-root {
   padding: 10px;
 }
 
+.tables-center {
+  display: flex;
+  justify-content: center;
+}
+
+.tables {
+  display: flex;
+}
+
 .container form {
   display: flex;
   flex-direction: column;
