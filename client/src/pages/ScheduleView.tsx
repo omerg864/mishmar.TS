@@ -81,6 +81,7 @@ const ScheduleView = (props: IProps) => {
   useLayoutEffect(() => {
     function updateSize() {
       checkOverflow(containerRef.current);
+      resizeRows();
     }
     window.addEventListener('resize', updateSize);
   }, []);
@@ -89,7 +90,7 @@ const ScheduleView = (props: IProps) => {
     checkOverflow(containerRef.current)
   }, [height])
 
-  useEffect(() => {
+  const resizeRows = () => {
     if (schedule.num_weeks !== 0) {
       let rows = Array.from(document.querySelectorAll<HTMLTableRowElement>('tbody tr'))
       const rowsWeeks = [];
@@ -116,6 +117,10 @@ const ScheduleView = (props: IProps) => {
         }
       }
     }
+  }
+
+  useEffect(() => {
+    resizeRows();
   }, [schedule])
 
 
