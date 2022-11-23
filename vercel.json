@@ -19,6 +19,7 @@
     ],
     "headers": [
       {
+        "src": "./client/build",
         "headers" : [
           {
             "key" : "Cache-Control",
