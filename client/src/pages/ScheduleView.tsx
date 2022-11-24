@@ -143,7 +143,9 @@ const ScheduleView = (props: IProps) => {
   const getPicture = () => {
     const tables = document.querySelector<HTMLDivElement>("#tables");
     if (tables && schedule.num_weeks !== 0) {
-      html2canvas(tables).then(canvas => {
+      const newDiv = tables.cloneNode(true) as HTMLElement;
+      document.body.appendChild(newDiv);
+      html2canvas(newDiv).then(canvas => {
         let a = document.createElement('a');
         a.href = canvas.toDataURL();
         a.download = `schedule${dateToStringShort(new Date(schedule.date))}.png`;
@@ -151,6 +153,7 @@ const ScheduleView = (props: IProps) => {
         a.click();
         document.body.removeChild(a);
     });
+      document.body.removeChild(newDiv);
     }
   }
 
