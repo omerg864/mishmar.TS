@@ -3,8 +3,6 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as path from 'path';
 
-console.log(process.env.TZ);
-
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
         cors: true,

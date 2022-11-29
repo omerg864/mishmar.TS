@@ -203,6 +203,7 @@ export class UserService {
     async authUser(
         id: string
     ): Promise<{ user: boolean; manager: boolean; userCookie: User }> {
+        console.log(process.env.TZ);
         const user = await this.userModel
             .findById(id)
             .select(['-password', '-reset_token']);

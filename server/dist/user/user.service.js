@@ -176,6 +176,7 @@ let UserService = class UserService {
         return user;
     }
     async authUser(id) {
+        console.log(process.env.TZ);
         const user = await this.userModel
             .findById(id)
             .select(['-password', '-reset_token']);
