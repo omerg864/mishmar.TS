@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "homepage": "https://mishmar-ramla.vercel.app",
+  "homepage": "https://mishmar-ramla.vercel.app", 
   "scripts": {
     "add": "cd client && npm run build && cd .. && git add .",
     "commit": "cd client && npm run build && cd ../server && nest build && cd .. && git add . && git commit -m"

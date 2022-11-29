@@ -26,10 +26,12 @@ let UserService = class UserService {
         this.settingsModel = settingsModel;
     }
     generateToken(id) {
-        return jwt.sign({ id }, "ABC", { expiresIn: '30d' });
+        return jwt.sign({ id }, 'ABC', { expiresIn: '30d' });
     }
     async login(username, password) {
-        const user = await this.userModel.findOne({ username }).select('-reset_token');
+        const user = await this.userModel
+            .findOne({ username })
+            .select('-reset_token');
         if (!user) {
             throw new common_1.NotFoundException('משתמש לא נמצא');
         }
@@ -38,15 +40,19 @@ let UserService = class UserService {
             throw new common_1.UnauthorizedException('סיסמא לא נכונה');
         }
         const token = this.generateToken(user.id);
-        delete user["_doc"].password;
-        return { user: Object.assign({}, user["_doc"]), token };
+        delete user['_doc'].password;
+        return { user: Object.assign({}, user['_doc']), token };
     }
     async register(user, pin_code) {
-        let userFound = await this.userModel.findOne({ username: { $regex: new RegExp(user.username, "i") } });
+        let userFound = await this.userModel.findOne({
+            username: { $regex: new RegExp(user.username, 'i') },
+        });
         if (userFound) {
             throw new common_1.ConflictException('שם משתמש בשימוש');
         }
-        userFound = await this.userModel.findOne({ email: { $regex: new RegExp(user.email, "i") } });
+        userFound = await this.userModel.findOne({
+            email: { $regex: new RegExp(user.email, 'i') },
+        });
         if (userFound) {
             throw new common_1.ConflictException('אימייל בשימוש');
         }
@@ -62,35 +68,39 @@ let UserService = class UserService {
         const hashedPassword = await bcrypt.hash(user.password, salt);
         const newUser = await this.userModel.create(Object.assign(Object.assign({}, user), { password: hashedPassword }));
         return {
-            message: "Success"
+            message: 'Success',
         };
     }
     async updateManyUsers(users) {
-        let users_temp = [];
+        const users_temp = [];
         for (let i = 0; i < users.length; i++) {
-            let userObj = Object.assign({}, users[i]);
+            const userObj = Object.assign({}, users[i]);
             if (userObj.password) {
                 const salt = await bcrypt.genSalt(10);
                 const hashedPassword = await bcrypt.hash(userObj.password, salt);
                 userObj.password = hashedPassword;
             }
-            const updatedUser = await this.userModel.findByIdAndUpdate(userObj._id, userObj, { new: true }).select(['-password', '-reset_token']);
+            const updatedUser = await this.userModel
+                .findByIdAndUpdate(userObj._id, userObj, { new: true })
+                .select(['-password', '-reset_token']);
             users_temp.push(updatedUser);
         }
         return users_temp;
     }
     async forgotPasswordEmail(email) {
-        const userFound = await this.userModel.findOne({ email: { $regex: new RegExp(email, "i") } });
+        const userFound = await this.userModel.findOne({
+            email: { $regex: new RegExp(email, 'i') },
+        });
         if (!userFound) {
             throw new common_1.NotFoundException(`משתמש עם אימייל ${email} לא נמצא`);
         }
-        var generatedToken = crypto.randomBytes(26).toString('hex');
+        let generatedToken = crypto.randomBytes(26).toString('hex');
         while (await this.userModel.findOne({ reset_token: generatedToken })) {
             generatedToken = crypto.randomBytes(26).toString('hex');
         }
         userFound.reset_token = generatedToken;
         await userFound.save();
-        return (0, functions_1.sendMail)(email, "איפוס סיסמה למשתמש", `כדי לאפס סיסמה נא ללכת לכתובת:\n ${process.env.SITE_ADDRESS}/password/reset/${generatedToken}`);
+        return (0, functions_1.sendMail)(email, 'איפוס סיסמה למשתמש', `כדי לאפס סיסמה נא ללכת לכתובת:\n ${process.env.SITE_ADDRESS}/password/reset/${generatedToken}`);
     }
     async resetTokenPassword(reset_token, password) {
         const userFound = await this.userModel.findOne({ reset_token });
@@ -101,14 +111,14 @@ let UserService = class UserService {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);
             userFound.password = hashedPassword;
-            var generatedToken = crypto.randomBytes(26).toString('hex');
+            let generatedToken = crypto.randomBytes(26).toString('hex');
             while (await this.userModel.findOne({ reset_token: generatedToken })) {
                 generatedToken = crypto.randomBytes(26).toString('hex');
             }
             userFound.reset_token = generatedToken;
             await userFound.save();
             return {
-                success: true
+                success: true,
             };
         }
         else {
@@ -121,11 +131,11 @@ let UserService = class UserService {
             throw new common_1.NotFoundException(`טוקן איפוס לא תקין`);
         }
         return {
-            success: true
+            success: true,
         };
     }
     async updateUser(user, userId) {
-        let userObj = Object.assign({}, user);
+        const userObj = Object.assign({}, user);
         if (userObj.role) {
             delete userObj.role;
         }
@@ -135,9 +145,11 @@ let UserService = class UserService {
         if (user.password) {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(user.password, salt);
-            userObj["password"] = hashedPassword;
+            userObj['password'] = hashedPassword;
         }
-        const updatedUser = await this.userModel.findByIdAndUpdate(userId, userObj, { new: true }).select(['-password', '-reset_token']);
+        const updatedUser = await this.userModel
+            .findByIdAndUpdate(userId, userObj, { new: true })
+            .select(['-password', '-reset_token']);
         return updatedUser;
     }
     async deleteUser(userId) {
@@ -149,18 +161,24 @@ let UserService = class UserService {
         return { id: user.id.toString() };
     }
     async getAll() {
-        const users = await this.userModel.find({ username: { $ne: "admin" } }).select(['-password', '-reset_token']);
+        const users = await this.userModel
+            .find({ username: { $ne: 'admin' } })
+            .select(['-password', '-reset_token']);
         return users;
     }
     async getUser(id) {
-        const user = await this.userModel.findById(id).select(['-password', '-reset_token']);
+        const user = await this.userModel
+            .findById(id)
+            .select(['-password', '-reset_token']);
         if (!user) {
             throw new common_1.NotFoundException('משתמש לא נמצא');
         }
         return user;
     }
     async authUser(id) {
-        const user = await this.userModel.findById(id).select(['-password', '-reset_token']);
+        const user = await this.userModel
+            .findById(id)
+            .select(['-password', '-reset_token']);
         let manager = false;
         if (user.role.includes('ADMIN') || user.role.includes('SITE_MANAGER')) {
             manager = true;
@@ -168,7 +186,7 @@ let UserService = class UserService {
         return {
             user: true,
             manager,
-            userCookie: user
+            userCookie: user,
         };
     }
 };
@@ -176,7 +194,8 @@ UserService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)('User')),
     __param(1, (0, mongoose_1.InjectModel)('Settings')),
-    __metadata("design:paramtypes", [mongoose_2.Model, mongoose_2.Model])
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model])
 ], UserService);
 exports.UserService = UserService;
 //# sourceMappingURL=user.service.js.map

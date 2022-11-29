@@ -152,8 +152,8 @@ const ScheduleView = (props: IProps) => {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+        document.body.removeChild(newDiv);
     });
-      document.body.removeChild(newDiv);
     }
   }
 

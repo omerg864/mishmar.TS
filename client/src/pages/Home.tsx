@@ -17,6 +17,8 @@ const Home = (props: IProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [posts, setPosts] = useState<PostType[]>([]);
 
+  console.log(process.env.TZ);
+
 
   const getPosts = async () =>{
     setIsLoading(true);

@@ -36,32 +36,41 @@ let ShiftService = class ShiftService {
         if (!schedule) {
             throw new common_1.NotFoundException('משמרת לא נמצאה');
         }
-        const shifts = await this.shiftModel.find({ scheduleId: scheduleId }).populate('userId');
-        const params = ["morning", "noon", "night", "pull", "reinforcement", "notes"];
+        const shifts = await this.shiftModel
+            .find({ scheduleId: scheduleId })
+            .populate('userId');
+        const params = [
+            'morning',
+            'noon',
+            'night',
+            'pull',
+            'reinforcement',
+            'notes',
+        ];
         let users = [];
-        let weeks = [];
+        const weeks = [];
         let userMins = [];
         let counters;
         let userIn;
-        let notesWeeks = [];
-        let generalNotes = "";
+        const notesWeeks = [];
+        let generalNotes = '';
         for (let i = 0; i < schedule.num_weeks; i++) {
-            notesWeeks.push("");
+            notesWeeks.push('');
             weeks.push({
-                morning: ["", "", "", "", "", "", ""],
-                noon: ["", "", "", "", "", "", ""],
-                night: ["", "", "", "", "", "", ""],
-                pull: ["", "", "", "", "", "", ""],
-                reinforcement: ["", "", "", "", "", "", ""],
-                notes: ["", "", "", "", "", "", ""]
+                morning: ['', '', '', '', '', '', ''],
+                noon: ['', '', '', '', '', '', ''],
+                night: ['', '', '', '', '', '', ''],
+                pull: ['', '', '', '', '', '', ''],
+                reinforcement: ['', '', '', '', '', '', ''],
+                notes: ['', '', '', '', '', '', ''],
             });
         }
         for (let i = 0; i < shifts.length; i++) {
             userIn = false;
-            let nickname = shifts[i].userId.nickname;
-            let id = shifts[i].userId._id.toString();
-            if (shifts[i].notes !== "") {
-                if (generalNotes === "") {
+            const nickname = shifts[i].userId.nickname;
+            const id = shifts[i].userId._id.toString();
+            if (shifts[i].notes !== '') {
+                if (generalNotes === '') {
                     generalNotes = `${nickname}: ${shifts[i].notes}`;
                 }
                 else {
@@ -74,7 +83,7 @@ let ShiftService = class ShiftService {
                 counters.noon[j] = 0;
                 for (let h = 0; h < params.length; h++) {
                     for (let k = 0; k < shifts[i].weeks[j][params[h]].length; k++) {
-                        if (users.filter(u => u.id === id).length === 0) {
+                        if (users.filter((u) => u.id === id).length === 0) {
                             users.push({ nickname, id });
                         }
                         if (shifts[i].weeks[j][params[h]][k]) {
@@ -84,7 +93,7 @@ let ShiftService = class ShiftService {
                             let value = nickname;
                             if (params[h] === 'morning') {
                                 if (!shifts[i].weeks[j].pull[k]) {
-                                    value += " (לא משיכה) ";
+                                    value += ' (לא משיכה) ';
                                 }
                                 if (k < 5) {
                                     counters.morning[j]++;
@@ -96,30 +105,35 @@ let ShiftService = class ShiftService {
                                 }
                             }
                             if (params[h] === 'notes') {
-                                if (notesWeeks[j] === "") {
+                                if (notesWeeks[j] === '') {
                                     notesWeeks[j] = `יום ${k + 1} - ${nickname}: ${shifts[i].weeks[j][params[h]][k]}`;
                                 }
                                 else {
                                     notesWeeks[j] += `\nיום ${k + 1} - ${nickname}: ${shifts[i].weeks[j][params[h]][k]}`;
                                 }
                             }
-                            if (weeks[j][params[h]][k] === "") {
+                            if (weeks[j][params[h]][k] === '') {
                                 weeks[j][params[h]][k] = value;
                             }
                             else {
-                                weeks[j][params[h]][k] += "\n" + value;
+                                weeks[j][params[h]][k] += '\n' + value;
                             }
                         }
                     }
                 }
             }
             if (userIn) {
-                userMins.push({ nickname, id, morning: counters.morning, noon: counters.noon });
+                userMins.push({
+                    nickname,
+                    id,
+                    morning: counters.morning,
+                    noon: counters.noon,
+                });
             }
         }
-        let userids = userMins.map(user => user.id);
-        users = users.filter(user => userids.includes(user.id));
-        userMins = userMins.filter(u => {
+        const userids = userMins.map((user) => user.id);
+        users = users.filter((user) => userids.includes(user.id));
+        userMins = userMins.filter((u) => {
             for (let i = 0; i < u.morning.length; i++) {
                 if (u.morning[i] < 2 || u.noon[i] < 1) {
                     return true;
@@ -127,9 +141,20 @@ let ShiftService = class ShiftService {
             }
             return false;
         });
-        let noUsers = await this.userModel.find({ _id: { $nin: userids }, username: { $ne: "admin" } }).select(["nickname", "id"]);
-        noUsers = noUsers.map(user => { return Object.assign(Object.assign({}, user["_doc"]), { id: user._id.toString() }); });
-        return { weeks, users, weeksNotes: notesWeeks, generalNotes, noUsers: noUsers, minUsers: userMins };
+        let noUsers = await this.userModel
+            .find({ _id: { $nin: userids }, username: { $ne: 'admin' } })
+            .select(['nickname', 'id']);
+        noUsers = noUsers.map((user) => {
+            return Object.assign(Object.assign({}, user['_doc']), { id: user._id.toString() });
+        });
+        return {
+            weeks,
+            users,
+            weeksNotes: notesWeeks,
+            generalNotes,
+            noUsers: noUsers,
+            minUsers: userMins,
+        };
     }
     async toExcel(weeks, days, num_users, weeksNotes, generalNotes, events) {
         const workbook = new excel.Workbook();
@@ -142,29 +167,29 @@ let ShiftService = class ShiftService {
             border: {
                 left: {
                     style: 'thin',
-                    color: '#000000'
+                    color: '#000000',
                 },
                 right: {
                     style: 'thin',
-                    color: '#000000'
+                    color: '#000000',
                 },
                 top: {
                     style: 'thin',
-                    color: '#000000'
+                    color: '#000000',
                 },
                 bottom: {
                     style: 'thin',
-                    color: '#000000'
+                    color: '#000000',
                 },
-            }
+            },
         };
-        const ws = workbook.addWorksheet('Schedule', worksheetOptions);
+        const ws = workbook.addWorksheet('Sheet1', worksheetOptions);
         const headerStyle = Object.assign({ alignment: {
                 horizontal: 'center',
                 vertical: 'center',
             }, fill: {
                 type: 'pattern',
-                fgColor: '#FFFFFF'
+                fgColor: '#FFFFFF',
             } }, border);
         const cellStyle = {
             alignment: {
@@ -176,91 +201,133 @@ let ShiftService = class ShiftService {
             border: {
                 top: {
                     style: 'thick',
-                    color: '#000000'
-                }
-            }
+                    color: '#000000',
+                },
+            },
         };
         const leftBorder = {
             border: {
                 left: {
                     style: 'thick',
-                    color: '#000000'
-                }
-            }
+                    color: '#000000',
+                },
+            },
         };
-        ws.cell(1, 1, 2, weeks.length * 7 + 2, true).string('הגשות')
+        ws.cell(1, 1, 2, weeks.length * 7 + 2, true)
+            .string('הגשות')
             .style(workbook.createStyle(Object.assign(Object.assign({}, headerStyle), { font: { size: 24, bold: true } })));
         ws.cell(1, weeks.length * 7 + 3, 2, weeks.length * 7 + 10, true)
             .string(`${(0, functions_1.dateToStringShort)(new Date(days[0][0]))} - ${(0, functions_1.dateToStringShort)(new Date(days.slice(-1)[0].slice(-1)[0]))}`)
             .style(workbook.createStyle(Object.assign(Object.assign({}, headerStyle), { font: { size: 24, bold: true } })));
-        const days_names = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
+        const days_names = [
+            'ראשון',
+            'שני',
+            'שלישי',
+            'רביעי',
+            'חמישי',
+            'שישי',
+            'שבת',
+        ];
         ws.cell(3, 1).string('תאריך').style(workbook.createStyle(headerStyle));
         ws.cell(4, 1).string('יום').style(workbook.createStyle(headerStyle));
-        ws.cell(5, 1, num_users + 8, 1, true).string('בוקר').style(headerStyle);
-        ws.cell(num_users + 9, 1, num_users * 2 + 12, 1, true).string('צהריים').style(headerStyle);
+        ws.cell(5, 1, num_users + 8, 1, true)
+            .string('בוקר')
+            .style(headerStyle);
+        ws.cell(num_users + 9, 1, num_users * 2 + 12, 1, true)
+            .string('צהריים')
+            .style(headerStyle);
         ws.cell(num_users + 9, 2, num_users + 9, weeks.length * 7 + 1, false)
-            .string('').style(Object.assign(Object.assign({}, cellStyle), topBorder));
+            .string('')
+            .style(Object.assign(Object.assign({}, cellStyle), topBorder));
         ws.cell(num_users * 2 + 13, 2, num_users * 2 + 13, weeks.length * 7 + 1, false)
-            .string('').style(Object.assign(Object.assign({}, cellStyle), topBorder));
-        ws.cell(num_users * 2 + 13, 1, num_users * 3 + 16, 1, true).string('לילה').style(headerStyle);
-        let names = new Set();
+            .string('')
+            .style(Object.assign(Object.assign({}, cellStyle), topBorder));
+        ws.cell(num_users * 2 + 13, 1, num_users * 3 + 16, 1, true)
+            .string('לילה')
+            .style(headerStyle);
+        const names = new Set();
         for (let i = 0; i < weeks.length; i++) {
-            ws.cell(5, (i + 1) * 8, num_users * 3 + 16, (i + 1) * 8, false)
-                .string('').style(Object.assign(Object.assign({}, cellStyle), leftBorder));
+            const one = i === 0 ? 1 : 0;
+            ws.cell(5, (i + 1) * 8 + one, num_users * 3 + 16, (i + 1) * 8 + one, false)
+                .string('')
+                .style(Object.assign(Object.assign({}, cellStyle), leftBorder));
             for (let j = 0; j < 7; j++) {
-                ws.cell(3, 2 + j + (i * 7)).string((0, functions_1.dateToStringShort)(new Date(days[i][j])))
+                ws.cell(3, 2 + j + i * 7)
+                    .string((0, functions_1.dateToStringShort)(new Date(days[i][j])))
                     .style(workbook.createStyle(headerStyle));
-                ws.cell(4, 2 + j + (i * 7)).string(days_names[j]).style(workbook.createStyle(headerStyle));
-                const monrningNames = weeks[i].morning[j].split('\n').filter(item => item != '');
+                ws.cell(4, 2 + j + i * 7)
+                    .string(days_names[j])
+                    .style(workbook.createStyle(headerStyle));
+                const monrningNames = weeks[i].morning[j]
+                    .split('\n')
+                    .filter((item) => item != '');
                 for (let k = 0; k < monrningNames.length; k++) {
                     if (!monrningNames[k].includes(' (לא משיכה) ')) {
                         names.add(monrningNames[k]);
-                        ws.cell(5 + k, 2 + j + (i * 7))
-                            .string(monrningNames[k]).style(workbook.createStyle(cellStyle));
+                        ws.cell(5 + k, 2 + j + i * 7)
+                            .string(monrningNames[k])
+                            .style(workbook.createStyle(cellStyle));
                     }
                     else {
                         names.add(monrningNames[k].replace(' (לא משיכה) ', ''));
-                        ws.cell(5 + k, 2 + j + (i * 7)).string(monrningNames[k].replace(' (לא משיכה) ', '')).style(workbook.createStyle(Object.assign(Object.assign({}, cellStyle), { font: { color: '#ff0000' } })));
+                        ws.cell(5 + k, 2 + j + i * 7)
+                            .string(monrningNames[k].replace(' (לא משיכה) ', ''))
+                            .style(workbook.createStyle(Object.assign(Object.assign({}, cellStyle), { font: { color: '#ff0000' } })));
                     }
                 }
-                const noonNames = weeks[i].noon[j].split('\n').filter(item => item != '');
+                const noonNames = weeks[i].noon[j]
+                    .split('\n')
+                    .filter((item) => item != '');
                 for (let k = 0; k < noonNames.length; k++) {
                     names.add(noonNames[k]);
-                    ws.cell(num_users + 9 + k, 2 + j + (i * 7))
-                        .string(noonNames[k]).style(workbook.createStyle(cellStyle));
+                    ws.cell(num_users + 9 + k, 2 + j + i * 7)
+                        .string(noonNames[k])
+                        .style(workbook.createStyle(cellStyle));
                 }
-                const nightNames = weeks[i].night[j].split('\n').filter(item => item != '');
+                const nightNames = weeks[i].night[j]
+                    .split('\n')
+                    .filter((item) => item != '');
                 for (let k = 0; k < nightNames.length; k++) {
                     names.add(nightNames[k]);
-                    ws.cell(num_users * 2 + 13 + k, 2 + j + (i * 7))
-                        .string(nightNames[k]).style(workbook.createStyle(cellStyle));
+                    ws.cell(num_users * 2 + 13 + k, 2 + j + i * 7)
+                        .string(nightNames[k])
+                        .style(workbook.createStyle(cellStyle));
                 }
             }
-            ws.cell(4, weeks.length * 7 + 5 + (i * 2)).string(`בוקר ${i + 1}`)
+            ws.cell(4, weeks.length * 7 + 5 + i * 2)
+                .string(`בוקר ${i + 1}`)
                 .style(workbook.createStyle(headerStyle));
-            ws.cell(4, weeks.length * 7 + 6 + (i * 2)).string(`צהריים ${i + 1}`)
+            ws.cell(4, weeks.length * 7 + 6 + i * 2)
+                .string(`צהריים ${i + 1}`)
                 .style(workbook.createStyle(headerStyle));
         }
-        let shiftsWeeksEnd = weeks.length * 7 + 6 + ((weeks.length - 1) * 2);
-        ws.cell(4, weeks.length * 7 + 3, 4, weeks.length * 7 + 4, true).string('שם')
+        const shiftsWeeksEnd = weeks.length * 7 + 6 + (weeks.length - 1) * 2;
+        ws.cell(4, weeks.length * 7 + 3, 4, weeks.length * 7 + 4, true)
+            .string('שם')
             .style(workbook.createStyle(headerStyle));
-        ws.cell(4, shiftsWeeksEnd + 1).string(`לילה`).style(workbook.createStyle(headerStyle));
-        ws.cell(4, shiftsWeeksEnd + 2).string(`סופ״ש`).style(workbook.createStyle(headerStyle));
+        ws.cell(4, shiftsWeeksEnd + 1)
+            .string(`לילה`)
+            .style(workbook.createStyle(headerStyle));
+        ws.cell(4, shiftsWeeksEnd + 2)
+            .string(`סופ״ש`)
+            .style(workbook.createStyle(headerStyle));
         names.add('');
-        let namesArray = Array.from(names);
+        const namesArray = Array.from(names);
         for (let i = 0; i < namesArray.length; i++) {
             ws.cell(5 + i, weeks.length * 7 + 3, 5 + i, weeks.length * 7 + 4, true)
-                .string(namesArray[i]).style(workbook.createStyle(headerStyle));
-            ws.cell(5 + i, weeks.length * 7 + 5, 5 + i, shiftsWeeksEnd + 2, false)
+                .string(namesArray[i])
                 .style(workbook.createStyle(headerStyle));
+            ws.cell(5 + i, weeks.length * 7 + 5, 5 + i, shiftsWeeksEnd + 2, false).style(workbook.createStyle(headerStyle));
         }
-        ws.cell(5 + namesArray.length, weeks.length * 7 + 3, 5 + namesArray.length, weeks.length * 7 + 4, true).string('סה״כ').style(workbook.createStyle(headerStyle));
+        ws.cell(5 + namesArray.length, weeks.length * 7 + 3, 5 + namesArray.length, weeks.length * 7 + 4, true)
+            .string('סה״כ')
+            .style(workbook.createStyle(headerStyle));
         for (let i = 0; i < weeks.length; i++) {
-            ws.cell(5 + namesArray.length, weeks.length * 7 + 5 + (i * 2))
-                .formula(`=SUM(${excel.getExcelAlpha(weeks.length * 7 + 5 + (i * 2))}5:${excel.getExcelAlpha(weeks.length * 7 + 5 + (i * 2))}${4 + namesArray.length})`)
+            ws.cell(5 + namesArray.length, weeks.length * 7 + 5 + i * 2)
+                .formula(`=SUM(${excel.getExcelAlpha(weeks.length * 7 + 5 + i * 2)}5:${excel.getExcelAlpha(weeks.length * 7 + 5 + i * 2)}${4 + namesArray.length})`)
                 .style(workbook.createStyle(headerStyle));
-            ws.cell(5 + namesArray.length, weeks.length * 7 + 6 + (i * 2))
-                .formula(`=SUM(${excel.getExcelAlpha(weeks.length * 7 + 6 + (i * 2))}5:${excel.getExcelAlpha(weeks.length * 7 + 6 + (i * 2))}${4 + namesArray.length})`)
+            ws.cell(5 + namesArray.length, weeks.length * 7 + 6 + i * 2)
+                .formula(`=SUM(${excel.getExcelAlpha(weeks.length * 7 + 6 + i * 2)}5:${excel.getExcelAlpha(weeks.length * 7 + 6 + i * 2)}${4 + namesArray.length})`)
                 .style(workbook.createStyle(headerStyle));
         }
         ws.cell(5 + namesArray.length, shiftsWeeksEnd + 1)
@@ -271,27 +338,32 @@ let ShiftService = class ShiftService {
             .style(workbook.createStyle(headerStyle));
         let notes_start = 8 + namesArray.length;
         ws.cell(notes_start, weeks.length * 7 + 3, notes_start + 1, weeks.length * 7 + 10, true)
-            .string(`הערות`).style(workbook.createStyle(Object.assign(Object.assign({}, headerStyle), { font: { size: 24 } })));
-        let notes_array = generalNotes.split('\n');
+            .string(`הערות`)
+            .style(workbook.createStyle(Object.assign(Object.assign({}, headerStyle), { font: { size: 24 } })));
+        const notes_array = generalNotes.split('\n');
         for (let i = 0; i < notes_array.length; i++) {
             ws.cell(notes_start + 2 + i, weeks.length * 7 + 3, notes_start + 2 + i, weeks.length * 7 + 10, true)
-                .string(notes_array[i]).style(workbook.createStyle(headerStyle));
+                .string(notes_array[i])
+                .style(workbook.createStyle(headerStyle));
         }
         notes_start += 2 + notes_array.length;
         for (let i = 0; i < weeksNotes.length; i++) {
-            let week_notes = weeksNotes[i].split('\n');
+            const week_notes = weeksNotes[i].split('\n');
             ws.cell(notes_start, weeks.length * 7 + 3, notes_start + 1, weeks.length * 7 + 10, true)
-                .string(`הערות שבוע ${i + 1}`).style(workbook.createStyle(Object.assign(Object.assign({}, headerStyle), { font: { size: 24 } })));
+                .string(`הערות שבוע ${i + 1}`)
+                .style(workbook.createStyle(Object.assign(Object.assign({}, headerStyle), { font: { size: 24 } })));
             notes_start += 2;
             for (let j = 0; j < week_notes.length; j++) {
                 ws.cell(notes_start + j, weeks.length * 7 + 3, notes_start + j, weeks.length * 7 + 10, true)
-                    .string(week_notes[j]).style(workbook.createStyle(headerStyle));
+                    .string(week_notes[j])
+                    .style(workbook.createStyle(headerStyle));
             }
             notes_start += week_notes.length;
         }
         notes_start += 2;
         ws.cell(notes_start, weeks.length * 7 + 3, notes_start + 1, weeks.length * 7 + 10, true)
-            .string(`אירועים`).style(workbook.createStyle(Object.assign(Object.assign({}, headerStyle), { font: { size: 24 } })));
+            .string(`אירועים`)
+            .style(workbook.createStyle(Object.assign(Object.assign({}, headerStyle), { font: { size: 24 } })));
         notes_start += 2;
         for (let i = 0; i < events.length; i++) {
             let value = `${(0, functions_1.dateToStringShort)(new Date(events[i].date))}: ${events[i].content} - `;
@@ -301,30 +373,46 @@ let ShiftService = class ShiftService {
                     value += `,`;
             }
             ws.cell(notes_start + i, weeks.length * 7 + 3, notes_start + i, weeks.length * 7 + 10, true)
-                .string(value).style(workbook.createStyle(headerStyle));
+                .string(value)
+                .style(workbook.createStyle(headerStyle));
         }
         const buffer = await workbook.writeToBuffer();
         return new common_1.StreamableFile(buffer);
     }
     async createNewShift(userId, scheduleId) {
-        let weeks = [];
-        let schedule = await this.scheduleModel.findById(scheduleId);
+        const weeks = [];
+        const schedule = await this.scheduleModel.findById(scheduleId);
         for (let i = 0; i < schedule.num_weeks; i++) {
             weeks.push({
                 morning: [false, false, false, false, false, false, false],
                 noon: [false, false, false, false, false, false, false],
                 night: [false, false, false, false, false, false, false],
                 pull: [true, true, true, true, true, true, true],
-                reinforcement: [false, false, false, false, false, false, false],
-                notes: ["", "", "", "", "", "", ""]
+                reinforcement: [
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                ],
+                notes: ['', '', '', '', '', '', ''],
             });
         }
-        let newShift = new this.shiftModel({ userId: userId, scheduleId: scheduleId, weeks });
+        const newShift = new this.shiftModel({
+            userId: userId,
+            scheduleId: scheduleId,
+            weeks,
+        });
         await newShift.save();
         return newShift;
     }
     async getUserScheduleShift(userId, scheduleId) {
-        let shiftFound = await this.shiftModel.findOne({ userId: userId, scheduleId: scheduleId });
+        const shiftFound = await this.shiftModel.findOne({
+            userId: userId,
+            scheduleId: scheduleId,
+        });
         if (!shiftFound) {
             return this.createNewShift(userId, scheduleId);
         }
@@ -337,7 +425,8 @@ let ShiftService = class ShiftService {
             throw new common_1.NotFoundException('משמרת לא נמצאה');
         }
         const userFound = await this.userModel.findById(userId);
-        if (!userFound.role.includes('ADMIN') && !userFound.role.includes('SITE_MANAGER')) {
+        if (!userFound.role.includes('ADMIN') &&
+            !userFound.role.includes('SITE_MANAGER')) {
             if (userId !== shift.userId.toString()) {
                 throw new common_1.UnauthorizedException('לא יכול לשנות משמרת של משתמש אחר');
             }
@@ -345,23 +434,31 @@ let ShiftService = class ShiftService {
             if (!settings.submit) {
                 throw new common_1.UnauthorizedException('אין אפשרות לשנות הגשות יותר');
             }
-            if (((_a = shiftFound.updatedAt) === null || _a === void 0 ? void 0 : _a.getTime()) === ((_b = shiftFound.createdAt) === null || _b === void 0 ? void 0 : _b.getTime())) {
-                const managers = await this.userModel.find({ role: { $in: ["ADMIN", "SITE_MANAGER"] } });
-                let emails = [];
+            if (((_a = shiftFound.updatedAt) === null || _a === void 0 ? void 0 : _a.getTime()) ===
+                ((_b = shiftFound.createdAt) === null || _b === void 0 ? void 0 : _b.getTime())) {
+                const managers = await this.userModel.find({
+                    role: { $in: ['ADMIN', 'SITE_MANAGER'] },
+                });
+                const emails = [];
                 for (let i = 0; i < managers.length; i++) {
                     emails.push(managers[i].email);
                 }
-                let shiftsCreated = await this.shiftModel.find({ scheduleId: shift.scheduleId });
+                const shiftsCreated = await this.shiftModel.find({
+                    scheduleId: shift.scheduleId,
+                });
                 let shiftsSubmitted = 0;
                 for (let i = 0; i < shiftsCreated.length; i++) {
-                    if (((_c = shiftsCreated[i].updatedAt) === null || _c === void 0 ? void 0 : _c.getTime()) === ((_d = shiftsCreated[i].updatedAt) === null || _d === void 0 ? void 0 : _d.getTime())) {
+                    if (((_c = shiftsCreated[i].updatedAt) === null || _c === void 0 ? void 0 : _c.getTime()) ===
+                        ((_d = shiftsCreated[i].updatedAt) === null || _d === void 0 ? void 0 : _d.getTime())) {
                         shiftsSubmitted++;
                     }
                 }
                 (0, functions_1.sendMail)(emails, `הגשת משמרות`, `עד עכשיו בתאריך ${(0, functions_1.dateToString)(new Date())} בשעה ${(0, functions_1.DateTimeToString)(new Date())} הגישו ${shiftsSubmitted} אנשים`);
             }
         }
-        return await this.shiftModel.findByIdAndUpdate(shift._id, shift, { new: true });
+        return await this.shiftModel.findByIdAndUpdate(shift._id, shift, {
+            new: true,
+        });
     }
     async delete(id) {
         const shiftFound = await this.shiftModel.findById(id);

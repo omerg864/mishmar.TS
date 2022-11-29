@@ -3,14 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendMail = exports.getRandomIndex = exports.compareTwoArrays = exports.stringInArray = exports.numberToDay = exports.dateToString = exports.DateTimeToString = exports.dateToStringShort = exports.addDays = void 0;
 const nodemailer = require("nodemailer");
 const addDays = (date, days) => {
-    var result = new Date(date);
+    const result = new Date(date);
     result.setDate(result.getDate() + days);
     return result;
 };
 exports.addDays = addDays;
 const dateToStringShort = (date) => {
-    let mm = date.getMonth() + 1;
-    let dd = date.getDate();
+    const mm = date.getMonth() + 1;
+    const dd = date.getDate();
     let MM = mm.toString();
     let DD = dd.toString();
     if (dd < 10)
@@ -22,8 +22,8 @@ const dateToStringShort = (date) => {
 };
 exports.dateToStringShort = dateToStringShort;
 const DateTimeToString = (date) => {
-    let mm = date.getMinutes();
-    let hh = date.getHours();
+    const mm = date.getMinutes();
+    const hh = date.getHours();
     let MM = mm.toString();
     let HH = hh.toString();
     if (hh < 10)
@@ -36,8 +36,8 @@ const DateTimeToString = (date) => {
 exports.DateTimeToString = DateTimeToString;
 const dateToString = (date) => {
     const yyyy = date.getFullYear() % 100;
-    let mm = date.getMonth() + 1;
-    let dd = date.getDate();
+    const mm = date.getMonth() + 1;
+    const dd = date.getDate();
     let MM = mm.toString();
     let DD = dd.toString();
     if (dd < 10)
@@ -49,16 +49,24 @@ const dateToString = (date) => {
 };
 exports.dateToString = dateToString;
 const numberToDay = (num) => {
-    const days_names = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
+    const days_names = [
+        'ראשון',
+        'שני',
+        'שלישי',
+        'רביעי',
+        'חמישי',
+        'שישי',
+        'שבת',
+    ];
     return days_names[num];
 };
 exports.numberToDay = numberToDay;
 const stringInArray = (name, array) => {
-    return array.filter(item => item === name).length > 0;
+    return array.filter((item) => item === name).length > 0;
 };
 exports.stringInArray = stringInArray;
 const compareTwoArrays = (arr1, arr2) => {
-    let names = [];
+    const names = [];
     for (let i = 0; i < arr1.length; i++) {
         if (!arr2.every((x) => x !== arr1[i])) {
             names.push(arr1[i]);
@@ -76,16 +84,16 @@ const sendMail = (receiver, subject, text) => {
         service: 'gmail',
         auth: {
             user: process.env.EMAIL_ADDRESS,
-            pass: process.env.EMAIL_PASSWORD
-        }
+            pass: process.env.EMAIL_PASSWORD,
+        },
     });
-    var mailOptions = {
+    const mailOptions = {
         from: process.env.EMAIL_ADDRESS,
         to: receiver,
         subject,
-        text
+        text,
     };
-    let response = {};
+    const response = {};
     transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
             response.error = error;
@@ -94,6 +102,7 @@ const sendMail = (receiver, subject, text) => {
             response.response = info.response;
         }
     });
+    console.log(response);
     return response;
 };
 exports.sendMail = sendMail;
