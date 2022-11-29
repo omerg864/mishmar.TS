@@ -30,7 +30,7 @@ const ScheduleNew = (props: IProps) => {
         try {
             const response = await fetch(`/api/schedules`, 
             {headers: {'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken')}
-            ,method: 'POST', body: JSON.stringify({ date, num_weeks: numWeeks})});
+            ,method: 'POST', body: JSON.stringify({ date: date, num_weeks: numWeeks})});
             const data = await response.json();
             if (data.error || data.statusCode) {
                 fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules`, component: "ScheduleNew" })})

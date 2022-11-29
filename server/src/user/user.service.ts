@@ -214,7 +214,6 @@ export class UserService {
             user: true,
             manager,
             userCookie: user,
-            tz: process.env.TZ,
         };
     }
 }
