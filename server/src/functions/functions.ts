@@ -6,6 +6,12 @@ export const addDays = (date: Date, days: number): Date => {
     return result;
 };
 
+export const addHours = (date: Date, hours: number): Date => {
+    const result = new Date(date);
+    result.setHours(result.getHours() + hours);
+    return result;
+};
+
 export const dateToStringShort = (date: Date): string => {
     const mm = date.getMonth() + 1; // Months start at 0!
     const dd = date.getDate();

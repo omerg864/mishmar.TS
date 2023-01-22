@@ -18,6 +18,7 @@ import {
     sendMail,
     dateToString,
     addDays,
+    addHours,
 } from '../functions/functions';
 import { EventInterface } from '../event/event.model';
 
@@ -334,21 +335,19 @@ export class ShiftService {
                 ws.cell(4, 2 + j + i * 7)
                     .string(days_names[j])
                     .style(workbook.createStyle(headerStyle));
-                const monrningNames = weeks[i].morning[j]
+                const morningNames = weeks[i].morning[j]
                     .split('\n')
                     .filter((item) => item != '');
-                for (let k = 0; k < monrningNames.length; k++) {
-                    if (!monrningNames[k].includes(' (לא משיכה) ')) {
-                        names.add(monrningNames[k]);
+                for (let k = 0; k < morningNames.length; k++) {
+                    if (!morningNames[k].includes(' (לא משיכה) ')) {
+                        names.add(morningNames[k]);
                         ws.cell(5 + k, 2 + j + i * 7)
-                            .string(monrningNames[k])
+                            .string(morningNames[k])
                             .style(workbook.createStyle(cellStyle));
                     } else {
-                        names.add(monrningNames[k].replace(' (לא משיכה) ', ''));
+                        names.add(morningNames[k].replace(' (לא משיכה) ', ''));
                         ws.cell(5 + k, 2 + j + i * 7)
-                            .string(
-                                monrningNames[k].replace(' (לא משיכה) ', '')
-                            )
+                            .string(morningNames[k].replace(' (לא משיכה) ', ''))
                             .style(
                                 workbook.createStyle({
                                     ...cellStyle,
@@ -628,16 +627,20 @@ export class ShiftService {
                 for (let i = 0; i < managers.length; i++) {
                     emails.push(managers[i].email);
                 }
-                const shiftsCreated = await this.shiftModel.find({
-                    scheduleId: shift.scheduleId,
-                });
-                let shiftsSubmitted = 0;
+                const shiftsCreated = await this.shiftModel
+                    .find({
+                        scheduleId: shift.scheduleId,
+                    })
+                    .populate('userId');
+                const usersSubmitted = [];
                 for (let i = 0; i < shiftsCreated.length; i++) {
                     if (
                         shiftsCreated[i].updatedAt?.getTime() ===
                         shiftsCreated[i].updatedAt?.getTime()
                     ) {
-                        shiftsSubmitted++;
+                        usersSubmitted.push(
+                            (shiftsCreated[i].userId as User).nickname
+                        );
                     }
                 }
                 sendMail(
@@ -646,8 +649,10 @@ export class ShiftService {
                     `עד עכשיו בתאריך ${dateToString(
                         new Date()
                     )} בשעה ${DateTimeToString(
-                        new Date()
-                    )} הגישו ${shiftsSubmitted} אנשים`
+                        addHours(new Date(), 2)
+                    )} הגישו ${usersSubmitted.length} אנשים
+                    \n
+                    אנשים שהגישו: ${usersSubmitted.join(',')}`
                 );
             }
         }
