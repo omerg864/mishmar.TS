@@ -31,7 +31,7 @@ const imports = [
     LogModule,
     ConfigModule.forRoot(),
     MongooseModule.forRoot(
-        `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_NAME}.${process.env.DB_PORT}.mongodb.net/${process.env.DB_TYPE}?retryWrites=true&w=majority`
+        `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_NAME}.wkjalhp.mongodb.net/${process.env.DB_TYPE}?retryWrites=true&w=majority`
     ),
 ];
 
