@@ -30,9 +30,7 @@ const imports = [
     StructureModule,
     LogModule,
     ConfigModule.forRoot(),
-    MongooseModule.forRoot(
-        `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_NAME}.wkjalhp.mongodb.net/${process.env.DB_TYPE}?retryWrites=true&w=majority`
-    ),
+    MongooseModule.forRoot(`${process.env.MONGODB}`),
 ];
 
 if (process.env.NODE_ENV === 'production') {
