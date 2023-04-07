@@ -258,20 +258,20 @@ let ShiftService = class ShiftService {
                 ws.cell(4, 2 + j + i * 7)
                     .string(days_names[j])
                     .style(workbook.createStyle(headerStyle));
-                const monrningNames = weeks[i].morning[j]
+                const morningNames = weeks[i].morning[j]
                     .split('\n')
                     .filter((item) => item != '');
-                for (let k = 0; k < monrningNames.length; k++) {
-                    if (!monrningNames[k].includes(' (לא משיכה) ')) {
-                        names.add(monrningNames[k]);
+                for (let k = 0; k < morningNames.length; k++) {
+                    if (!morningNames[k].includes(' (לא משיכה) ')) {
+                        names.add(morningNames[k]);
                         ws.cell(5 + k, 2 + j + i * 7)
-                            .string(monrningNames[k])
+                            .string(morningNames[k])
                             .style(workbook.createStyle(cellStyle));
                     }
                     else {
-                        names.add(monrningNames[k].replace(' (לא משיכה) ', ''));
+                        names.add(morningNames[k].replace(' (לא משיכה) ', ''));
                         ws.cell(5 + k, 2 + j + i * 7)
-                            .string(monrningNames[k].replace(' (לא משיכה) ', ''))
+                            .string(morningNames[k].replace(' (לא משיכה) ', ''))
                             .style(workbook.createStyle(Object.assign(Object.assign({}, cellStyle), { font: { color: '#ff0000' } })));
                     }
                 }
@@ -443,17 +443,21 @@ let ShiftService = class ShiftService {
                 for (let i = 0; i < managers.length; i++) {
                     emails.push(managers[i].email);
                 }
-                const shiftsCreated = await this.shiftModel.find({
+                const shiftsCreated = await this.shiftModel
+                    .find({
                     scheduleId: shift.scheduleId,
-                });
-                let shiftsSubmitted = 0;
+                })
+                    .populate('userId');
+                const usersSubmitted = [];
                 for (let i = 0; i < shiftsCreated.length; i++) {
                     if (((_c = shiftsCreated[i].updatedAt) === null || _c === void 0 ? void 0 : _c.getTime()) ===
                         ((_d = shiftsCreated[i].updatedAt) === null || _d === void 0 ? void 0 : _d.getTime())) {
-                        shiftsSubmitted++;
+                        usersSubmitted.push(shiftsCreated[i].userId.nickname);
                     }
                 }
-                (0, functions_1.sendMail)(emails, `הגשת משמרות`, `עד עכשיו בתאריך ${(0, functions_1.dateToString)(new Date())} בשעה ${(0, functions_1.DateTimeToString)(new Date())} הגישו ${shiftsSubmitted} אנשים`);
+                (0, functions_1.sendMail)(emails, `הגשת משמרות`, `עד עכשיו בתאריך ${(0, functions_1.dateToString)(new Date())} בשעה ${(0, functions_1.DateTimeToString)((0, functions_1.addHours)(new Date(), 2))} הגישו ${usersSubmitted.length} אנשים
+                    \n
+                    אנשים שהגישו: ${usersSubmitted.join(',')}`);
             }
         }
         return await this.shiftModel.findByIdAndUpdate(shift._id, shift, {

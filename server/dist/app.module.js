@@ -23,13 +23,24 @@ const path = require("path");
 const dotenv = require("dotenv");
 if (process.env.NODE_ENV !== 'production') {
     dotenv.config({
-        path: path.resolve(__dirname, '../.env')
+        path: path.resolve(__dirname, '../.env'),
     });
 }
-const imports = [user_module_1.UserModule, schedule_module_1.ScheduleModule, shift_module_1.ShiftModule, event_module_1.EventModule, post_module_1.PostModule, settings_module_1.SettingsModule, structure_module_1.StructureModule, log_module_1.LogModule, config_1.ConfigModule.forRoot(), mongoose_1.MongooseModule.forRoot(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_NAME}.wkjalhp.mongodb.net/${process.env.DB_TYPE}?retryWrites=true&w=majority`)];
+const imports = [
+    user_module_1.UserModule,
+    schedule_module_1.ScheduleModule,
+    shift_module_1.ShiftModule,
+    event_module_1.EventModule,
+    post_module_1.PostModule,
+    settings_module_1.SettingsModule,
+    structure_module_1.StructureModule,
+    log_module_1.LogModule,
+    config_1.ConfigModule.forRoot(),
+    mongoose_1.MongooseModule.forRoot(`${process.env.MONGODB}`),
+];
 if (process.env.NODE_ENV === 'production') {
     imports.push(serve_static_1.ServeStaticModule.forRoot({
-        rootPath: path.join(__dirname, "../../client/build")
+        rootPath: path.join(__dirname, '../../client/build'),
     }));
 }
 let AppModule = class AppModule {

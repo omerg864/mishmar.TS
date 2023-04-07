@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendMail = exports.getRandomIndex = exports.compareTwoArrays = exports.stringInArray = exports.numberToDay = exports.dateToString = exports.DateTimeToString = exports.dateToStringShort = exports.addDays = void 0;
+exports.sendMail = exports.getRandomIndex = exports.compareTwoArrays = exports.stringInArray = exports.numberToDay = exports.dateToString = exports.DateTimeToString = exports.dateToStringShort = exports.addHours = exports.addDays = void 0;
 const nodemailer = require("nodemailer");
 const addDays = (date, days) => {
     const result = new Date(date);
@@ -8,6 +8,12 @@ const addDays = (date, days) => {
     return result;
 };
 exports.addDays = addDays;
+const addHours = (date, hours) => {
+    const result = new Date(date);
+    result.setHours(result.getHours() + hours);
+    return result;
+};
+exports.addHours = addHours;
 const dateToStringShort = (date) => {
     const mm = date.getMonth() + 1;
     const dd = date.getDate();

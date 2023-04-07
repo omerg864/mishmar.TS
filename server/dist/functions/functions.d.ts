@@ -1,4 +1,5 @@
 export declare const addDays: (date: Date, days: number) => Date;
+export declare const addHours: (date: Date, hours: number) => Date;
 export declare const dateToStringShort: (date: Date) => string;
 export declare const DateTimeToString: (date: Date) => string;
 export declare const dateToString: (date: Date) => string;

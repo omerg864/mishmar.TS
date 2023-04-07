@@ -6,7 +6,8 @@
   "homepage": "https://mishmar-ramla.vercel.app", 
   "scripts": {
     "add": "cd client && npm run build && cd .. && git add .",
-    "commit": "cd client && npm run build && cd ../server && nest build && cd .. && git add . && git commit -m"
+    "commit": "cd client && npm run build && cd ../server && nest build && cd .. && git add . && git commit -m",
+    "install_dep": "cd server && npm install && cd .. && cd client && npm install && cd .."
   },
   "repository": {
     "type": "git",
