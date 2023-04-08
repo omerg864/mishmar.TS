@@ -1,5 +1,11 @@
 # Welcome to Mishmar!
 
+<p align="center">
+    <br>
+    <img src="./client/public/favicon.ico" width="400"/>
+    <br>
+<p>
+
 Mishmar is a web-based application built with Nest.js, MongoDB, TypeScript, and React with TypeScript. It streamlines the scheduling process for companies by allowing workers to submit their preferred shifts, which managers can easily organize and arrange using excel files.
 
 Mishmar has been tested and upgraded, and is currently running successfully for two years in Ramla's court house security staff.
