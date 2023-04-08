@@ -2,7 +2,7 @@
 
 <p align="center">
     <br>
-    <img src="./client/public/favicon.ico" width="400"/>
+    <img src="./client/public/favicon.ico" width="200"/>
     <br>
 <p>
 
