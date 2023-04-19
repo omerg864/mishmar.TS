@@ -53,7 +53,7 @@ const Header = (props: IProps) => {
   };
 
   const handleCloseNavMenu = (e: React.MouseEvent<Element>) => {
-    switch((e.target as HTMLButtonElement).innerText.toLowerCase()){
+    switch((e.target as HTMLButtonElement).innerText){
       case 'לוח מנהל':
         navigate('/management');
         break;
