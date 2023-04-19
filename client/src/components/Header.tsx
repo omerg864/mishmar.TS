@@ -21,10 +21,10 @@ import Cookies from 'universal-cookie';
 
 
 
-const pages = ['הגשת משמרות', 'סידור עבודה'];
-const pages_manager = ['הגשת משמרות', 'סידור עבודה', 'לוח מנהל'];
-const settings_auth = ['פרופיל', 'התנתק'];
-const settings = ['התחבר', 'הירשם'];
+const pages = [{name: 'הגשת משמרות', id: "shift"},{name: 'סידור עבודה', id: "work"}];
+const pages_manager = [{name: 'הגשת משמרות', id: "shift"},{name: 'סידור עבודה', id: "work"}, {name: 'לוח מנהל', id: "manager"}];
+const settings_auth = [{name: 'פרופיל', id: "profile"}, {name: 'התנתק', id:"logout"}];
+const settings = [{name: 'התחבר', id: "login"}, {name: 'הירשם', id: "register"}];
 
 interface IProps {
   authenticated: boolean;
@@ -53,14 +53,15 @@ const Header = (props: IProps) => {
   };
 
   const handleCloseNavMenu = (e: React.MouseEvent<Element>) => {
-    switch((e.target as HTMLButtonElement).innerText){
-      case 'לוח מנהל':
+    console.log((e.target as HTMLButtonElement).id);
+    switch((e.target as HTMLButtonElement).id){
+      case 'manager':
         navigate('/management');
         break;
-      case 'הגשת משמרות':
+      case 'shift':
         navigate('/shift');
         break;
-      case 'סידור עבודה':
+      case 'work':
         navigate('/schedule');
         break;
       default:
@@ -70,17 +71,18 @@ const Header = (props: IProps) => {
   };
 
   const handleCloseUserMenu = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-    switch((e.target as HTMLLIElement).innerText){
-      case 'התחבר':
+    console.log((e.target as HTMLButtonElement).parentElement);
+    switch((e.target as HTMLLIElement).parentElement?.id){
+      case 'login':
         navigate('/login');
         break;
-      case 'הירשם':
+      case 'register':
         navigate('/register');
         break;
-      case 'התנתק': 
+      case 'logout': 
         logout();
         break;
-      case 'פרופיל':
+      case 'profile':
         navigate('/profile');
         break;
       default:
@@ -205,12 +207,12 @@ const Header = (props: IProps) => {
               }}
             >
               {!props.manager ? pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                <MenuItem key={page.id} id={page.id} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               )) : pages_manager.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                <MenuItem key={page.id} id={page.id} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -237,19 +239,21 @@ const Header = (props: IProps) => {
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {!props.manager ? pages.map((page) => (
               <Button
-                key={page}
+                key={page.id}
                 onClick={handleCloseNavMenu}
+                id={page.id}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                {page}
+                {page.name}
               </Button>
             )) : pages_manager.map((page) => (
               <Button
-                key={page}
+                key={page.id}
+                id={page.id}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                {page}
+                {page.name}
               </Button>
             ))}
           </Box>
@@ -277,12 +281,12 @@ const Header = (props: IProps) => {
               onClose={handleCloseUserMenu}
             >
               {props.authenticated ? settings_auth.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                <MenuItem key={setting.id} id={setting.id} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">{setting.name}</Typography>
                 </MenuItem>
               )) : settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                <MenuItem key={setting.id} id={setting.id} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">{setting.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
