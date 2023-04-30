@@ -53,7 +53,7 @@ const Header = (props: IProps) => {
   };
 
   const handleCloseNavMenu = (e: React.MouseEvent<Element>) => {
-    console.log((e.target as HTMLButtonElement).id);
+    console.log((e.target as HTMLButtonElement));
     switch((e.target as HTMLButtonElement).id){
       case 'manager':
         navigate('/management');
@@ -208,11 +208,11 @@ const Header = (props: IProps) => {
             >
               {!props.manager ? pages.map((page) => (
                 <MenuItem key={page.id} id={page.id} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page.name}</Typography>
+                  <Typography textAlign="center" id={page.id}>{page.name}</Typography>
                 </MenuItem>
               )) : pages_manager.map((page) => (
                 <MenuItem key={page.id} id={page.id} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page.name}</Typography>
+                  <Typography textAlign="center" id={page.id}>{page.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
