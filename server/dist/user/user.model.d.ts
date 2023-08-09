@@ -1,5 +1,5 @@
 import * as mongoose from "mongoose";
-export declare const UserScheme: mongoose.Schema<User, mongoose.Model<User, any, any, any, any>, {}, {}, {}, {}, "type", User>;
+export declare const UserScheme: mongoose.Schema<User, mongoose.Model<User, any, any, any, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, User>;
 export interface User {
     id?: string;
     _id: string | mongoose.Schema.Types.ObjectId;

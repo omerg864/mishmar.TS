@@ -1,5 +1,5 @@
 import * as mongoose from "mongoose";
-export declare const PostScheme: mongoose.Schema<PostInterface, mongoose.Model<PostInterface, any, any, any, any>, {}, {}, {}, {}, "type", PostInterface>;
+export declare const PostScheme: mongoose.Schema<PostInterface, mongoose.Model<PostInterface, any, any, any, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, PostInterface>;
 export interface PostInterface {
     id?: mongoose.Schema.Types.ObjectId;
     _id?: mongoose.Schema.Types.ObjectId | string;

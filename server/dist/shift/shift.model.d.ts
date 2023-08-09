@@ -1,6 +1,6 @@
 import * as mongoose from "mongoose";
 import { User } from "../user/user.model";
-export declare const ShiftScheme: mongoose.Schema<Shift, mongoose.Model<Shift, any, any, any, any>, {}, {}, {}, {}, "type", Shift>;
+export declare const ShiftScheme: mongoose.Schema<Shift, mongoose.Model<Shift, any, any, any, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, Shift>;
 export interface Shift {
     id?: mongoose.Schema.Types.ObjectId | string;
     _id: mongoose.Schema.Types.ObjectId | string;
