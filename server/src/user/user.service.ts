@@ -12,6 +12,7 @@ import * as bcrypt from 'bcryptjs';
 import { Settings } from '../settings/settings.model';
 import { sendMail } from '../functions/functions';
 import * as crypto from 'crypto';
+import { email_regex } from '../types/regularExpressions';
 
 @Injectable()
 export class UserService {
@@ -21,7 +22,7 @@ export class UserService {
 	) {}
 
 	generateToken(id: string): string {
-		return jwt.sign({ id }, 'ABC', { expiresIn: '30d' });
+		return jwt.sign({ id }, process.env.JTW_SECRET, { expiresIn: '30d' });
 	}
 
 	async login(
@@ -52,6 +53,9 @@ export class UserService {
 		});
 		if (userFound) {
 			throw new ConflictException('שם משתמש בשימוש');
+		}
+		if (!user.email || !email_regex.test(user.email)) {
+			throw new ConflictException('אימייל לא תקין');
 		}
 		userFound = await this.userModel.findOne({
 			email: { $regex: new RegExp(user.email, 'i') },
@@ -101,6 +105,9 @@ export class UserService {
 	async forgotPasswordEmail(
 		email: string
 	): Promise<{ error?: Error; response?: string }> {
+		if (!email || !email_regex.test(email)) {
+			throw new ConflictException('אימייל לא תקין');
+		}
 		const userFound = await this.userModel.findOne({
 			email: { $regex: new RegExp(email, 'i') },
 		});

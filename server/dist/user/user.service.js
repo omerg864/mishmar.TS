@@ -20,13 +20,14 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const functions_1 = require("../functions/functions");
 const crypto = require("crypto");
+const regularExpressions_1 = require("../types/regularExpressions");
 let UserService = class UserService {
     constructor(userModel, settingsModel) {
         this.userModel = userModel;
         this.settingsModel = settingsModel;
     }
     generateToken(id) {
-        return jwt.sign({ id }, 'ABC', { expiresIn: '30d' });
+        return jwt.sign({ id }, process.env.JTW_SECRET, { expiresIn: '30d' });
     }
     async login(username, password) {
         const user = await this.userModel
@@ -52,6 +53,9 @@ let UserService = class UserService {
         });
         if (userFound) {
             throw new common_1.ConflictException('שם משתמש בשימוש');
+        }
+        if (!user.email || !regularExpressions_1.email_regex.test(user.email)) {
+            throw new common_1.ConflictException('אימייל לא תקין');
         }
         userFound = await this.userModel.findOne({
             email: { $regex: new RegExp(user.email, 'i') },
@@ -91,6 +95,9 @@ let UserService = class UserService {
         return users_temp;
     }
     async forgotPasswordEmail(email) {
+        if (!email || !regularExpressions_1.email_regex.test(email)) {
+            throw new common_1.ConflictException('אימייל לא תקין');
+        }
         const userFound = await this.userModel.findOne({
             email: { $regex: new RegExp(email, 'i') },
         });
