@@ -8,6 +8,13 @@ body {
   direction: rtl;
 }
 
+body {
+  background-color: #1975d2;
+}
+main {
+  background-color: #fff;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

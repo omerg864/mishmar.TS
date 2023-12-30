@@ -5,8 +5,8 @@ main {
   align-items: center;
   height: 100vh;
   padding: 15px;
+  padding-left: 25px;
   box-sizing: border-box;
-  margin-left: 10px;
 }
 
 .text_input {
