@@ -22,7 +22,7 @@ export class UserService {
 	) {}
 
 	generateToken(id: string): string {
-		return jwt.sign({ id }, process.env.JTW_SECRET, { expiresIn: '30d' });
+		return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 	}
 
 	async login(

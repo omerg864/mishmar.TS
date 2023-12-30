@@ -27,7 +27,7 @@ let UserService = class UserService {
         this.settingsModel = settingsModel;
     }
     generateToken(id) {
-        return jwt.sign({ id }, process.env.JTW_SECRET, { expiresIn: '30d' });
+        return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
     }
     async login(username, password) {
         const user = await this.userModel
