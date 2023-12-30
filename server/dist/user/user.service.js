@@ -44,6 +44,9 @@ let UserService = class UserService {
         return { user: Object.assign({}, user['_doc']), token };
     }
     async register(user, pin_code) {
+        if (user.username.includes('$')) {
+            throw new common_1.ConflictException('שם משתמש לא יכול להכיל $');
+        }
         let userFound = await this.userModel.findOne({
             username: { $regex: new RegExp(user.username, 'i') },
         });

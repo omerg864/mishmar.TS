@@ -14,27 +14,57 @@ const schedule_controller_1 = require("./schedule.controller");
 const schedule_service_1 = require("./schedule.service");
 const mongoose_1 = require("@nestjs/mongoose");
 const user_model_1 = require("../user/user.model");
-const auth_middlware_1 = require("../middleware/auth.middlware");
+const auth_middleware_1 = require("../middleware/auth.middleware");
 const settings_model_1 = require("../settings/settings.model");
 let ScheduleModule = class ScheduleModule {
     configure(consumer) {
-        consumer.apply(auth_middlware_1.AuthMiddleware).forRoutes({ path: 'api/schedules/auth/*', method: common_1.RequestMethod.GET });
-        consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/schedules/:id', method: common_1.RequestMethod.GET });
-        consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/schedules/table/:id', method: common_1.RequestMethod.GET });
-        consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/schedules/*', method: common_1.RequestMethod.PUT });
-        consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/schedules', method: common_1.RequestMethod.POST });
-        consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/schedules', method: common_1.RequestMethod.PATCH });
-        consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/schedules/*', method: common_1.RequestMethod.DELETE });
+        consumer
+            .apply(auth_middleware_1.AuthMiddleware)
+            .forRoutes({
+            path: 'api/schedules/auth/*',
+            method: common_1.RequestMethod.GET,
+        });
+        consumer
+            .apply(auth_middleware_1.SiteManagerMiddleware)
+            .forRoutes({
+            path: 'api/schedules/:id',
+            method: common_1.RequestMethod.GET,
+        });
+        consumer
+            .apply(auth_middleware_1.SiteManagerMiddleware)
+            .forRoutes({
+            path: 'api/schedules/table/:id',
+            method: common_1.RequestMethod.GET,
+        });
+        consumer
+            .apply(auth_middleware_1.SiteManagerMiddleware)
+            .forRoutes({ path: 'api/schedules/*', method: common_1.RequestMethod.PUT });
+        consumer
+            .apply(auth_middleware_1.SiteManagerMiddleware)
+            .forRoutes({ path: 'api/schedules', method: common_1.RequestMethod.POST });
+        consumer
+            .apply(auth_middleware_1.SiteManagerMiddleware)
+            .forRoutes({ path: 'api/schedules', method: common_1.RequestMethod.PATCH });
+        consumer
+            .apply(auth_middleware_1.SiteManagerMiddleware)
+            .forRoutes({
+            path: 'api/schedules/*',
+            method: common_1.RequestMethod.DELETE,
+        });
     }
 };
 ScheduleModule = __decorate([
     (0, common_1.Module)({
-        imports: [mongoose_1.MongooseModule.forFeature([{ name: 'Schedule', schema: schedule_model_1.ScheduleScheme },
+        imports: [
+            mongoose_1.MongooseModule.forFeature([
+                { name: 'Schedule', schema: schedule_model_1.ScheduleScheme },
                 { name: 'User', schema: user_model_1.UserScheme },
                 { name: 'Structure', schema: structure_model_1.StructureScheme },
-                { name: 'Settings', schema: settings_model_1.SettingsScheme }])],
+                { name: 'Settings', schema: settings_model_1.SettingsScheme },
+            ]),
+        ],
         controllers: [schedule_controller_1.ScheduleController],
-        providers: [schedule_service_1.ScheduleService]
+        providers: [schedule_service_1.ScheduleService],
     })
 ], ScheduleModule);
 exports.ScheduleModule = ScheduleModule;

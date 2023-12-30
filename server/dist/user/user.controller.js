@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const user_service_1 = require("./user.service");
 const common_1 = require("@nestjs/common");
-const auth_middlware_1 = require("../middleware/auth.middlware");
+const auth_middleware_1 = require("../middleware/auth.middleware");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
@@ -98,7 +98,7 @@ __decorate([
 __decorate([
     (0, common_1.Patch)(),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, auth_middlware_1.UserID)()),
+    __param(1, (0, auth_middleware_1.UserID)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
@@ -132,7 +132,7 @@ __decorate([
 ], UserController.prototype, "getAllUsers", null);
 __decorate([
     (0, common_1.Get)('auth'),
-    __param(0, (0, auth_middlware_1.UserID)()),
+    __param(0, (0, auth_middleware_1.UserID)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)

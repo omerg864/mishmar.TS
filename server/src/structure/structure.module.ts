@@ -5,15 +5,21 @@ import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { StructureController } from './structure.controller';
 import { StructureService } from './structure.service';
 import { UserScheme } from '../user/user.model';
-import { SiteManagerMiddleware } from '../middleware/auth.middlware';
+import { SiteManagerMiddleware } from '../middleware/auth.middleware';
 
 @Module({
-  imports: [MongooseModule.forFeature([{name: 'Structure', schema: StructureScheme}, {name: 'Schedule', schema: ScheduleScheme}, {name: 'User', schema: UserScheme}])],
-  controllers: [StructureController],
-  providers: [StructureService]
+	imports: [
+		MongooseModule.forFeature([
+			{ name: 'Structure', schema: StructureScheme },
+			{ name: 'Schedule', schema: ScheduleScheme },
+			{ name: 'User', schema: UserScheme },
+		]),
+	],
+	controllers: [StructureController],
+	providers: [StructureService],
 })
 export class StructureModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(SiteManagerMiddleware).forRoutes(StructureController);
-  }
+	configure(consumer: MiddlewareConsumer) {
+		consumer.apply(SiteManagerMiddleware).forRoutes(StructureController);
+	}
 }

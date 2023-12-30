@@ -13,18 +13,27 @@ const common_1 = require("@nestjs/common");
 const settings_controller_1 = require("./settings.controller");
 const settings_service_1 = require("./settings.service");
 const settings_model_1 = require("./settings.model");
-const auth_middlware_1 = require("../middleware/auth.middlware");
+const auth_middleware_1 = require("../middleware/auth.middleware");
 let SettingsModule = class SettingsModule {
     configure(consumer) {
-        consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/settings', method: common_1.RequestMethod.PATCH });
-        consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/settings', method: common_1.RequestMethod.GET });
+        consumer
+            .apply(auth_middleware_1.SiteManagerMiddleware)
+            .forRoutes({ path: 'api/settings', method: common_1.RequestMethod.PATCH });
+        consumer
+            .apply(auth_middleware_1.SiteManagerMiddleware)
+            .forRoutes({ path: 'api/settings', method: common_1.RequestMethod.GET });
     }
 };
 SettingsModule = __decorate([
     (0, common_1.Module)({
-        imports: [mongoose_1.MongooseModule.forFeature([{ name: 'Settings', schema: settings_model_1.SettingsScheme }, { name: 'User', schema: user_model_1.UserScheme }])],
+        imports: [
+            mongoose_1.MongooseModule.forFeature([
+                { name: 'Settings', schema: settings_model_1.SettingsScheme },
+                { name: 'User', schema: user_model_1.UserScheme },
+            ]),
+        ],
         controllers: [settings_controller_1.SettingsController],
-        providers: [settings_service_1.SettingsService]
+        providers: [settings_service_1.SettingsService],
     })
 ], SettingsModule);
 exports.SettingsModule = SettingsModule;

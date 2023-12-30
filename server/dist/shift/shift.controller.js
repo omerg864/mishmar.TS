@@ -14,7 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ShiftController = void 0;
 const common_1 = require("@nestjs/common");
-const auth_middlware_1 = require("../middleware/auth.middlware");
+const auth_middleware_1 = require("../middleware/auth.middleware");
 const shift_service_1 = require("./shift.service");
 let ShiftController = class ShiftController {
     constructor(shiftService) {
@@ -66,7 +66,7 @@ __decorate([
 ], ShiftController.prototype, "getUserScheduleShiftManager", null);
 __decorate([
     (0, common_1.Get)('user/:scheduleId'),
-    __param(0, (0, auth_middlware_1.UserID)()),
+    __param(0, (0, auth_middleware_1.UserID)()),
     __param(1, (0, common_1.Param)('scheduleId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
@@ -94,7 +94,7 @@ __decorate([
 __decorate([
     (0, common_1.Patch)(),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, auth_middlware_1.UserID)()),
+    __param(1, (0, auth_middleware_1.UserID)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)

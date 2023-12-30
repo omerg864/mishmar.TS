@@ -9,30 +9,60 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ShiftModule = void 0;
 const settings_model_1 = require("../settings/settings.model");
 const schedule_model_1 = require("./../schedule/schedule.model");
-const auth_middlware_1 = require("./../middleware/auth.middlware");
+const auth_middleware_1 = require("../middleware/auth.middleware");
 const shift_model_1 = require("./shift.model");
 const common_1 = require("@nestjs/common");
 const shift_controller_1 = require("./shift.controller");
 const shift_service_1 = require("./shift.service");
 const mongoose_1 = require("@nestjs/mongoose");
 const user_model_1 = require("../user/user.model");
-const auth_middlware_2 = require("../middleware/auth.middlware");
+const auth_middleware_2 = require("../middleware/auth.middleware");
 let ShiftModule = class ShiftModule {
     configure(consumer) {
-        consumer.apply(auth_middlware_2.SiteManagerMiddleware).forRoutes({ path: 'api/shifts/all', method: common_1.RequestMethod.GET });
-        consumer.apply(auth_middlware_2.SiteManagerMiddleware).forRoutes({ path: 'api/shifts/user/:userId/:scheduleId/manager', method: common_1.RequestMethod.GET });
-        consumer.apply(auth_middlware_2.SiteManagerMiddleware).forRoutes({ path: 'api/shifts/schedule/:id', method: common_1.RequestMethod.GET });
-        consumer.apply(auth_middlware_2.SiteManagerMiddleware).forRoutes({ path: 'api/shifts/excel', method: common_1.RequestMethod.PUT });
-        consumer.apply(auth_middlware_2.AuthMiddleware).forRoutes({ path: 'api/shifts', method: common_1.RequestMethod.PATCH });
-        consumer.apply(auth_middlware_2.AuthMiddleware).forRoutes({ path: 'api/shifts/user/:scheduleId', method: common_1.RequestMethod.GET });
-        consumer.apply(auth_middlware_1.AdminManagerMiddleware).forRoutes({ path: 'api/shifts/*', method: common_1.RequestMethod.DELETE });
+        consumer
+            .apply(auth_middleware_2.SiteManagerMiddleware)
+            .forRoutes({ path: 'api/shifts/all', method: common_1.RequestMethod.GET });
+        consumer
+            .apply(auth_middleware_2.SiteManagerMiddleware)
+            .forRoutes({
+            path: 'api/shifts/user/:userId/:scheduleId/manager',
+            method: common_1.RequestMethod.GET,
+        });
+        consumer
+            .apply(auth_middleware_2.SiteManagerMiddleware)
+            .forRoutes({
+            path: 'api/shifts/schedule/:id',
+            method: common_1.RequestMethod.GET,
+        });
+        consumer
+            .apply(auth_middleware_2.SiteManagerMiddleware)
+            .forRoutes({ path: 'api/shifts/excel', method: common_1.RequestMethod.PUT });
+        consumer
+            .apply(auth_middleware_2.AuthMiddleware)
+            .forRoutes({ path: 'api/shifts', method: common_1.RequestMethod.PATCH });
+        consumer
+            .apply(auth_middleware_2.AuthMiddleware)
+            .forRoutes({
+            path: 'api/shifts/user/:scheduleId',
+            method: common_1.RequestMethod.GET,
+        });
+        consumer
+            .apply(auth_middleware_1.AdminManagerMiddleware)
+            .forRoutes({ path: 'api/shifts/*', method: common_1.RequestMethod.DELETE });
     }
 };
 ShiftModule = __decorate([
     (0, common_1.Module)({
-        imports: [mongoose_1.MongooseModule.forFeature([{ name: 'Shift', schema: shift_model_1.ShiftScheme }, { name: 'Settings', schema: settings_model_1.SettingsScheme }, { name: 'Schedule', schema: schedule_model_1.ScheduleScheme }, { name: 'User', schema: user_model_1.UserScheme }])],
+        imports: [
+            mongoose_1.MongooseModule.forFeature([
+                { name: 'Shift', schema: shift_model_1.ShiftScheme },
+                { name: 'Settings', schema: settings_model_1.SettingsScheme },
+                { name: 'Schedule', schema: schedule_model_1.ScheduleScheme },
+                { name: 'User', schema: user_model_1.UserScheme },
+            ]),
+        ],
         controllers: [shift_controller_1.ShiftController],
-        providers: [shift_service_1.ShiftService]
+        providers: [shift_service_1.ShiftService],
     })
 ], ShiftModule);
 exports.ShiftModule = ShiftModule;

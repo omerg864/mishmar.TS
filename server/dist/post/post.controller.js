@@ -14,7 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostController = void 0;
 const common_1 = require("@nestjs/common");
-const auth_middlware_1 = require("../middleware/auth.middlware");
+const auth_middleware_1 = require("../middleware/auth.middleware");
 const post_service_1 = require("./post.service");
 let PostController = class PostController {
     constructor(postService) {
@@ -38,7 +38,7 @@ let PostController = class PostController {
 };
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, auth_middlware_1.UserID)()),
+    __param(0, (0, auth_middleware_1.UserID)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
@@ -46,7 +46,7 @@ __decorate([
 ], PostController.prototype, "create", null);
 __decorate([
     (0, common_1.Patch)(),
-    __param(0, (0, auth_middlware_1.UserID)()),
+    __param(0, (0, auth_middleware_1.UserID)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),

@@ -14,17 +14,23 @@ const common_1 = require("@nestjs/common");
 const structure_controller_1 = require("./structure.controller");
 const structure_service_1 = require("./structure.service");
 const user_model_1 = require("../user/user.model");
-const auth_middlware_1 = require("../middleware/auth.middlware");
+const auth_middleware_1 = require("../middleware/auth.middleware");
 let StructureModule = class StructureModule {
     configure(consumer) {
-        consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes(structure_controller_1.StructureController);
+        consumer.apply(auth_middleware_1.SiteManagerMiddleware).forRoutes(structure_controller_1.StructureController);
     }
 };
 StructureModule = __decorate([
     (0, common_1.Module)({
-        imports: [mongoose_1.MongooseModule.forFeature([{ name: 'Structure', schema: structure_model_1.StructureScheme }, { name: 'Schedule', schema: schedule_model_1.ScheduleScheme }, { name: 'User', schema: user_model_1.UserScheme }])],
+        imports: [
+            mongoose_1.MongooseModule.forFeature([
+                { name: 'Structure', schema: structure_model_1.StructureScheme },
+                { name: 'Schedule', schema: schedule_model_1.ScheduleScheme },
+                { name: 'User', schema: user_model_1.UserScheme },
+            ]),
+        ],
         controllers: [structure_controller_1.StructureController],
-        providers: [structure_service_1.StructureService]
+        providers: [structure_service_1.StructureService],
     })
 ], StructureModule);
 exports.StructureModule = StructureModule;

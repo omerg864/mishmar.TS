@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostModule = void 0;
-const auth_middlware_1 = require("./../middleware/auth.middlware");
+const auth_middleware_1 = require("../middleware/auth.middleware");
 const post_model_1 = require("./post.model");
 const common_1 = require("@nestjs/common");
 const post_controller_1 = require("./post.controller");
@@ -16,18 +16,36 @@ const mongoose_1 = require("@nestjs/mongoose");
 const user_model_1 = require("../user/user.model");
 let PostModule = class PostModule {
     configure(consumer) {
-        consumer.apply(auth_middlware_1.ShiftManagerMiddleware).forRoutes({ path: 'api/posts', method: common_1.RequestMethod.POST });
-        consumer.apply(auth_middlware_1.ShiftManagerMiddleware).forRoutes({ path: 'api/posts/*', method: common_1.RequestMethod.DELETE });
-        consumer.apply(auth_middlware_1.ShiftManagerMiddleware).forRoutes({ path: 'api/posts', method: common_1.RequestMethod.PATCH });
-        consumer.apply(auth_middlware_1.ShiftManagerMiddleware).forRoutes({ path: 'api/posts/:id', method: common_1.RequestMethod.GET });
-        consumer.apply(auth_middlware_1.AuthMiddleware).forRoutes({ path: 'api/posts/auth/all', method: common_1.RequestMethod.GET });
+        consumer
+            .apply(auth_middleware_1.ShiftManagerMiddleware)
+            .forRoutes({ path: 'api/posts', method: common_1.RequestMethod.POST });
+        consumer
+            .apply(auth_middleware_1.ShiftManagerMiddleware)
+            .forRoutes({ path: 'api/posts/*', method: common_1.RequestMethod.DELETE });
+        consumer
+            .apply(auth_middleware_1.ShiftManagerMiddleware)
+            .forRoutes({ path: 'api/posts', method: common_1.RequestMethod.PATCH });
+        consumer
+            .apply(auth_middleware_1.ShiftManagerMiddleware)
+            .forRoutes({ path: 'api/posts/:id', method: common_1.RequestMethod.GET });
+        consumer
+            .apply(auth_middleware_1.AuthMiddleware)
+            .forRoutes({
+            path: 'api/posts/auth/all',
+            method: common_1.RequestMethod.GET,
+        });
     }
 };
 PostModule = __decorate([
     (0, common_1.Module)({
-        imports: [mongoose_1.MongooseModule.forFeature([{ name: 'Post', schema: post_model_1.PostScheme }, { name: 'User', schema: user_model_1.UserScheme }])],
+        imports: [
+            mongoose_1.MongooseModule.forFeature([
+                { name: 'Post', schema: post_model_1.PostScheme },
+                { name: 'User', schema: user_model_1.UserScheme },
+            ]),
+        ],
         controllers: [post_controller_1.PostController],
-        providers: [post_service_1.PostService]
+        providers: [post_service_1.PostService],
     })
 ], PostModule);
 exports.PostModule = PostModule;

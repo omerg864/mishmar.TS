@@ -12,24 +12,47 @@ const common_1 = require("@nestjs/common");
 const user_service_1 = require("./user.service");
 const mongoose_1 = require("@nestjs/mongoose");
 const user_model_1 = require("./user.model");
-const auth_middlware_1 = require("../middleware/auth.middlware");
+const auth_middleware_1 = require("../middleware/auth.middleware");
 const settings_model_1 = require("../settings/settings.model");
 let UserModule = class UserModule {
     configure(consumer) {
-        consumer.apply(auth_middlware_1.AuthMiddleware).forRoutes({ path: 'api/users', method: common_1.RequestMethod.PATCH });
-        consumer.apply(auth_middlware_1.AuthMiddleware).forRoutes({ path: 'api/users/auth', method: common_1.RequestMethod.GET });
-        consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/users/manager', method: common_1.RequestMethod.PATCH });
-        consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/users/:id', method: common_1.RequestMethod.DELETE });
-        consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/users/get/:id', method: common_1.RequestMethod.GET });
-        consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes({ path: 'api/users/many', method: common_1.RequestMethod.PATCH });
-        consumer.apply(auth_middlware_1.SiteManagerMiddleware).forRoutes('api/users/all');
+        consumer
+            .apply(auth_middleware_1.AuthMiddleware)
+            .forRoutes({ path: 'api/users', method: common_1.RequestMethod.PATCH });
+        consumer
+            .apply(auth_middleware_1.AuthMiddleware)
+            .forRoutes({ path: 'api/users/auth', method: common_1.RequestMethod.GET });
+        consumer
+            .apply(auth_middleware_1.SiteManagerMiddleware)
+            .forRoutes({
+            path: 'api/users/manager',
+            method: common_1.RequestMethod.PATCH,
+        });
+        consumer
+            .apply(auth_middleware_1.SiteManagerMiddleware)
+            .forRoutes({ path: 'api/users/:id', method: common_1.RequestMethod.DELETE });
+        consumer
+            .apply(auth_middleware_1.SiteManagerMiddleware)
+            .forRoutes({
+            path: 'api/users/get/:id',
+            method: common_1.RequestMethod.GET,
+        });
+        consumer
+            .apply(auth_middleware_1.SiteManagerMiddleware)
+            .forRoutes({ path: 'api/users/many', method: common_1.RequestMethod.PATCH });
+        consumer.apply(auth_middleware_1.SiteManagerMiddleware).forRoutes('api/users/all');
     }
 };
 UserModule = __decorate([
     (0, common_1.Module)({
-        imports: [mongoose_1.MongooseModule.forFeature([{ name: 'User', schema: user_model_1.UserScheme }, { name: 'Settings', schema: settings_model_1.SettingsScheme }])],
+        imports: [
+            mongoose_1.MongooseModule.forFeature([
+                { name: 'User', schema: user_model_1.UserScheme },
+                { name: 'Settings', schema: settings_model_1.SettingsScheme },
+            ]),
+        ],
         controllers: [user_controller_1.UserController],
-        providers: [user_service_1.UserService]
+        providers: [user_service_1.UserService],
     })
 ], UserModule);
 exports.UserModule = UserModule;
