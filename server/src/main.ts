@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as ExpressMongoSanitize from 'express-mongo-sanitize';
+import ExpressMongoSanitize from 'express-mongo-sanitize';
 import sanitizeMiddleware from './middleware/sanitize.middleware.js';
 
 async function bootstrap() {
