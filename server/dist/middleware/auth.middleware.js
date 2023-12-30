@@ -28,7 +28,7 @@ const checkUser = async (headers, userModel) => {
         throw new common_1.UnauthorizedException('לא נמצא טוקן הזדהות');
     }
     try {
-        const payload = jwt.verify(token, 'ABC');
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
         const userId = payload['id'];
         if (!userId) {
             throw new common_1.UnauthorizedException('טוקן הזדהות לא תקין');
