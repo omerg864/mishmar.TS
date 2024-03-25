@@ -27,7 +27,7 @@ const Posts = (props: IProps) => {
     setLoading(true);
     let page = searchParams.get('page') ? searchParams.get('page') : 1;
     try {
-      const response = await fetch(`/api/posts/auth/all?page=${page}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
+      const response = await fetch(`/api/posts/auth/all?page=${page}`, { headers: { 'Content-Type': 'application/json' } });
       const data = await response.json();
       if (data.error || data.statusCode) {
         fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `posts/auth/all?page=${page}`, component: "Posts" })})

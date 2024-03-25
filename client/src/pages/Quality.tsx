@@ -24,7 +24,7 @@ const Quality = (props: IProps) => {
     const getUsers = async () => {
         setIsLoading(true);
         try {
-          const response = await fetch(`/api/users/all`, { headers: { authorization: 'Bearer ' + cookies.get('userToken')}});
+          const response = await fetch(`/api/users/all`, { headers: { 'Content-Type': 'application/json' }});
           const data = await response.json();
           if (data.error || data.statusCode) {
             fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/all`, component: "Quality" })})
@@ -83,7 +83,7 @@ const Quality = (props: IProps) => {
         if (loading)
             setIsLoading(true);
         try {
-          const response = await fetch(`/api/users/many`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
+          const response = await fetch(`/api/users/many`, { headers: { "Content-Type": "application/json" }, 
           method: 'PATCH', body: JSON.stringify(users)});
           const data = await response.json();
           if (data.error || data.statusCode) {

@@ -29,7 +29,7 @@ const Shift = (props: IProps) => {
       const getLastSchedule = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch(`/api/schedules/auth/last`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
+            const response = await fetch(`/api/schedules/auth/last`, { headers: { 'Content-Type': 'application/json' } });
             const data = await response.json();
             if (data.error || data.statusCode) {
               fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/auth/last`, component: "Shift" })})
@@ -48,7 +48,7 @@ const Shift = (props: IProps) => {
 
       const getGeneralSettings = async () => {
         try {
-            const response = await fetch(`/api/settings/general`, { headers: { Authorization: 'Bearer ' + cookies.get('userToken') } });
+            const response = await fetch(`/api/settings/general`, { headers: { 'Content-Type': 'application/json' } });
             const data = await response.json();
             if (data.error || data.statusCode) {
               fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `settings/general`, component: "Shift" })})
@@ -64,7 +64,7 @@ const Shift = (props: IProps) => {
 
       const getShift = async (id: string) => {
         try {
-            const response = await fetch(`/api/shifts/user/${id}`, { headers: { Authorization: 'Bearer ' + cookies.get('userToken') } });
+            const response = await fetch(`/api/shifts/user/${id}`, { headers: { 'Content-Type': 'application/json' } });
             const data = await response.json();
             if (data.error || data.statusCode) {
               fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `shifts/user/${id}`, component: "Shift" })})
@@ -80,7 +80,7 @@ const Shift = (props: IProps) => {
 
       const getEvents = async (id: string) => {
         try {
-          const response = await fetch(`/api/events/schedule/${id}`, { headers: { Authorization: 'Bearer ' + cookies.get('userToken') } });
+          const response = await fetch(`/api/events/schedule/${id}`, { headers: { 'Content-Type': 'application/json' } });
           const data = await response.json();
           if (data.error || data.statusCode) {
             fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `events/schedule/${id}`, component: "Shift" })})
@@ -121,7 +121,7 @@ const Shift = (props: IProps) => {
         }
         setIsLoading(true);
         try {
-            const response = await fetch(`/api/shifts`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') },
+            const response = await fetch(`/api/shifts`, { headers: { 'Content-Type': 'application/json' },
         method: 'PATCH', body: JSON.stringify(shift) });
             const data = await response.json();
             if (data.error || data.statusCode) {

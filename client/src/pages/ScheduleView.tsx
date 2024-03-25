@@ -38,7 +38,7 @@ const ScheduleView = (props: IProps) => {
       url = `/api/schedules/auth/view?page=${page}`;
     }
     try {
-        const response = await fetch(url, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
+        const response = await fetch(url, { headers: { 'Content-Type': 'application/json' } });
         const data = await response.json();
         if (data.error || data.statusCode) {
           fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: url, component: "ScheduleView" })})

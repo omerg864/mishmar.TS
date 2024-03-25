@@ -1,7 +1,7 @@
 import { NestMiddleware } from '@nestjs/common';
 import { Response, NextFunction } from 'express';
-import { Model } from "mongoose";
-import { User } from "../user/user.model";
+import { Model } from 'mongoose';
+import { User } from '../user/user.model';
 export declare class AuthMiddleware implements NestMiddleware {
     private readonly userModel;
     constructor(userModel: Model<User>);

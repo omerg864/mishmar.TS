@@ -25,7 +25,7 @@ const ScheduleTable = (props: IProps) => {
     const getData = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch(`/api/schedules/table/${id}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
+            const response = await fetch(`/api/schedules/table/${id}`, { headers: { 'Content-Type': 'application/json' } });
             const data = await response.json();
             if (data.error || data.statusCode) {
                 fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/table/${id}`, component: "ScheduleTable" })})

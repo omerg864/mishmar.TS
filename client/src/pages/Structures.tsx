@@ -85,7 +85,7 @@ const Structures = (props: IProps) => {
     const getStructures = async () => {
         setLoading(true);
         try {
-            const response = await fetch('/api/structures/all', {headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}});
+            const response = await fetch('/api/structures/all', {headers: { 'Content-Type': 'application/json' }});
             const data = await response.json();
             if (data.error || data.statusCode) {
               fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `structures/all`, component: "Structures" })})
@@ -119,7 +119,7 @@ const Structures = (props: IProps) => {
       setLoading(true);
       try {
         const response = await fetch(`/api/structures/many`, 
-        { headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + cookies.get('userToken')},
+        { headers: { 'Content-Type': 'application/json'},
           method: 'PATCH', body: JSON.stringify(structures)
       })
         const data = await response.json();
@@ -147,7 +147,7 @@ const Structures = (props: IProps) => {
       await saveStructures();
       try {
         const response = await fetch(`/api/structures`,
-        { headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + cookies.get('userToken')}, 
+        { headers: { 'Content-Type': 'application/json' }, 
         method: 'POST', body: JSON.stringify({structure: newStructure, scheduleAdd})});
         const data = await response.json();
         if (data.statusCode || data.error) {
@@ -168,7 +168,7 @@ const Structures = (props: IProps) => {
     const deleteStructure = async (e: React.MouseEvent<HTMLButtonElement>) => {
       setLoading(true);
       try {
-        const response = await fetch(`/api/structures/${(e.target as HTMLButtonElement).value}`, { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}, method: 'DELETE'});
+        const response = await fetch(`/api/structures/${(e.target as HTMLButtonElement).value}`, { headers: { 'Content-Type': 'application/json' }, method: 'DELETE'});
         const data = await response.json();
         if (data.error || data.statusCode) {
           fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `structures/${(e.target as HTMLButtonElement).value}`, component: "Structures" })})

@@ -23,7 +23,7 @@ const Home = (props: IProps) => {
   const getPosts = async () =>{
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/posts/auth/all?page=1`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } });
+      const response = await fetch(`/api/posts/auth/all?page=1`, { headers: { 'Content-Type': 'application/json' } });
       const data = await response.json();
       if (data.error || data.statusCode) {
         fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `posts/auth/all?page=1`, component: "Home" })})

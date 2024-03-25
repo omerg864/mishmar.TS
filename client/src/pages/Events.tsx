@@ -89,7 +89,7 @@ const Events = (props: IProps) => {
       }
       setIsLoading(true);
       try {
-        const response = await fetch(`/api/events/`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') },
+        const response = await fetch(`/api/events/`, { headers: { 'Content-Type': 'application/json' },
       method: 'POST', body: JSON.stringify(newEvent)});
         const data = await response.json();
         if (data.error || data.statusCode) {
@@ -113,7 +113,7 @@ const Events = (props: IProps) => {
       setIsLoading(true);
       e.preventDefault();
       try {
-        const response = await fetch(`/api/events/${(e.target as HTMLButtonElement).value}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') }, method: 'DELETE'});
+        const response = await fetch(`/api/events/${(e.target as HTMLButtonElement).value}`, { headers: { 'Content-Type': 'application/json' }, method: 'DELETE'});
         const data = await response.json();
         if (data.error || data.statusCode) {
           fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `events/${(e.target as HTMLButtonElement).value}`, component: "Events" })})
@@ -143,7 +143,7 @@ const Events = (props: IProps) => {
       if (loading)
         setIsLoading(true);
       try {
-        const response = await fetch(`/api/events/many`, { headers: { 'Content-Type': 'application/json', Authorization : 'Bearer ' + cookies.get('userToken') }, 
+        const response = await fetch(`/api/events/many`, { headers: { 'Content-Type': 'application/json' }, 
       method: 'PATCH', body: JSON.stringify(events) });
       const data = await response.json();
         if (data.error || data.statusCode) {
@@ -166,7 +166,7 @@ const Events = (props: IProps) => {
         setIsLoading(true);
       let page = searchParams.get('page') ? searchParams.get('page') : 1;
       try {
-        const response = await fetch(`/api/events/all?page=${page}`, { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}});
+        const response = await fetch(`/api/events/all?page=${page}`, { headers: { 'Content-Type': 'application/json' }});
         const data = await response.json();
         if (data.error|| data.statusCode) {
           fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `events/all?page=${page}`, component: "Events" })})

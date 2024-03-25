@@ -120,7 +120,7 @@ const Header = (props: IProps) => {
   const authUser = async () => {
     setAuthLoading(true);
     try {
-      const response = await fetch('/api/users/auth', { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken')}})
+      const response = await fetch('/api/users/auth', { headers: { 'Content-Type': 'application/json' }})
       const data = await response.json();
       if (data.error || data.statusCode) {
         props.setAuthenticated(false);

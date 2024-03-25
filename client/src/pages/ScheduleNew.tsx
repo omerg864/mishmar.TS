@@ -29,7 +29,7 @@ const ScheduleNew = (props: IProps) => {
         setLoading(true);
         try {
             const response = await fetch(`/api/schedules`, 
-            {headers: {'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken')}
+            {headers: {'Content-Type': 'application/json' }
             ,method: 'POST', body: JSON.stringify({ date: date, num_weeks: numWeeks})});
             const data = await response.json();
             if (data.error || data.statusCode) {
@@ -51,7 +51,7 @@ const ScheduleNew = (props: IProps) => {
         setLoading(true);
         try {
             const response = await fetch(`/api/schedules/auth/last`, 
-            {headers: {'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken')}});
+            {headers: {'Content-Type': 'application/json' }});
             const data = await response.json();
             if (data.error || data.statusCode) {
                 fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/auth/last`, component: "ScheduleNew" })})

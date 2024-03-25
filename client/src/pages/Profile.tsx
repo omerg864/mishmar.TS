@@ -36,7 +36,7 @@ const Profile = (props: IProps) => {
     }
     setLoading(true);
     try {
-      const response = await fetch(`/api/users`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
+      const response = await fetch(`/api/users`, { headers: { "Content-Type": "application/json" }, 
       method: 'PATCH', body: JSON.stringify(formData)});
       const data = await response.json();
       if (data.error || data.statusCode) {
@@ -72,7 +72,7 @@ const Profile = (props: IProps) => {
     }
     setLoading(true);
     try {
-      const response = await fetch(`/api/users`, { headers: { "Content-Type": "application/json" ,authorization: 'Bearer ' + cookies.get('userToken')}, 
+      const response = await fetch(`/api/users`, { headers: { "Content-Type": "application/json" }, 
       method: 'PATCH', body: JSON.stringify(passwordData)});
       const data = await response.json();
       if (data.error || data.statusCode) {

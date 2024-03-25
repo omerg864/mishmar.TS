@@ -19,14 +19,11 @@ const jwt = require("jsonwebtoken");
 const common_3 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const checkUser = async (headers, userModel) => {
-    if (!headers.authorization) {
+const checkUser = async (userToken, userModel) => {
+    if (!userToken) {
         throw new common_1.UnauthorizedException('לא נמצא טוקן הזדהות');
     }
-    const token = headers.authorization.split(' ')[1];
-    if (!token) {
-        throw new common_1.UnauthorizedException('לא נמצא טוקן הזדהות');
-    }
+    const token = userToken;
     try {
         const payload = jwt.verify(token, process.env.JWT_SECRET);
         const userId = payload['id'];
@@ -48,7 +45,7 @@ let AuthMiddleware = class AuthMiddleware {
         this.userModel = userModel;
     }
     async use(req, res, next) {
-        const user = await checkUser(req.headers, this.userModel);
+        const user = await checkUser(req.cookies.userToken, this.userModel);
         req.userId = user._id.toString();
         next();
     }
@@ -64,8 +61,9 @@ let SiteManagerMiddleware = class SiteManagerMiddleware {
         this.userModel = userModel;
     }
     async use(req, res, next) {
-        const userFound = await checkUser(req.headers, this.userModel);
-        if (!userFound.role.includes('SITE_MANAGER') && !userFound.role.includes('ADMIN')) {
+        const userFound = await checkUser(req.cookies.userToken, this.userModel);
+        if (!userFound.role.includes('SITE_MANAGER') &&
+            !userFound.role.includes('ADMIN')) {
             throw new common_1.UnauthorizedException('רק מנהל האתר יכול לעשות בקשה זאת');
         }
         req.userId = userFound._id.toString();
@@ -83,8 +81,9 @@ let ShiftManagerMiddleware = class ShiftManagerMiddleware {
         this.userModel = userModel;
     }
     async use(req, res, next) {
-        const userFound = await checkUser(req.headers, this.userModel);
-        if (!userFound.role.includes('SHIFT_MANAGER') && !userFound.role.includes('ADMIN')) {
+        const userFound = await checkUser(req.cookies.userToken, this.userModel);
+        if (!userFound.role.includes('SHIFT_MANAGER') &&
+            !userFound.role.includes('ADMIN')) {
             throw new common_1.UnauthorizedException('רק אחמ"ש יכול לעשות בקשה זאת');
         }
         req.userId = userFound._id.toString();
@@ -102,7 +101,7 @@ let AdminManagerMiddleware = class AdminManagerMiddleware {
         this.userModel = userModel;
     }
     async use(req, res, next) {
-        const userFound = await checkUser(req.headers, this.userModel);
+        const userFound = await checkUser(req.cookies.userToken, this.userModel);
         if (!userFound.role.includes('ADMIN')) {
             throw new common_1.UnauthorizedException('רק אדמין יכול לעשות בקשה זאת');
         }

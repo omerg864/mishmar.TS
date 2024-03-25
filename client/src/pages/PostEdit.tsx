@@ -29,7 +29,7 @@ const PostEdit = (props: IProps) => {
   const getPost = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/posts/${id}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') }});
+      const response = await fetch(`/api/posts/${id}`, { headers: { 'Content-Type': 'application/json' }});
       const data = await response.json();
       if (data.error || data.statusCode) {
         fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `posts/${id}`, component: "PostEdit" })})
@@ -51,7 +51,7 @@ const PostEdit = (props: IProps) => {
   const updatePost = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/posts/`, { headers: { authorization: 'Bearer ' + cookies.get('userToken'), "Content-type": "application/json" },
+      const response = await fetch(`/api/posts/`, { headers: { "Content-type": "application/json" },
       method: 'PATCH', body: JSON.stringify({...post, date: new Date() })});
       const data = await response.json();
       if (data.error || data.statusCode) {
@@ -71,7 +71,7 @@ const PostEdit = (props: IProps) => {
   const deletePost = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/posts/${id}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') },
+      const response = await fetch(`/api/posts/${id}`, { headers: { 'Content-Type': 'application/json' },
       method: 'DELETE'});
       const data = await response.json();
       if (data.error || data.statusCode) {

@@ -43,7 +43,7 @@ const ScheduleShift = (props: IProps) => {
 
     const getData = async () => {
         try {
-            const response = await fetch(`/api/shifts/schedule/${id}`, {headers: { authorization: 'Bearer ' + cookies.get('userToken') }});
+            const response = await fetch(`/api/shifts/schedule/${id}`, {headers: { 'Content-Type': 'application/json' }});
             const data = await response.json();
             if (data.error || data.statusCode) {
                 fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `shifts/schedule/${id}`, component: "ScheduleShift" })})
@@ -64,7 +64,7 @@ const ScheduleShift = (props: IProps) => {
 
     const getEvents = async () => {
         try {
-            const response = await fetch(`/api/events/manager/schedule/${id}`, {headers: { authorization: 'Bearer ' + cookies.get('userToken') }});
+            const response = await fetch(`/api/events/manager/schedule/${id}`, {headers: { 'Content-Type': 'application/json' }});
             const data = await response.json();
             if (data.error || data.statusCode) {
                 fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `events/manager/schedule/${id}`, component: "ScheduleShift" })})
@@ -80,7 +80,7 @@ const ScheduleShift = (props: IProps) => {
 
     const getSchedule = async () => {
         try {
-            const response = await fetch(`/api/schedules/${id}`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') }});
+            const response = await fetch(`/api/schedules/${id}`, { headers: { 'Content-Type': 'application/json' }});
             const data = await response.json();
             if (data.error || data.statusCode) {
                 fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/${id}`, component: "ScheduleShift" })})
@@ -97,7 +97,7 @@ const ScheduleShift = (props: IProps) => {
     const toExcel = async () => {
         setLoading(true);
         try {
-            const response = await fetch('/api/shifts/excel', { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken')  },
+            const response = await fetch('/api/shifts/excel', { headers: { 'Content-Type': 'application/json' },
             method: 'PUT', body: JSON.stringify({weeks, days: schedule.days, num_users: users.length, weeksNotes, generalNotes, events}) });
             const blob = await response.blob();
             if (response.status === 200) {

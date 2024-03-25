@@ -42,7 +42,7 @@ const Manager = (props: IProps) => {
     const changeSubmit = async (e: React.ChangeEvent<HTMLInputElement>) => {
         setChecked(e.target.checked);
         try {
-            const response = await fetch('/api/settings', { headers: { 'Authorization': 'Bearer ' + cookies.get('userToken'), "Content-type": "application/json"} ,method: 'PATCH', body: JSON.stringify({submit: e.target.checked})})
+            const response = await fetch('/api/settings', { headers: { "Content-type": "application/json" } ,method: 'PATCH', body: JSON.stringify({submit: e.target.checked})})
             const data = await response.json();
             if (data.error) {
                 fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `settings`, component: "Manager" })})
