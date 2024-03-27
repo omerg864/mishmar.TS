@@ -221,8 +221,7 @@ const ScheduleUpdate = (props: IProps) => {
             var form = new FormData()
             form.append("file", file);
             form.append("scheduleId", schedule._id)
-            const response = await fetch(`/api/schedules/upload`, {headers: { 'Content-Type': 'application/json' }
-        ,method: 'PUT', body: form })
+            const response = await fetch(`/api/schedules/upload`, { method: 'PUT', body: form })
         const data = await response.json();
         if (data.error || data.statusCode) {
             fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/upload`, component: "ScheduleUpdate" })})

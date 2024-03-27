@@ -9,7 +9,7 @@ export type Shift = {
     shift: string | Structure;
     days: string[];
 };
-type dayShifts = "morning" | "noon" | "night";
+type dayShifts = 'morning' | 'noon' | 'night';
 type ExcelWeeksData = {
     morning: {
         name: string;

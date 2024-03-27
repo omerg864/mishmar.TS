@@ -90,6 +90,8 @@ let ShiftService = class ShiftService {
         }
         for (let i = 0; i < shifts.length; i++) {
             userIn = false;
+            if (!shifts[i].userId)
+                continue;
             const nickname = shifts[i].userId.nickname;
             const id = shifts[i].userId._id.toString();
             if (shifts[i].notes !== '') {

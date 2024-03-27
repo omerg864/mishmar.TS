@@ -73,20 +73,23 @@ let ScheduleService = class ScheduleService {
         this.toShiftNamesArray = (shifts, day) => {
             let names = [];
             for (let i = 0; i < shifts.length; i++) {
-                names.push(...shifts[i].days[day].split('\n').filter(x => x.length > 0));
+                names.push(...shifts[i].days[day].split('\n').filter((x) => x.length > 0));
             }
             return names;
         };
     }
     async populateSchedule(schedule) {
-        let schedule_temp = Object.assign({}, schedule["_doc"]);
+        let schedule_temp = Object.assign({}, schedule['_doc']);
         let weeks_tmp = [];
         for (let i = 0; i < schedule.weeks.length; i++) {
             let week_tmp = [];
             for (let j = 0; j < schedule.weeks[i].length; j++) {
                 let structureModel = await this.structureModel.findById(schedule.weeks[i][j].shift);
                 if (structureModel) {
-                    week_tmp.push({ shift: structureModel, days: schedule.weeks[i][j].days });
+                    week_tmp.push({
+                        shift: structureModel,
+                        days: schedule.weeks[i][j].days,
+                    });
                 }
             }
             week_tmp.sort(this.sortStructures);
@@ -114,7 +117,11 @@ let ScheduleService = class ScheduleService {
             }
         }
         let pages = all_schedules.length - index;
-        let schedule_found = (await this.scheduleModel.find().sort({ date: -1 }).skip(query.page + index).limit(1))[0];
+        let schedule_found = (await this.scheduleModel
+            .find()
+            .sort({ date: -1 })
+            .skip(query.page + index)
+            .limit(1))[0];
         if (!schedule_found) {
             throw new common_1.NotFoundException('לא נמצאו סידורים');
         }
@@ -131,16 +138,24 @@ let ScheduleService = class ScheduleService {
         }
         let scheduleCount = await this.scheduleModel.find().count();
         const pages = scheduleCount > 0 ? Math.ceil(scheduleCount / 5) : 1;
-        let schedules = await this.scheduleModel.find().sort({ date: -1 }).skip(query.page * 5).limit(5).select('-weeks');
+        let schedules = await this.scheduleModel
+            .find()
+            .sort({ date: -1 })
+            .skip(query.page * 5)
+            .limit(5)
+            .select('-weeks');
         return { schedules, pages };
     }
     async getLast() {
-        let schedules = await this.scheduleModel.find().sort({ date: -1 }).select('-weeks');
+        let schedules = await this.scheduleModel
+            .find()
+            .sort({ date: -1 })
+            .select('-weeks');
         if (schedules.length === 0) {
             throw new common_1.ConflictException('לא נמצאו סידורים');
         }
         let days = this.calculateDays(schedules[0]);
-        return Object.assign(Object.assign({}, schedules[0]["_doc"]), { days });
+        return Object.assign(Object.assign({}, schedules[0]['_doc']), { days });
     }
     async getLastData() {
         let schedules = await this.scheduleModel.find().sort({ date: -1 });
@@ -182,7 +197,7 @@ let ScheduleService = class ScheduleService {
         while (cell) {
             index += 1;
             cell = ws[`A${index}`];
-            if (stop === "") {
+            if (stop === '') {
                 if (!cell) {
                     return { cell, index };
                 }
@@ -212,27 +227,38 @@ let ScheduleService = class ScheduleService {
         for (let j = start; j <= end; j++) {
             let cell = ws[`${excel.getExcelAlpha(column)}${j}`];
             if (((_b = (_a = cell === null || cell === void 0 ? void 0 : cell.s) === null || _a === void 0 ? void 0 : _a.fgColor) === null || _b === void 0 ? void 0 : _b.rgb) === 'C6EFCE') {
-                extractedData[week][day][shift].push({ name: cell === null || cell === void 0 ? void 0 : cell.v, pull: true, seq: false });
+                extractedData[week][day][shift].push({
+                    name: cell === null || cell === void 0 ? void 0 : cell.v,
+                    pull: true,
+                    seq: false,
+                });
             }
             if (((_d = (_c = cell === null || cell === void 0 ? void 0 : cell.s) === null || _c === void 0 ? void 0 : _c.fgColor) === null || _d === void 0 ? void 0 : _d.rgb) === 'FFEB9C') {
-                extractedData[week][day][shift].push({ name: cell === null || cell === void 0 ? void 0 : cell.v, pull: false, seq: false });
+                extractedData[week][day][shift].push({
+                    name: cell === null || cell === void 0 ? void 0 : cell.v,
+                    pull: false,
+                    seq: false,
+                });
             }
         }
         return extractedData;
     }
     extractDataFromExcel(file, num_weeks) {
-        const fileRead = XLSX.read(file.buffer, { type: 'buffer', cellStyles: true });
-        const ws = fileRead.Sheets["Sheet1"];
+        const fileRead = XLSX.read(file.buffer, {
+            type: 'buffer',
+            cellStyles: true,
+        });
+        const ws = fileRead.Sheets['Sheet1'];
         if (!ws) {
             throw new common_1.NotFoundException('שם העמוד צריך להיות Sheet1');
         }
         let endNames = { morning: 5, noon: 5, night: 5 };
         let temps = { cell: ws.A5, index: 5 };
-        temps = this.getEndShiftExcel(ws, temps.cell, temps.index, "צהריים");
+        temps = this.getEndShiftExcel(ws, temps.cell, temps.index, 'צהריים');
         endNames.morning = temps.index - 1;
-        temps = this.getEndShiftExcel(ws, temps.cell, temps.index, "לילה");
+        temps = this.getEndShiftExcel(ws, temps.cell, temps.index, 'לילה');
         endNames.noon = temps.index - 1;
-        temps = this.getEndShiftExcel(ws, temps.cell, temps.index, "");
+        temps = this.getEndShiftExcel(ws, temps.cell, temps.index, '');
         endNames.night = temps.index - 1;
         let extractedData = this.getEmptyWeeksArrayShifts(num_weeks);
         let weekNumber = 0;
@@ -240,26 +266,29 @@ let ScheduleService = class ScheduleService {
             if ((weekNumber === 0 ? i - 1 : i) % 8 === 0)
                 weekNumber += 1;
             let day = i - 2 - weekNumber * 7;
-            extractedData = this.searchExcelShift(ws, 5, endNames.morning, i, weekNumber, day, extractedData, "morning");
-            extractedData = this.searchExcelShift(ws, endNames.morning + 1, endNames.noon, i, weekNumber, day, extractedData, "noon");
-            extractedData = this.searchExcelShift(ws, endNames.noon + 1, endNames.night, i, weekNumber, day, extractedData, "night");
+            extractedData = this.searchExcelShift(ws, 5, endNames.morning, i, weekNumber, day, extractedData, 'morning');
+            extractedData = this.searchExcelShift(ws, endNames.morning + 1, endNames.noon, i, weekNumber, day, extractedData, 'noon');
+            extractedData = this.searchExcelShift(ws, endNames.noon + 1, endNames.night, i, weekNumber, day, extractedData, 'night');
         }
         return extractedData;
     }
     assignToShifts(shiftType, shifts, data, inShift, day, week, managers_names, weeks_tmp, settings) {
-        let managerShifts = shifts.filter(structure => structure.shift.manager);
-        if (this.compareTwoArrays(managers_names, data[week][day][shiftType].map(user => user.name)).length) {
-            let temp_names = this.compareTwoArrays(managers_names, data[week][day][shiftType].map(user => user.name));
+        let managerShifts = shifts.filter((structure) => structure.shift.manager);
+        if (this.compareTwoArrays(managers_names, data[week][day][shiftType].map((user) => user.name)).length) {
+            let temp_names = this.compareTwoArrays(managers_names, data[week][day][shiftType].map((user) => user.name));
             for (let k = 0; k < managerShifts.length; k++) {
                 if (temp_names.length !== 0) {
                     let rndIndex = (0, functions_1.getRandomIndex)(temp_names.length);
-                    weeks_tmp[week] = weeks_tmp[week].map(shift => {
-                        if (shift.shift._id === managerShifts[k].shift._id) {
-                            let split = shift.days[day].split("\n").filter(name => name != '');
+                    weeks_tmp[week] = weeks_tmp[week].map((shift) => {
+                        if (shift.shift._id ===
+                            managerShifts[k].shift._id) {
+                            let split = shift.days[day]
+                                .split('\n')
+                                .filter((name) => name != '');
                             split.push(temp_names[rndIndex]);
                             shift.days[day] = split.join('\n');
                             inShift.push(temp_names[rndIndex]);
-                            data[week][day][shiftType] = data[week][day][shiftType].filter(user => user.name !== temp_names[rndIndex]);
+                            data[week][day][shiftType] = data[week][day][shiftType].filter((user) => user.name !== temp_names[rndIndex]);
                             temp_names = temp_names.filter((_, index) => index !== rndIndex);
                         }
                         return shift;
@@ -267,33 +296,41 @@ let ScheduleService = class ScheduleService {
                 }
             }
         }
-        else if (data[week][day][shiftType].filter(user => user.name === settings.officer).length && managerShifts.length && settings.officer) {
-            weeks_tmp[week] = weeks_tmp[week].map(shift => {
-                if (shift.shift._id === managerShifts[0].shift._id) {
-                    let split = shift.days[day].split("\n").filter(name => name != '');
+        else if (data[week][day][shiftType].filter((user) => user.name === settings.officer).length &&
+            managerShifts.length &&
+            settings.officer) {
+            weeks_tmp[week] = weeks_tmp[week].map((shift) => {
+                if (shift.shift._id ===
+                    managerShifts[0].shift._id) {
+                    let split = shift.days[day]
+                        .split('\n')
+                        .filter((name) => name != '');
                     split.push(settings.officer);
                     shift.days[day] = split.join('\n');
                     inShift.push(settings.officer);
-                    data[week][day][shiftType] = data[week][day][shiftType].filter(user => user.name !== settings.officer);
+                    data[week][day][shiftType] = data[week][day][shiftType].filter((user) => user.name !== settings.officer);
                 }
                 return shift;
             });
         }
         if (data[week][day][shiftType].length > 0) {
-            let openingShifts = shifts.filter(structure => structure.shift.opening);
-            let temp_names = data[week][day][shiftType].filter(user => !managers_names.includes(user.name));
+            let openingShifts = shifts.filter((structure) => structure.shift.opening);
+            let temp_names = data[week][day][shiftType].filter((user) => !managers_names.includes(user.name));
             if (temp_names.length < openingShifts.length) {
                 temp_names = data[week][day][shiftType];
             }
             for (let k = 0; k < openingShifts.length; k++) {
                 let rndIndex = (0, functions_1.getRandomIndex)(temp_names.length);
-                weeks_tmp[week] = weeks_tmp[week].map(shift => {
-                    if (shift.shift._id === openingShifts[k].shift._id) {
-                        let split = shift.days[day].split("\n").filter(name => name != '');
+                weeks_tmp[week] = weeks_tmp[week].map((shift) => {
+                    if (shift.shift._id ===
+                        openingShifts[k].shift._id) {
+                        let split = shift.days[day]
+                            .split('\n')
+                            .filter((name) => name != '');
                         split.push(temp_names[rndIndex].name);
                         shift.days[day] = split.join('\n');
                         inShift.push(temp_names[rndIndex].name);
-                        data[week][day][shiftType] = data[week][day][shiftType].filter(user => user.name !== temp_names[rndIndex].name);
+                        data[week][day][shiftType] = data[week][day][shiftType].filter((user) => user.name !== temp_names[rndIndex].name);
                         temp_names = temp_names.filter((_, index) => index !== rndIndex);
                     }
                     return shift;
@@ -301,18 +338,21 @@ let ScheduleService = class ScheduleService {
             }
         }
         if (data[week][day][shiftType].length > 0) {
-            let temp_names = data[week][day][shiftType].filter(user => user.pull);
+            let temp_names = data[week][day][shiftType].filter((user) => user.pull);
             if (temp_names.length > 0) {
-                let pullShifts = shifts.filter(structure => structure.shift.pull);
+                let pullShifts = shifts.filter((structure) => structure.shift.pull);
                 for (let k = 0; k < pullShifts.length; k++) {
                     let rndIndex = (0, functions_1.getRandomIndex)(temp_names.length);
-                    weeks_tmp[week] = weeks_tmp[week].map(shift => {
-                        if (shift.shift._id === pullShifts[k].shift._id) {
-                            let split = shift.days[day].split("\n").filter(name => name != '');
+                    weeks_tmp[week] = weeks_tmp[week].map((shift) => {
+                        if (shift.shift._id ===
+                            pullShifts[k].shift._id) {
+                            let split = shift.days[day]
+                                .split('\n')
+                                .filter((name) => name != '');
                             split.push(temp_names[rndIndex].name);
                             shift.days[day] = split.join('\n');
                             inShift.push(temp_names[rndIndex].name);
-                            data[week][day][shiftType] = data[week][day][shiftType].filter(user => user.name !== temp_names[rndIndex].name);
+                            data[week][day][shiftType] = data[week][day][shiftType].filter((user) => user.name !== temp_names[rndIndex].name);
                             temp_names = temp_names.filter((_, index) => index !== rndIndex);
                         }
                         return shift;
@@ -321,20 +361,25 @@ let ScheduleService = class ScheduleService {
             }
         }
         if (data[week][day][shiftType].length > 0) {
-            let shiftsLeft = shifts.filter(shift => !shift.shift.pull && !shift.shift.manager && !shift.shift.opening);
+            let shiftsLeft = shifts.filter((shift) => !shift.shift.pull &&
+                !shift.shift.manager &&
+                !shift.shift.opening);
             for (let k = 0; k < shiftsLeft.length; k++) {
                 if (data[week][day][shiftType].length === 0)
                     break;
                 if (k === shiftsLeft.length - 1) {
                     let tempData = [...data[week][day][shiftType]];
                     for (let u = 0; u < tempData.length; u++) {
-                        weeks_tmp[week] = weeks_tmp[week].map(shift => {
-                            if (shift.shift._id === shiftsLeft[k].shift._id) {
-                                let split = shift.days[day].split("\n").filter(name => name != '');
+                        weeks_tmp[week] = weeks_tmp[week].map((shift) => {
+                            if (shift.shift._id ===
+                                shiftsLeft[k].shift._id) {
+                                let split = shift.days[day]
+                                    .split('\n')
+                                    .filter((name) => name != '');
                                 split.push(tempData[u].name);
                                 shift.days[day] = split.join('\n');
                                 inShift.push(tempData[u].name);
-                                data[week][day][shiftType] = data[week][day][shiftType].filter(user => user.name !== tempData[u].name);
+                                data[week][day][shiftType] = data[week][day][shiftType].filter((user) => user.name !== tempData[u].name);
                             }
                             return shift;
                         });
@@ -342,13 +387,17 @@ let ScheduleService = class ScheduleService {
                 }
                 else {
                     let rndIndex = (0, functions_1.getRandomIndex)(data[week][day][shiftType].length);
-                    weeks_tmp[week] = weeks_tmp[week].map(shift => {
-                        if (shift.shift._id === shiftsLeft[k].shift._id) {
-                            let split = shift.days[day].split("\n").filter(name => name != '');
+                    weeks_tmp[week] = weeks_tmp[week].map((shift) => {
+                        if (shift.shift._id ===
+                            shiftsLeft[k].shift._id) {
+                            let split = shift.days[day]
+                                .split('\n')
+                                .filter((name) => name != '');
                             split.push(data[week][day][shiftType][rndIndex].name);
                             shift.days[day] = split.join('\n');
                             inShift.push(data[week][day][shiftType][rndIndex].name);
-                            data[week][day][shiftType] = data[week][day][shiftType].filter(user => user.name !== data[week][day][shiftType][rndIndex].name);
+                            data[week][day][shiftType] = data[week][day][shiftType].filter((user) => user.name !==
+                                data[week][day][shiftType][rndIndex].name);
                         }
                         return shift;
                     });
@@ -358,7 +407,6 @@ let ScheduleService = class ScheduleService {
         return { data, inShift, weeks_tmp };
     }
     async excelToSchedule(files, scheduleId) {
-        console.log(files[0]);
         if (!files[0]) {
             throw new common_1.NotFoundException('אין קובץ');
         }
@@ -372,42 +420,60 @@ let ScheduleService = class ScheduleService {
             for (let j = 0; j < schedule.weeks[i].length; j++) {
                 let structureModel = await this.structureModel.findById(schedule.weeks[i][j].shift);
                 if (structureModel) {
-                    week_tmp.push({ shift: structureModel, days: ["", "", "", "", "", "", ""] });
+                    week_tmp.push({
+                        shift: structureModel,
+                        days: ['', '', '', '', '', '', ''],
+                    });
                 }
             }
             week_tmp.sort(this.sortStructures);
             weeks_tmp.push(week_tmp);
         }
-        let managers = await this.userModel.find({ username: { $ne: "admin" }, role: 'SHIFT_MANAGER' });
+        let managers = await this.userModel.find({
+            username: { $ne: 'admin' },
+            role: 'SHIFT_MANAGER',
+        });
         let settings = await this.settingsModel.findOne();
-        let managers_names = managers.map(user => user.nickname);
-        let extractedData = this.extractDataFromExcel(files[0], schedule.num_weeks);
-        console.log("🚀 ~ file: schedule.service.ts ~ line 261 ~ ScheduleService ~ excelToSchedule ~ extractedData", extractedData[0][0]);
-        for (let i = 0; i < extractedData.length; i++) {
-            let morningShifts = weeks_tmp[i].filter(structure => structure.shift.shift === 0);
-            let noonShifts = weeks_tmp[i].filter(structure => structure.shift.shift === 1);
-            let nightShifts = weeks_tmp[i].filter(structure => structure.shift.shift === 2);
-            for (let j = 0; j < extractedData[i].length; j++) {
-                let inShift = [];
-                let assigned = this.assignToShifts("morning", morningShifts, extractedData, inShift, j, i, managers_names, weeks_tmp, settings);
-                extractedData = assigned.data;
-                inShift = assigned.inShift;
-                weeks_tmp = assigned.weeks_tmp;
-                assigned = this.assignToShifts("noon", noonShifts, extractedData, inShift, j, i, managers_names, weeks_tmp, settings);
-                extractedData = assigned.data;
-                inShift = assigned.inShift;
-                weeks_tmp = assigned.weeks_tmp;
-                assigned = this.assignToShifts("night", nightShifts, extractedData, inShift, j, i, managers_names, weeks_tmp, settings);
-                extractedData = assigned.data;
-                inShift = assigned.inShift;
-                weeks_tmp = assigned.weeks_tmp;
+        let managers_names = managers.map((user) => user.nickname);
+        let extractedData;
+        try {
+            extractedData = this.extractDataFromExcel(files[0], schedule.num_weeks);
+        }
+        catch (error) {
+            console.log(error);
+            throw new common_1.ConflictException('שגיאה בקריאת הקובץ', error.message);
+        }
+        console.log('🚀 ~ file: schedule.service.ts ~ line 261 ~ ScheduleService ~ excelToSchedule ~ extractedData', extractedData[0][0]);
+        try {
+            for (let i = 0; i < extractedData.length; i++) {
+                let morningShifts = weeks_tmp[i].filter((structure) => structure.shift.shift === 0);
+                let noonShifts = weeks_tmp[i].filter((structure) => structure.shift.shift === 1);
+                let nightShifts = weeks_tmp[i].filter((structure) => structure.shift.shift === 2);
+                for (let j = 0; j < extractedData[i].length; j++) {
+                    let inShift = [];
+                    let assigned = this.assignToShifts('morning', morningShifts, extractedData, inShift, j, i, managers_names, weeks_tmp, settings);
+                    extractedData = assigned.data;
+                    inShift = assigned.inShift;
+                    weeks_tmp = assigned.weeks_tmp;
+                    assigned = this.assignToShifts('noon', noonShifts, extractedData, inShift, j, i, managers_names, weeks_tmp, settings);
+                    extractedData = assigned.data;
+                    inShift = assigned.inShift;
+                    weeks_tmp = assigned.weeks_tmp;
+                    assigned = this.assignToShifts('night', nightShifts, extractedData, inShift, j, i, managers_names, weeks_tmp, settings);
+                    extractedData = assigned.data;
+                    inShift = assigned.inShift;
+                    weeks_tmp = assigned.weeks_tmp;
+                }
             }
+        }
+        catch (error) {
+            throw new common_1.ConflictException('שגיאה בהכנסת הנתונים לסידור', error.message);
         }
         console.log(extractedData[0]);
         schedule.weeks = weeks_tmp;
         await schedule.save();
         return {
-            message: 'success'
+            message: 'success',
         };
     }
     async scheduleTable(id) {
@@ -417,7 +483,10 @@ let ScheduleService = class ScheduleService {
         }
         schedule = await this.populateSchedule(schedule);
         let counts = [];
-        let total = { night: 0, weekend: 0 };
+        let total = {
+            night: 0,
+            weekend: 0,
+        };
         let names = [];
         let resetObj = {};
         for (let i = 0; i < schedule.num_weeks; i++) {
@@ -430,7 +499,9 @@ let ScheduleService = class ScheduleService {
             for (let j = 0; j < schedule.weeks[i].length; j++) {
                 let structure = schedule.weeks[i][j].shift;
                 for (let k = 0; k < schedule.weeks[i][j].days.length; k++) {
-                    let shift_names = schedule.weeks[i][j].days[k].split('\n').filter(name => name !== '');
+                    let shift_names = schedule.weeks[i][j].days[k]
+                        .split('\n')
+                        .filter((name) => name !== '');
                     for (let l = 0; l < shift_names.length; l++) {
                         if (!names.includes(shift_names[l])) {
                             names.push(shift_names[l]);
@@ -440,7 +511,8 @@ let ScheduleService = class ScheduleService {
                         switch (structure.shift) {
                             case 0:
                                 if (k !== 6) {
-                                    counts[index][`morning${i}`] = +counts[index][`morning${i}`] + 1;
+                                    counts[index][`morning${i}`] =
+                                        +counts[index][`morning${i}`] + 1;
                                     total[`morning${i}`] += 1;
                                 }
                                 else {
@@ -450,7 +522,8 @@ let ScheduleService = class ScheduleService {
                                 break;
                             case 1:
                                 if (k < 5) {
-                                    counts[index][`noon${i}`] = +counts[index][`noon${i}`] + 1;
+                                    counts[index][`noon${i}`] =
+                                        +counts[index][`noon${i}`] + 1;
                                     total[`noon${i}`] += 1;
                                 }
                                 else {
@@ -478,9 +551,9 @@ let ScheduleService = class ScheduleService {
     async scheduleValid(weeks) {
         let notifications = new Set();
         for (let i = 0; i < weeks.length; i++) {
-            let morningShifts = weeks[i].filter(shift => shift.shift.shift === 0);
-            let noonShifts = weeks[i].filter(shift => shift.shift.shift === 1);
-            let nightShifts = weeks[i].filter(shift => shift.shift.shift === 2);
+            let morningShifts = weeks[i].filter((shift) => shift.shift.shift === 0);
+            let noonShifts = weeks[i].filter((shift) => shift.shift.shift === 1);
+            let nightShifts = weeks[i].filter((shift) => shift.shift.shift === 2);
             for (let j = 0; j < 7; j++) {
                 let morningNames = this.toShiftNamesArray(morningShifts, j);
                 let noonNames = this.toShiftNamesArray(noonShifts, j);
@@ -514,7 +587,7 @@ let ScheduleService = class ScheduleService {
                 }
                 else {
                     if (i !== weeks.length - 1) {
-                        morningShifts = weeks[i + 1].filter(shift => shift.shift.shift === 0);
+                        morningShifts = weeks[i + 1].filter((shift) => shift.shift.shift === 0);
                         morningNames = this.toShiftNamesArray(morningShifts, 0);
                         duplicates = this.compareTwoArrays(nightNames, morningNames);
                         for (let k = 0; k < duplicates.length; k++) {
@@ -536,12 +609,17 @@ let ScheduleService = class ScheduleService {
         return Object.assign(Object.assign({}, schedule), { days });
     }
     async create(schedule) {
-        const rows = await this.structureModel.find().sort({ shift: 1, index: 1 });
+        const rows = await this.structureModel
+            .find()
+            .sort({ shift: 1, index: 1 });
         let weeks = [];
         for (let i = 0; i < schedule.num_weeks; i++) {
             weeks[i] = [];
             for (let j = 0; j < rows.length; j++) {
-                weeks[i].push({ shift: rows[j]._id.toString(), days: ['', '', '', '', '', '', ''] });
+                weeks[i].push({
+                    shift: rows[j]._id.toString(),
+                    days: ['', '', '', '', '', '', ''],
+                });
             }
         }
         return await this.scheduleModel.create(Object.assign(Object.assign({}, schedule), { weeks }));

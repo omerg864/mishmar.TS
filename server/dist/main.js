@@ -11,6 +11,7 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, {
         cors: true,
+        logger: ['error', 'warn', 'log'],
     });
     app.use((0, express_mongo_sanitize_1.default)());
     app.use(sanitize_middleware_js_1.default);
