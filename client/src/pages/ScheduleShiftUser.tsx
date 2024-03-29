@@ -38,50 +38,50 @@ const ScheduleShiftUser = (props: IProps) => {
 
     const getSchedule = async () => {
         try {
-            const response = await fetch(`/api/schedules/${scheduleId}`, { headers: { 'Content-Type': 'application/json' }});
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/schedules/${scheduleId}`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') }});
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/${scheduleId}`, component: "ScheduleShiftUser" })})
+                fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/${scheduleId}`, component: "ScheduleShiftUser" })})
                 toast.error(data.message);
             } else {
                 setSchedule(data)
             }
 
         } catch (err) {
-            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/${scheduleId}`, component: "ScheduleShiftUser" })})
+            fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/${scheduleId}`, component: "ScheduleShiftUser" })})
             toast.error('Internal Server Error');
         }
     }
 
     const getUser = async () => {
         try {
-            const response = await fetch(`/api/users/get/${userId}`, { headers: { 'Content-Type': 'application/json' }});
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/get/${userId}`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') }});
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/get/${userId}`, component: "ScheduleShiftUser" })})
+                fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/get/${userId}`, component: "ScheduleShiftUser" })})
                 toast.error(data.message);
             } else {
                 setUser(data);
             }
 
         } catch (err) {
-            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/get/${userId}`, component: "ScheduleShiftUser" })})
+            fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/get/${userId}`, component: "ScheduleShiftUser" })})
             toast.error('Internal Server Error');
         }
     }
 
     const getShift = async () => {
         try {
-            const response = await fetch(`/api/shifts/user/${userId}/${scheduleId}/manager`, { headers: { 'Content-Type': 'application/json' } });
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/shifts/user/${userId}/${scheduleId}/manager`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') } });
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `shifts/user/${userId}/${scheduleId}/manager`, component: "ScheduleShiftUser" })})
+                fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `shifts/user/${userId}/${scheduleId}/manager`, component: "ScheduleShiftUser" })})
                 toast.error(data.message);
             } else {
                 setShift(data);
             }
         } catch (err) {
-            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `shifts/user/${userId}/${scheduleId}/manager`, component: "ScheduleShiftUser" })})
+            fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `shifts/user/${userId}/${scheduleId}/manager`, component: "ScheduleShiftUser" })})
             toast.error("Internal Server Error");
         }
       }
@@ -89,17 +89,17 @@ const ScheduleShiftUser = (props: IProps) => {
       const submitShift = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch(`/api/shifts`, { headers: { 'Content-Type': 'application/json' },
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/shifts`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') },
         method: 'PATCH', body: JSON.stringify(shift) });
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `shifts`, component: "ScheduleShiftUser" })})
+                fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `shifts`, component: "ScheduleShiftUser" })})
                 toast.error(data.message);
             } else {
                 toast.success("משמרות עודכנו");
             }
         } catch (err) {
-            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `shifts`, component: "ScheduleShiftUser" })})
+            fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `shifts`, component: "ScheduleShiftUser" })})
             toast.error("Internal Server Error");
         }
         setIsLoading(false);

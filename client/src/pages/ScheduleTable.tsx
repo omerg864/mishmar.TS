@@ -25,10 +25,10 @@ const ScheduleTable = (props: IProps) => {
     const getData = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch(`/api/schedules/table/${id}`, { headers: { 'Content-Type': 'application/json' } });
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/schedules/table/${id}`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') } });
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/table/${id}`, component: "ScheduleTable" })})
+                fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/table/${id}`, component: "ScheduleTable" })})
                 toast.error(data.message);
             } else {
                 setCounts(data.counts);
@@ -36,7 +36,7 @@ const ScheduleTable = (props: IProps) => {
                 setTotal(data.total);
             }
         } catch (err) {
-            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/table/${id}`, component: "ScheduleTable" })})
+            fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/table/${id}`, component: "ScheduleTable" })})
             toast.error('Internal Server Error');
         }
         setIsLoading(false);

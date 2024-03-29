@@ -39,16 +39,16 @@ const ScheduleUpdate = (props: IProps) => {
         if (loading)
             setIsLoading(true);
         try {
-            const response = await fetch(`/api/schedules/${id}`, { headers: { 'Content-Type': 'application/json' }});
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/schedules/${id}`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') }});
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/${id}`, component: "ScheduleUpdate" })})
+                fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/${id}`, component: "ScheduleUpdate" })})
                 toast.error(data.message);
             } else {
                 setSchedule(data);
             }
         }catch (err) {
-            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/${id}`, component: "ScheduleUpdate" })})
+            fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/${id}`, component: "ScheduleUpdate" })})
             toast.error("Internal Server Error");
         }
         if (loading)
@@ -70,17 +70,17 @@ const ScheduleUpdate = (props: IProps) => {
         setButtonOpen(false);
         setIsLoading(true);
         try {
-            const response = await fetch('/api/schedules/', { headers: { 'Content-Type': 'application/json' },
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/schedules/`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') },
             method: 'PATCH', body: JSON.stringify(schedule) });
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules`, component: "ScheduleUpdate" })})
+                fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules`, component: "ScheduleUpdate" })})
                 toast.error(data.message);
             } else {
                 toast.success("עודכן");
             }
         } catch (err) {
-            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules`, component: "ScheduleUpdate" })})
+            fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules`, component: "ScheduleUpdate" })})
             toast.error("Internal Server error");
         }
         setIsLoading(false);
@@ -90,18 +90,18 @@ const ScheduleUpdate = (props: IProps) => {
         setButtonOpen(false);
         setIsLoading(true);
         try {
-            const response = await fetch(`/api/schedules/${id}`, { headers: { 'Content-Type': 'application/json' },
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/schedules/${id}`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') },
             method: 'DELETE' });
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/${id}`, component: "ScheduleUpdate" })})
+                fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/${id}`, component: "ScheduleUpdate" })})
                 toast.error(data.message);
             } else {
                 toast.success("סידור נמחק");
                 navigate('/schedules');
             }
         } catch (err) {
-            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/${id}`, component: "ScheduleUpdate" })})
+            fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/${id}`, component: "ScheduleUpdate" })})
             toast.error("Internal Server Error");
         }
         setIsLoading(false);
@@ -128,17 +128,17 @@ const ScheduleUpdate = (props: IProps) => {
         setIsLoading(true);
         try {
             let weeks = resetScheduleWeeks();
-            const response = await fetch('/api/schedules/', { headers: { 'Content-Type': 'application/json' },
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/schedules/`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') },
             method: 'PATCH', body: JSON.stringify({...schedule, weeks}) });
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules`, component: "ScheduleUpdate" })})
+                fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules`, component: "ScheduleUpdate" })})
                 toast.error(data.message);
             } else {
                 toast.success("עודכן");
             }
         } catch (err) {
-            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules`, component: "ScheduleUpdate" })})
+            fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules`, component: "ScheduleUpdate" })})
             toast.error("Internal Server Error");
         }
         setIsLoading(false);
@@ -148,11 +148,11 @@ const ScheduleUpdate = (props: IProps) => {
         setButtonOpen(false);
         setIsLoading(true);
         try {
-            const response = await fetch('/api/schedules/check', { headers: { 'Content-Type': 'application/json' },
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/schedules/check`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') },
             method: 'PUT', body: JSON.stringify(schedule.weeks) });
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/check`, component: "ScheduleUpdate" })})
+                fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/check`, component: "ScheduleUpdate" })})
                 toast.error(data.message);
             } else {
                 if (data.length > 0) {
@@ -164,7 +164,7 @@ const ScheduleUpdate = (props: IProps) => {
                 }
             }
         } catch (err) {
-            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/check`, component: "ScheduleUpdate" })})
+            fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/check`, component: "ScheduleUpdate" })})
             toast.error("Internal Server Error");
         }
         setIsLoading(false);
@@ -221,17 +221,17 @@ const ScheduleUpdate = (props: IProps) => {
             var form = new FormData()
             form.append("file", file);
             form.append("scheduleId", schedule._id)
-            const response = await fetch(`/api/schedules/upload`, { method: 'PUT', body: form })
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/schedules/upload`, { headers: { authorization: 'Bearer ' + cookies.get('userToken') } ,method: 'PUT', body: form })
         const data = await response.json();
         if (data.error || data.statusCode) {
-            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/upload`, component: "ScheduleUpdate" })})
+            fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/upload`, component: "ScheduleUpdate" })})
             toast.error(data.message);
         } else {
             closeModal();
             await getSchedule(false);
         }
         } catch (err) {
-            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/upload`, component: "ScheduleUpdate" })})
+            fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `schedules/upload`, component: "ScheduleUpdate" })})
             toast.error("Internal Server Error");
         }
         setIsLoading(false);

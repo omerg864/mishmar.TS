@@ -27,18 +27,18 @@ const PostNew = (props: IProps) => {
   const savePost = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/posts/`, { headers: { "Content-type": "application/json" },
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/posts/`, { headers: { "Content-type": "application/json", authorization: 'Bearer ' + cookies.get('userToken') },
       method: 'POST', body: JSON.stringify({...post, date: new Date() })});
       const data = await response.json();
       if (data.error || data.statusCode) {
-        fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `posts`, component: "PostNew" })})
+        fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `posts`, component: "PostNew" })})
         toast.error(data.message);
       } else {
         toast.success("פוסט נשמר");
         navigate('/posts');
       }
     } catch (err) {
-      fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `posts`, component: "PostNew" })})
+      fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `posts`, component: "PostNew" })})
       toast.error('Internal Server Error');
     }
     setLoading(false);

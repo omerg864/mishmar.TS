@@ -20,16 +20,16 @@ const Manager = (props: IProps) => {
     const getSubmit = async () => {
         setLoading(true);
         try {
-            const response = await fetch('/api/settings/general')
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/settings/general`)
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `settings/general`, component: "Manager" })})
+                fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `settings/general`, component: "Manager" })})
                 toast.error(data.message);
             } else {
                 setChecked(data.submit);
             }
         } catch (err) {
-            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `settings/general`, component: "Manager" })})
+            fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `settings/general`, component: "Manager" })})
             toast.error('Internal Server Error')
         }
         setLoading(false);
@@ -42,16 +42,16 @@ const Manager = (props: IProps) => {
     const changeSubmit = async (e: React.ChangeEvent<HTMLInputElement>) => {
         setChecked(e.target.checked);
         try {
-            const response = await fetch('/api/settings', { headers: { "Content-type": "application/json" } ,method: 'PATCH', body: JSON.stringify({submit: e.target.checked})})
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/settings`, { headers: { "Content-type": "application/json", authorization: 'Bearer ' + cookies.get('userToken') } ,method: 'PATCH', body: JSON.stringify({submit: e.target.checked})})
             const data = await response.json();
             if (data.error) {
-                fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `settings`, component: "Manager" })})
+                fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `settings`, component: "Manager" })})
                 toast.error(data.message);
             } else {
                 toast.success("שונה");
             }
         } catch(err) {
-            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `settings`, component: "Manager" })})
+            fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `settings`, component: "Manager" })})
             toast.error('Internal Server Error')
         }
     }

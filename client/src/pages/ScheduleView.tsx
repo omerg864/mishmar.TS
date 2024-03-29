@@ -32,16 +32,16 @@ const ScheduleView = (props: IProps) => {
     setIsLoading(true);
     let url = "";
     if (id) {
-      url = `/api/schedules/${id}`;
+      url = `${process.env.REACT_APP_API_URL}/api/schedules/${id}`;
     } else {
       let page = searchParams.get('page') ? parseInt(searchParams.get('page') as string) : 1;
-      url = `/api/schedules/auth/view?page=${page}`;
+      url = `${process.env.REACT_APP_API_URL}/api/schedules/auth/view?page=${page}`;
     }
     try {
-        const response = await fetch(url, { headers: { 'Content-Type': 'application/json' } });
+        const response = await fetch(url, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') } });
         const data = await response.json();
         if (data.error || data.statusCode) {
-          fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: url, component: "ScheduleView" })})
+          fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: url, component: "ScheduleView" })})
           toast.error(data.message);
         } else {
           if (!id){
@@ -52,7 +52,7 @@ const ScheduleView = (props: IProps) => {
           }
         }
     } catch (err) {
-      fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: url, component: "ScheduleView" })})
+      fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: url, component: "ScheduleView" })})
         toast.error("Internal Server Error");
     }
     setIsLoading(false);

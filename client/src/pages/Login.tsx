@@ -33,10 +33,10 @@ const Login = (props: IProps) => {
         e.preventDefault();
         setIsLoading(true);
         try {
-          const response = await fetch(`/api/users/login`, { headers: {"Content-type": "application/json"} ,method: 'POST', body: JSON.stringify(userData)})
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/login`, { headers: {"Content-type": "application/json"} ,method: 'POST', body: JSON.stringify(userData)})
         const data = await response.json();
         if (data.error || data.statusCode) {          
-            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/login`, component: "Login" })})
+            fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `users/login`, component: "Login" })})
             toast.error(data.message);
         } else {
             let date30 = addDays(new Date(), 30);
@@ -52,7 +52,7 @@ const Login = (props: IProps) => {
             navigate('/');
         }
         } catch(err) {
-          fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/login`, component: "Login" })})
+          fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `users/login`, component: "Login" })})
           toast.error('Internal Server Error')
         }
         setIsLoading(false);

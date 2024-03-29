@@ -22,16 +22,16 @@ const SettingsPage = (props: IProps) => {
     const getSettings = async () => {
         setIsLoading(true);
         try {
-          const response = await fetch('/api/settings/', { headers: { 'Content-Type': 'application/json' }})
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/settings/`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') }})
           const data = await response.json();
           if (data.error || data.statusCode) {
-            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `settings`, component: "Settings" })})
+            fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `settings`, component: "Settings" })})
             toast.error(data.message);
           } else {
             setSettings(data);
           }
         } catch (err) {
-          fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `settings`, component: "Settings" })})
+          fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `settings`, component: "Settings" })})
           toast.error("Internal Server Error");
         }
         setIsLoading(false);
@@ -41,18 +41,18 @@ const SettingsPage = (props: IProps) => {
         e.preventDefault();
         setIsLoading(true);
         try {
-          const response = await fetch('/api/settings/', { headers: { 'Content-Type': 'application/json' }, 
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/settings/`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') }, 
             method: 'PATCH', body: JSON.stringify(settings)})
           const data = await response.json();
           if (data.error || data.statusCode) {
-            fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `settings`, component: "Settings" })})
+            fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `settings`, component: "Settings" })})
             toast.error(data.message);
           } else {
             toast.success("הגדרות נשמרו");
             props.setSettingsChange(!props.settingsChange);
           }
         } catch (err) {
-          fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `settings`, component: "Settings" })})
+          fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `settings`, component: "Settings" })})
           toast.error("Internal Server Error");
         }
         setIsLoading(false);

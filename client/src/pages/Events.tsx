@@ -89,11 +89,11 @@ const Events = (props: IProps) => {
       }
       setIsLoading(true);
       try {
-        const response = await fetch(`/api/events/`, { headers: { 'Content-Type': 'application/json' },
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/events/`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') },
       method: 'POST', body: JSON.stringify(newEvent)});
         const data = await response.json();
         if (data.error || data.statusCode) {
-          fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: 'events', component: "Events" })})
+          fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: 'events', component: "Events" })})
           toast.error(data.message);
         } else {
           toast.success("אירוע נוצר");
@@ -102,7 +102,7 @@ const Events = (props: IProps) => {
           setNewEvent({content: "", users: [], date: (new Date()).toString()});
         }
       } catch (err) {
-        fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: 'events', component: "Events" })})
+        fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: 'events', component: "Events" })})
         toast.error("Internal Server Error");
       }
       setIsLoading(false);
@@ -113,17 +113,17 @@ const Events = (props: IProps) => {
       setIsLoading(true);
       e.preventDefault();
       try {
-        const response = await fetch(`/api/events/${(e.target as HTMLButtonElement).value}`, { headers: { 'Content-Type': 'application/json' }, method: 'DELETE'});
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/events/${(e.target as HTMLButtonElement).value}`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') }, method: 'DELETE'});
         const data = await response.json();
         if (data.error || data.statusCode) {
-          fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `events/${(e.target as HTMLButtonElement).value}`, component: "Events" })})
+          fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `events/${(e.target as HTMLButtonElement).value}`, component: "Events" })})
           toast.error(data.message);
         } else {
           toast.success('אירוע נמחק');
           await getEvents(false);
         }
       } catch (err) {
-        fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `events/${(e.target as HTMLButtonElement).value}`, component: "Events" })})
+        fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `events/${(e.target as HTMLButtonElement).value}`, component: "Events" })})
         toast.error("Internal Server Error");
       }
       setIsLoading(false);
@@ -143,17 +143,17 @@ const Events = (props: IProps) => {
       if (loading)
         setIsLoading(true);
       try {
-        const response = await fetch(`/api/events/many`, { headers: { 'Content-Type': 'application/json' }, 
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/events/many`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') }, 
       method: 'PATCH', body: JSON.stringify(events) });
       const data = await response.json();
         if (data.error || data.statusCode) {
-          fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `events/many`, component: "Events" })})
+          fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `events/many`, component: "Events" })})
           toast.error(data.message);
         } else {
           toast.success('אירועים עודכנו');
         }
       } catch (err) {
-        fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `events/many`, component: "Events" })})
+        fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `events/many`, component: "Events" })})
         toast.error("Internal Server Error");
       }
       if (loading)
@@ -166,10 +166,10 @@ const Events = (props: IProps) => {
         setIsLoading(true);
       let page = searchParams.get('page') ? searchParams.get('page') : 1;
       try {
-        const response = await fetch(`/api/events/all?page=${page}`, { headers: { 'Content-Type': 'application/json' }});
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/events/all?page=${page}`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') }});
         const data = await response.json();
         if (data.error|| data.statusCode) {
-          fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `events/all?page=${page}`, component: "Events" })})
+          fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `events/all?page=${page}`, component: "Events" })})
           toast.error(data.message);
         } else {
           setEvents(data.events);
@@ -177,7 +177,7 @@ const Events = (props: IProps) => {
           setPages(data.pages);
         }
       } catch (err) {
-        fetch('/api/logs', { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `events/all?page=${page}`, component: "Events" })})
+        fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: `events/all?page=${page}`, component: "Events" })})
         toast.error('Internal Server Error');
       }
       if (loading)
