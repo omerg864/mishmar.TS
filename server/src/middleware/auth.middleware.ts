@@ -11,27 +11,30 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../user/user.model';
 
-const checkUser = async (headers: {authorization : string}, userModel: Model<User>): Promise<User> => {
+const checkUser = async (
+	headers: { authorization: string },
+	userModel: Model<User>
+): Promise<User> => {
 	if (!headers.authorization) {
-	  throw new UnauthorizedException('לא נמצא טוקן הזדהות')
-  }
-	const token = headers.authorization.split(' ')[1]
+		throw new UnauthorizedException('לא נמצא טוקן הזדהות');
+	}
+	const token = headers.authorization.split(' ')[1];
 	if (!token) {
-		throw new UnauthorizedException('לא נמצא טוקן הזדהות')
+		throw new UnauthorizedException('לא נמצא טוקן הזדהות');
 	}
 	try {
-	  const payload = jwt.verify(token, process.env.JWT_SECRET);
-	  const userId = payload['id'];
-	  if (!userId) {
-		  throw new UnauthorizedException('טוקן הזדהות לא תקין')
-	  }
-	  const userFound = await userModel.findById(userId);
-	  if (!userFound) {
-		  throw new NotFoundException('משתמש לא נמצא')
-	  }
-	  return userFound;
+		const payload = jwt.verify(token, process.env.JWT_SECRET);
+		const userId = payload['id'];
+		if (!userId) {
+			throw new UnauthorizedException('טוקן הזדהות לא תקין');
+		}
+		const userFound = await userModel.findById(userId);
+		if (!userFound) {
+			throw new NotFoundException('משתמש לא נמצא');
+		}
+		return userFound;
 	} catch (err) {
-	  throw new UnauthorizedException('טוקן הזדהות לא תקין')
+		throw new UnauthorizedException('טוקן הזדהות לא תקין');
 	}
 };
 
@@ -41,7 +44,7 @@ export class AuthMiddleware implements NestMiddleware {
 
 	async use(req: any, res: Response, next: NextFunction) {
 		const user: User = await checkUser(
-			req.cookies.userToken,
+			req.headers,
 			this.userModel
 		);
 		req.userId = user._id.toString();
@@ -55,7 +58,7 @@ export class SiteManagerMiddleware implements NestMiddleware {
 
 	async use(req: any, res: Response, next: NextFunction) {
 		const userFound: User = await checkUser(
-			req.cookies.userToken,
+			req.headers,
 			this.userModel
 		);
 		if (
@@ -75,7 +78,7 @@ export class ShiftManagerMiddleware implements NestMiddleware {
 
 	async use(req: any, res: Response, next: NextFunction) {
 		const userFound: User = await checkUser(
-			req.cookies.userToken,
+			req.headers,
 			this.userModel
 		);
 		if (
@@ -95,7 +98,7 @@ export class AdminManagerMiddleware implements NestMiddleware {
 
 	async use(req: any, res: Response, next: NextFunction) {
 		const userFound: User = await checkUser(
-			req.cookies.userToken,
+			req.headers,
 			this.userModel
 		);
 		if (!userFound.role.includes('ADMIN')) {

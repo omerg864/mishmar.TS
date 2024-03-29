@@ -7,7 +7,10 @@ import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule, {
-		cors: true,
+		cors: {
+			origin: process.env.SITE_ADDRESS,
+			credentials: true,
+		},
 		logger: ['error', 'warn', 'log'],
 	});
 	app.use(ExpressMongoSanitize());
