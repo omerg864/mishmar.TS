@@ -33,13 +33,6 @@ const imports = [
     MongooseModule.forRoot(`${process.env.MONGODB}`),
 ];
 
-if (process.env.NODE_ENV === 'production') {
-    imports.push(
-        ServeStaticModule.forRoot({
-            rootPath: path.join(__dirname, '../../client/build'),
-        })
-    );
-}
 @Module({
     imports,
     controllers: [],
