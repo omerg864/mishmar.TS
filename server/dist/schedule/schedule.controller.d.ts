@@ -41,5 +41,7 @@ export declare class ScheduleController {
     deleteSchedule(id: string): Promise<{
         id: string;
     }>;
-    updateSchedule(schedule: Schedule): Promise<Schedule>;
+    updateSchedule(schedule: Schedule): Promise<{
+        success: boolean;
+    }>;
 }

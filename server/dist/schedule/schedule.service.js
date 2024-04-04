@@ -452,10 +452,10 @@ let ScheduleService = class ScheduleService {
             extractedData = this.extractDataFromExcel(files[0], schedule.num_weeks);
         }
         catch (error) {
-            console.log(...oo_oo(`2807271219_597_3_597_21_4`, error));
+            console.log(...oo_oo(`3398247056_597_3_597_21_4`, error));
             throw new common_1.ConflictException('שגיאה בקריאת הקובץ', error.message);
         }
-        console.log(...oo_oo(`2807271219_600_2_603_3_4`, '🚀 ~ file: schedule.service.ts ~ line 261 ~ ScheduleService ~ excelToSchedule ~ extractedData', extractedData[0][0]));
+        console.log(...oo_oo(`3398247056_600_2_603_3_4`, '🚀 ~ file: schedule.service.ts ~ line 261 ~ ScheduleService ~ excelToSchedule ~ extractedData', extractedData[0][0]));
         try {
             for (let i = 0; i < extractedData.length; i++) {
                 let morningShifts = weeks_tmp[i].filter((structure) => structure.shift.shift === 0);
@@ -481,7 +481,7 @@ let ScheduleService = class ScheduleService {
         catch (error) {
             throw new common_1.ConflictException('שגיאה בהכנסת הנתונים לסידור', error.message);
         }
-        console.log(...oo_oo(`2807271219_669_2_669_31_4`, extractedData[0]));
+        console.log(...oo_oo(`3398247056_669_2_669_31_4`, extractedData[0]));
         schedule.weeks = weeks_tmp;
         await schedule.save();
         return {
@@ -641,10 +641,8 @@ let ScheduleService = class ScheduleService {
         if (!scheduleFound) {
             throw new common_1.NotFoundException('סידור לא נמצא');
         }
-        let newSchedule = await this.scheduleModel.findByIdAndUpdate(schedule._id, schedule, { new: true });
-        newSchedule = await this.populateSchedule(newSchedule);
-        let days = this.calculateDays(newSchedule);
-        return Object.assign(Object.assign({}, newSchedule), { days });
+        let newSchedule = await this.scheduleModel.findByIdAndUpdate(schedule._id, schedule);
+        return { success: true };
     }
     async delete(id) {
         const schedule = await this.scheduleModel.findById(id);

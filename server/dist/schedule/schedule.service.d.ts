@@ -89,7 +89,9 @@ export declare class ScheduleService {
     scheduleValid(weeks: Shift[][]): Promise<string[]>;
     getSchedule(id: string): Promise<Schedule>;
     create(schedule: Schedule): Promise<Schedule>;
-    update(schedule: Schedule): Promise<Schedule>;
+    update(schedule: Schedule): Promise<{
+        success: boolean;
+    }>;
     delete(id: string): Promise<{
         id: string;
     }>;

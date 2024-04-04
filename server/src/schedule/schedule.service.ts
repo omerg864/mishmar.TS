@@ -898,19 +898,16 @@ export class ScheduleService {
 		return await this.scheduleModel.create({ ...schedule, weeks });
 	}
 
-	async update(schedule: Schedule): Promise<Schedule> {
+	async update(schedule: Schedule): Promise<{ success: boolean}> {
 		let scheduleFound = await this.scheduleModel.findById(schedule._id);
 		if (!scheduleFound) {
 			throw new NotFoundException('סידור לא נמצא');
 		}
 		let newSchedule: Schedule = await this.scheduleModel.findByIdAndUpdate(
 			schedule._id,
-			schedule,
-			{ new: true }
+			schedule
 		);
-		newSchedule = await this.populateSchedule(newSchedule);
-		let days: Date[][] = this.calculateDays(newSchedule);
-		return { ...newSchedule, days };
+		return { success: true };
 	}
 
 	async delete(id: string): Promise<{ id: string }> {
