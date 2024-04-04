@@ -40,3 +40,10 @@ export const numberToArray = (number: number): number[] => {
     }
     return arr;
 };
+
+export const doesContain = (arr: any[], value: any): boolean => {
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] === value) return true;
+    }
+    return false;
+};

@@ -1,6 +1,8 @@
 import React from 'react'
 import { TextareaAutosize, Typography, TableRow, TableCell, TableBody } from '@mui/material';
 import { ShiftWeek, Structure } from '../types/types';
+import { doesContain } from '../functions/functions';
+import Cookies from 'universal-cookie';
 
 interface IProps {
   week: number;
@@ -11,6 +13,8 @@ interface IProps {
 
 
 const TableBodySchedule = (props: IProps) => {
+
+  const cookies = new Cookies();
   
 
   return (
@@ -27,7 +31,11 @@ const TableBodySchedule = (props: IProps) => {
                   onChange={props.onChange}
                   name={`${props.week}-${index2}-${index}`}
                   style={{ maxWidth: '90px' }}
-                /> : <Typography>{day}</Typography>}
+                /> : <React.Fragment>
+                  {day.split("\n").map((line, index) => {
+                    return <Typography className={`${ doesContain(line.split(' '), cookies.get('user').nickname) ? 'green' : ''}`} key={index}>{line}</Typography>
+                  })}
+                  </React.Fragment>}
               </TableCell>
             ))}
           </TableRow>

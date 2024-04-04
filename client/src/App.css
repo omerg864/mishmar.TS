@@ -189,6 +189,10 @@ th {
   word-wrap: break-word;
 }
 
+.green {
+  color: green;
+}
+
 .css-ahj2mt-MuiTypography-root {
   font-size: 1.3rem;
 }
