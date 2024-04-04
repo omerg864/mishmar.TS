@@ -56,12 +56,20 @@ export class ScheduleService {
 	async populateSchedule(schedule: Schedule): Promise<Schedule> {
 		let schedule_temp: Schedule = { ...schedule['_doc'] };
 		let weeks_tmp: Shift[][] = [];
+		let cache: {[id: string] : Structure| null } = { omer: null };
 		for (let i = 0; i < schedule.weeks.length; i++) {
 			let week_tmp: Shift[] = [];
 			for (let j = 0; j < schedule.weeks[i].length; j++) {
-				let structureModel = await this.structureModel.findById(
-					schedule.weeks[i][j].shift
-				);
+				let structureModel: Structure;
+				if (cache[schedule.weeks[i][j].shift.toString()]) {
+					structureModel =
+						cache[schedule.weeks[i][j].shift.toString()];
+				} else {
+					structureModel = await this.structureModel.findById(
+						schedule.weeks[i][j].shift
+					);
+					cache[schedule.weeks[i][j].shift.toString()] = structureModel;
+				}
 				if (structureModel) {
 					week_tmp.push({
 						shift: structureModel,
@@ -84,7 +92,11 @@ export class ScheduleService {
 		} else {
 			query.page -= 1;
 		}
-		let all_schedules = await this.scheduleModel.find().sort({ date: -1 });
+		let all_schedules = await this.scheduleModel
+			.find()
+			.sort({ date: -1 })
+			.limit(2);
+		let count = await this.scheduleModel.find().count();
 		if (all_schedules.length === 0) {
 			throw new NotFoundException('לא נמצאו סידורים');
 		}
@@ -95,14 +107,11 @@ export class ScheduleService {
 				throw new ConflictException('אין סידורים מפורסמים עדיין');
 			}
 		}
-		let pages = all_schedules.length - index;
-		let schedule_found = (
-			await this.scheduleModel
-				.find()
-				.sort({ date: -1 })
-				.skip(query.page + index)
-				.limit(1)
-		)[0];
+		let pages = count - index;
+		let schedule_found = await this.scheduleModel
+			.findOne()
+			.sort({ date: -1 })
+			.skip(query.page + index);
 		if (!schedule_found) {
 			throw new NotFoundException('לא נמצאו סידורים');
 		}
