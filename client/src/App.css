@@ -180,6 +180,15 @@ th {
   gap: 10px;
 }
 
+.general-notes {
+  font-family: inherit;
+  white-space: pre-wrap;       
+  white-space: -moz-pre-wrap;  
+  white-space: -pre-wrap;     
+  white-space: -o-pre-wrap;    
+  word-wrap: break-word;
+}
+
 .css-ahj2mt-MuiTypography-root {
   font-size: 1.3rem;
 }

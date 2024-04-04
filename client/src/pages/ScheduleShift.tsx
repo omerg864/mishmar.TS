@@ -169,15 +169,15 @@ const ScheduleShift = (props: IProps) => {
         </div>
         </div>
         <div style={{display: 'flex', width: '100%'}}>
-            <pre style={{ fontFamily: 'inherit' }}>
+            <pre className='general-notes'>
                 הערות כלליות:{"\n"}{generalNotes}
             </pre>
         </div>
         <div style={{display: 'flex', width: '100%'}}>
-            <pre style={{ fontFamily: 'inherit' }}>
+            <pre className='general-notes'>
                  אירועים:{"\n"}
                  {events.map(event => (
-                    <pre style={{ fontFamily: 'inherit' }} key={event._id}>
+                    <pre className='general-notes' key={event._id}>
                         <span>{dateToStringShort(new Date(event.date))}: {event.content} - {event.users.map((user, index) => (
                             <span key={(user as User)._id}>{(user as User).nickname}{index === event.users.length - 1 ? "" : ','}</span>
                         ))}</span>
@@ -190,7 +190,7 @@ const ScheduleShift = (props: IProps) => {
             <TableHead2 days={schedule.days[week]} 
             children={<TableBodyShift rows={rows} week={week} data={weeks} update={false} disabled={false}/>}/>
             <div style={{display: 'flex', width: '100%'}}>
-            <pre style={{ fontFamily: 'inherit' }}>
+            <pre className='general-notes'>
                 הערות שבוע {week + 1}:{"\n"}{weeksNotes[week]}
             </pre>
             </div>
