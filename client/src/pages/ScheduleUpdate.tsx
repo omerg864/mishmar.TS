@@ -74,7 +74,7 @@ const ScheduleUpdate = (props: IProps) => {
             method: 'PATCH', body: JSON.stringify(schedule) });
             const data = await response.json();
             if (data.error || data.statusCode) {
-                fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules`, component: "ScheduleUpdate" })})
+                fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules`, component: "ScheduleUpdate" })});
                 toast.error(data.message);
             } else {
                 toast.success("עודכן");

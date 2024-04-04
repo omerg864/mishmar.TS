@@ -144,6 +144,7 @@ const ScheduleView = (props: IProps) => {
     const tables = document.querySelector<HTMLDivElement>("#tables");
     if (tables && schedule.num_weeks !== 0) {
       const newDiv = tables.cloneNode(true) as HTMLElement;
+      newDiv.style.position = 'absolute';
       document.body.appendChild(newDiv);
       html2canvas(newDiv).then(canvas => {
         let a = document.createElement('a');

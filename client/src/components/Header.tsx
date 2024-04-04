@@ -53,7 +53,6 @@ const Header = (props: IProps) => {
   };
 
   const handleCloseNavMenu = (e: React.MouseEvent<Element>) => {
-    console.log((e.target as HTMLButtonElement));
     switch((e.target as HTMLButtonElement).id){
       case 'manager':
         navigate('/management');
@@ -71,7 +70,6 @@ const Header = (props: IProps) => {
   };
 
   const handleCloseUserMenu = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-    console.log((e.target as HTMLButtonElement).parentElement);
     switch((e.target as HTMLLIElement).parentElement?.id){
       case 'login':
         navigate('/login');
