@@ -258,7 +258,7 @@ const ScheduleUpdate = (props: IProps) => {
     <ActionButton actions={actions} open={buttonOpen} setOpen={setButtonOpen}/>
     <main>
         <h1>{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
-        <FormControlLabel control={<Switch onChange={changePublish} checked={schedule.publish} />} label="Submit" />
+        <FormControlLabel control={<Switch onChange={changePublish} checked={schedule.publish} />} label="פרסום" />
         {numberToArray(schedule.num_weeks).map((week) => (
           <TableHead2 key={`week-${week}`} days={schedule.days[week]} children={<TableBodySchedule week={week} data={schedule.weeks[week]} update={true} onChange={changeSchedule} />} />
         ))}

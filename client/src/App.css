@@ -197,6 +197,49 @@ th {
   font-size: 1.3rem;
 }
 
+.googleSignIn {
+  border: none;
+  border-radius: 2px;
+  background-color: #4285f4;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.24), 0 0 1px 0 rgba(0, 0, 0, 0.12);
+  border: none;
+  display: flex;
+  padding: 1px;
+  color: #fff;
+}
+.googleSignIn:hover {
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+}
+.googleSignIn:active {
+  background: #3367d6;
+}
+
+.googleSignIn--white {
+  background: #fff;
+  color: rgba(0, 0, 0, 0.8);
+  align-items: center;
+  justify-content: center;
+}
+.googleSignIn--white:active {
+  background: #eeeeee;
+}
+
+.googleSignIn:disabled {
+  background: rgba(0, 0, 0, 0.08);
+  color: rgba(0, 0, 0, 0.4);
+  box-shadow: none;
+}
+
+.googleSignIn__text {
+  padding: 11px;
+  font-family: "Roboto";
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  text-align: left;
+  white-space: nowrap;
+}
+
 
 @media only screen and (max-width: 899px) {
   .posts-home {

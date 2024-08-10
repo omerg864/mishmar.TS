@@ -23,6 +23,9 @@ let UserController = class UserController {
     async login(username, password) {
         return await this.userService.login(username, password);
     }
+    async google(code) {
+        return await this.userService.google(code);
+    }
     async register(user, pinCode) {
         return await this.userService.register(user, pinCode);
     }
@@ -65,6 +68,13 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "login", null);
+__decorate([
+    (0, common_1.Post)('google'),
+    __param(0, (0, common_1.Body)('code')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "google", null);
 __decorate([
     (0, common_1.Post)('register'),
     __param(0, (0, common_1.Body)('user')),

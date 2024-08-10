@@ -1,4 +1,14 @@
 import * as nodemailer from 'nodemailer';
+import { google } from "googleapis";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+export const googleAuthClient = new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    'postmessage'
+);
 
 export const addDays = (date: Date, days: number): Date => {
     const result = new Date(date);
@@ -115,3 +125,5 @@ export const sendMail = (
     console.log(response);
     return response;
 };
+
+

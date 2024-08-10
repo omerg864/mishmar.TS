@@ -13,6 +13,8 @@ import { Settings } from '../settings/settings.model';
 import { sendMail } from '../functions/functions';
 import * as crypto from 'crypto';
 import { email_regex } from '../types/regularExpressions';
+import { googleAuthClient } from '../functions/functions';
+import axios from 'axios';
 
 @Injectable()
 export class UserService {
@@ -39,6 +41,34 @@ export class UserService {
 		if (!isMatch) {
 			throw new UnauthorizedException('סיסמא לא נכונה');
 		}
+		const token = this.generateToken(user.id);
+		delete user['_doc'].password;
+		return { user: { ...user['_doc'] }, token };
+	}
+
+	async google(
+		code: string
+	): Promise<{ user: User; token: string }> {
+		if (!code) {
+			throw new UnauthorizedException('Invalid code');
+		}
+		const googleRes = await googleAuthClient.getToken(code);
+
+		googleAuthClient.setCredentials(googleRes.tokens);
+
+		const userRes = await axios.get(
+			`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`
+		);
+		if (!userRes.data.email) {
+			throw new UnauthorizedException('Invalid email');
+		}
+		const user = await this.userModel.findOne({
+			email: { $regex: new RegExp(`^${userRes.data.email}$`, 'i') },
+		});
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+
 		const token = this.generateToken(user.id);
 		delete user['_doc'].password;
 		return { user: { ...user['_doc'] }, token };

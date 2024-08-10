@@ -29,6 +29,7 @@ import ResetPassword from './pages/ResetPassword';
 import Settings from './pages/Settings';
 import ScheduleTable from './pages/ScheduleTable';
 import Page404 from './pages/Page404';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
     <>
       <Header authenticated={authenticated} settingsChange={settingsChange} setAuthenticated={setAuthenticated} manager={manager} setManager={setManager} />
       <ToastContainer rtl={true} theme="colored" />
+      <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID as string}>
       <Routes>
         <Route path="/" element={<Home authenticated={authenticated} />} />
         <Route path="/login" element={<Login authenticated={authenticated} setAuthenticated={setAuthenticated} setManager={setManager} />} />
@@ -68,6 +70,7 @@ function App() {
         <Route path="/settings" element={<Settings settingsChange={settingsChange} setSettingsChange={setSettingsChange} manager={manager} />} />
         <Route path="*" element={<Page404 />} />
       </Routes>
+      </GoogleOAuthProvider>
     </>
   );
 }

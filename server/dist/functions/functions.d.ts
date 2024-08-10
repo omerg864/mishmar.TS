@@ -1,3 +1,4 @@
+export declare const googleAuthClient: import("google-auth-library").OAuth2Client;
 export declare const addDays: (date: Date, days: number) => Date;
 export declare const addHours: (date: Date, hours: number) => Date;
 export declare const dateToStringShort: (date: Date) => string;

@@ -7,6 +7,10 @@ export declare class UserController {
         user: User;
         token: string;
     }>;
+    google(code: string): Promise<{
+        user: User;
+        token: string;
+    }>;
     register(user: User, pinCode: string): Promise<{
         message: string;
     }>;

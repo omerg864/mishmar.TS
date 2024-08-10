@@ -23,6 +23,13 @@ export class UserController {
 		return await this.userService.login(username, password);
 	}
 
+	@Post('google')
+	async google(
+		@Body('code') code: string,
+	): Promise<{ user: User; token: string }> {
+		return await this.userService.google(code);
+	}
+
 	@Post('register')
 	async register(
 		@Body('user') user: User,

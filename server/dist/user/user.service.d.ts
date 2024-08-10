@@ -10,6 +10,10 @@ export declare class UserService {
         user: User;
         token: string;
     }>;
+    google(code: string): Promise<{
+        user: User;
+        token: string;
+    }>;
     register(user: User, pin_code: string): Promise<{
         message: string;
     }>;

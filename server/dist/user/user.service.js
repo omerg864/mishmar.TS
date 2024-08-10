@@ -34,6 +34,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
@@ -44,6 +47,8 @@ const bcrypt = __importStar(require("bcryptjs"));
 const functions_1 = require("../functions/functions");
 const crypto = __importStar(require("crypto"));
 const regularExpressions_1 = require("../types/regularExpressions");
+const functions_2 = require("../functions/functions");
+const axios_1 = __importDefault(require("axios"));
 let UserService = class UserService {
     constructor(userModel, settingsModel) {
         this.userModel = userModel;
@@ -62,6 +67,26 @@ let UserService = class UserService {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             throw new common_1.UnauthorizedException('סיסמא לא נכונה');
+        }
+        const token = this.generateToken(user.id);
+        delete user['_doc'].password;
+        return { user: Object.assign({}, user['_doc']), token };
+    }
+    async google(code) {
+        if (!code) {
+            throw new common_1.UnauthorizedException('Invalid code');
+        }
+        const googleRes = await functions_2.googleAuthClient.getToken(code);
+        functions_2.googleAuthClient.setCredentials(googleRes.tokens);
+        const userRes = await axios_1.default.get(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`);
+        if (!userRes.data.email) {
+            throw new common_1.UnauthorizedException('Invalid email');
+        }
+        const user = await this.userModel.findOne({
+            email: { $regex: new RegExp(`^${userRes.data.email}$`, 'i') },
+        });
+        if (!user) {
+            throw new common_1.NotFoundException('User not found');
         }
         const token = this.generateToken(user.id);
         delete user['_doc'].password;
