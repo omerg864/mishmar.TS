@@ -240,6 +240,16 @@ th {
   white-space: nowrap;
 }
 
+.salary_cells {
+  display: flex;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+#salaryTableContainer {
+  width: fit-content;
+}
+
 
 @media only screen and (max-width: 899px) {
   .posts-home {
@@ -258,6 +268,17 @@ th {
   .shift-user {
     flex-direction: column;
     justify-content: flex-start;
+  }
+
+  .salary_cells {
+    flex-wrap: nowrap;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  #salaryTableContainer {
+    width: 100%;
   }
 }
 

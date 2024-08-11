@@ -29,6 +29,7 @@ import ResetPassword from './pages/ResetPassword';
 import Settings from './pages/Settings';
 import ScheduleTable from './pages/ScheduleTable';
 import Page404 from './pages/Page404';
+import Salary from './pages/Salary';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 
@@ -67,6 +68,7 @@ function App() {
         <Route path="/password/reset/:reset_token" element={<ResetPassword authenticated={authenticated} />} />
         <Route path="/profile" element={<Profile authenticated={authenticated} />} />
         <Route path="/schedule" element={<ScheduleView authenticated={authenticated} />} />
+        <Route path="/salary" element={<Salary authenticated={authenticated} />} />
         <Route path="/settings" element={<Settings settingsChange={settingsChange} setSettingsChange={setSettingsChange} manager={manager} />} />
         <Route path="*" element={<Page404 />} />
       </Routes>

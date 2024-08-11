@@ -100,3 +100,30 @@ export interface Passwords {
     password: string;
     confirmPassword: string;
 }
+
+export interface Salary {
+    absence: number;
+    shift_100: number;
+    extra_125: number;
+    extra_150: number;
+    special_150: number;
+    special_200: number;
+    shift_150: number;
+    extra_1875: number;
+    extra_225: number;
+    extra_20: number;
+    small_eco: number;
+    big_eco: number;
+    extra_eco: number;
+    travel: number;
+    extra_travel: number;
+}
+
+export interface BaseSalary {
+    pay: number;
+    travel: number;
+    extra_travel: number;
+    small_eco: number;
+    big_eco: number;
+    extra_eco: number;
+}

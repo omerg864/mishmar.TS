@@ -13,7 +13,6 @@ import MenuItem from '@mui/material/MenuItem';
 import ShieldRoundedIcon from '@mui/icons-material/ShieldRounded';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import { Dispatch, SetStateAction } from "react";
-
 import { toast } from 'react-toastify';
 import Spinner from './Spinner';
 import { useNavigate } from 'react-router-dom';
@@ -59,6 +58,9 @@ const Header = (props: IProps) => {
         break;
       case 'shift':
         navigate('/shift');
+        break;
+      case 'salary':
+        navigate('/salary');
         break;
       case 'work':
         navigate('/schedule');
