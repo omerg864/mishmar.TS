@@ -636,8 +636,8 @@ export class ShiftService {
 				const usersSubmitted = [];
 				for (let i = 0; i < shiftsCreated.length; i++) {
 					if (
-						shiftsCreated[i].updatedAt?.getTime() ===
-						shiftsCreated[i].updatedAt?.getTime()
+						shiftsCreated[i].updatedAt?.getTime() !==
+						shiftsCreated[i].createdAt?.getTime()
 					) {
 						usersSubmitted.push(
 							(shiftsCreated[i].userId as User).nickname

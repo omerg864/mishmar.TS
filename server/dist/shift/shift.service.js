@@ -475,8 +475,8 @@ let ShiftService = class ShiftService {
                     .populate('userId');
                 const usersSubmitted = [];
                 for (let i = 0; i < shiftsCreated.length; i++) {
-                    if (((_c = shiftsCreated[i].updatedAt) === null || _c === void 0 ? void 0 : _c.getTime()) ===
-                        ((_d = shiftsCreated[i].updatedAt) === null || _d === void 0 ? void 0 : _d.getTime())) {
+                    if (((_c = shiftsCreated[i].updatedAt) === null || _c === void 0 ? void 0 : _c.getTime()) !==
+                        ((_d = shiftsCreated[i].createdAt) === null || _d === void 0 ? void 0 : _d.getTime())) {
                         usersSubmitted.push(shiftsCreated[i].userId.nickname);
                     }
                 }

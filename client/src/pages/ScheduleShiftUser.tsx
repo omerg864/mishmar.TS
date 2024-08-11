@@ -23,7 +23,7 @@ const ScheduleShiftUser = () => {
     const cookies = new Cookies();
 
     useEffect(() => {
-            getData();
+        getData();
     }, [])
 
     const getSchedule = async () => {
@@ -113,9 +113,7 @@ const ScheduleShiftUser = () => {
 
     const getData = async () => {
         setIsLoading(true);
-        getUser();
-        getShift();
-        await getSchedule();
+        await Promise.all([getUser(), getShift(), getSchedule()]);
         setIsLoading(false);
     }
 

@@ -114,9 +114,7 @@ const ScheduleShift = () => {
 
     const getRequests = async () => {
         setLoading(true);
-        getData();
-        getEvents();
-        await getSchedule();
+        await Promise.all([getData(), getSchedule(), getEvents()]);
         setLoading(false);
     }
 
