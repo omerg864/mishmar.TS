@@ -1,19 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import Spinner from '../components/Spinner'
 import { Button } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import { toast } from 'react-toastify';
 import { addDays, dateToString, dateToStringShort, numberToArray } from '../functions/functions';
-import { EventType, ScheduleUser, ShiftWeek, User } from '../types/types';
+import { EventType, ScheduleUser, User } from '../types/types';
 import TableHead2 from '../components/TableHead';
 import TableBodyShift from '../components/TableBodyShift';
-import NotAuthorized from '../components/NotAuthorized';
 
-
-interface IProps {
-    manager: boolean;
-}
 
 interface ShiftScheduleWeek {
     morning: string[];
@@ -26,7 +21,7 @@ interface ShiftScheduleWeek {
 
 const rows = ["morning", "noon", "night", "reinforcement"];
 
-const ScheduleShift = (props: IProps) => {
+const ScheduleShift = () => {
 
     const { id } = useParams();
     const [loading, setLoading] = useState<boolean>(true);
@@ -127,15 +122,8 @@ const ScheduleShift = (props: IProps) => {
 
 
     useEffect(() => {
-        if(props.manager) {
-            getRequests();
-        }
-    }, [props.manager]);
-
-
-    if (!props.manager) {
-        return <NotAuthorized />;
-    }
+        getRequests();
+    }, []);
 
     if (loading) {
         return <Spinner />;

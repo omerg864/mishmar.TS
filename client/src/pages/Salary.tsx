@@ -4,12 +4,14 @@ import MiniTable from '../components/MiniTable';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import SalaryTable from '../components/SalaryTable';
 import { toast } from 'react-toastify';
+import Spinner from '../components/Spinner';
 
-function Salary({ authenticated }: { authenticated: boolean }) {
+function Salary() {
     const [inputType, setInputType] = useState<string>('input');
     const [salary, setSalary] = useState<SalaryInterface>({
         absence: 0,
         shift_100: 0,
+        extra_100: 0,
         extra_125: 0,
         extra_150: 0,
         special_150: 0,
@@ -36,6 +38,7 @@ function Salary({ authenticated }: { authenticated: boolean }) {
     const totalPay = useMemo<SalaryInterface & {work_hours: number, total: number}>(() => {
         const absence = salary.absence * baseData.pay;
         const shift_100 = salary.shift_100 * baseData.pay;
+        const extra_100 = salary.extra_100 * baseData.pay;
         const extra_125 = salary.extra_125 * baseData.pay * 1.25;
         const extra_150 = salary.extra_150 * baseData.pay * 1.5;
         const special_150 = salary.special_150 * baseData.pay * 1.5;
@@ -49,10 +52,12 @@ function Salary({ authenticated }: { authenticated: boolean }) {
         const extra_eco = salary.extra_eco * baseData.extra_eco;
         const travel = salary.travel * baseData.travel;
         const extra_travel = salary.extra_travel * baseData.extra_travel;
-        const work_hours = absence + shift_100 + extra_125 + extra_150 + special_150 + special_200 + shift_150 + extra_1875 + extra_225 + extra_20;
-        const total = absence + shift_100 + extra_125 + extra_150 + special_150 + special_200 + shift_150 + extra_1875 + extra_225 + extra_20 + small_eco + big_eco + extra_eco + travel + extra_travel;
-        return { absence, shift_100, extra_125, extra_150, special_150, special_200, shift_150, extra_1875, extra_225, extra_20, small_eco, big_eco, extra_eco, travel, extra_travel, work_hours, total };
+        const work_hours = absence + shift_100 + extra_125 + extra_150 + special_150 + special_200 + shift_150 + extra_1875 + extra_225 + extra_20 + extra_100;
+        const total = work_hours + small_eco + big_eco + extra_eco + travel + extra_travel;
+        return { absence, shift_100, extra_125, extra_150, special_150, special_200, shift_150, extra_1875, extra_225, extra_20, small_eco, big_eco, extra_eco, travel, extra_travel, work_hours, total, extra_100 };
     }, [salary, baseData]);
+
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const changeBaseData = (e: React.ChangeEvent<HTMLInputElement>) => {
         setBaseData({...baseData, [e.target.id]: +e.target.value});
@@ -79,9 +84,13 @@ function Salary({ authenticated }: { authenticated: boolean }) {
         setInputType(value);
     }
 
-    const heads = [{name: 'ימי העדרות', id: 'absence'}, {name: 'משמרת 100%', id: 'shift_100'}, {name: 'שעות נוספות 125%', id: 'extra_125'}, {name: 'שעות נוספות 150%', id: 'extra_150'}, {name: 'איכות 150%', id: 'special_150'}, {name: 'איכות 200%', id: 'special_200'}, {name: 'לילה 150%', id: 'shift_150'}, {name: 'שעות נוספות 187.5%', id: 'extra_1875'}, {name: 'שעות נוספות 225%', id: 'extra_225'}, {name: 'צהריים 20%', id: 'extra_20'}, {name: 'כלכלה קטנה', id: 'small_eco'}, {name: 'כלכלה גדולה', id: 'big_eco'}, {name: 'אש"ל תגבור', id: 'extra_eco'}, {name: 'נסיעות', id: 'travel'}, {name: 'תחבורה ציבורית תגבור', id: 'extra_travel'}];
-    const quantity = [salary.absence.toString(), salary.shift_100.toString(), salary.extra_125.toString(), salary.extra_150.toString(), salary.special_150.toString(), salary.special_200.toString(), salary.shift_150.toString(), salary.extra_1875.toString(), salary.extra_225.toString(), salary.extra_20.toString(), salary.small_eco.toString(), salary.big_eco.toString(), salary.extra_eco.toString(), salary.travel.toString(), salary.extra_travel.toString()];
-    const pay = [totalPay.absence.toString(), totalPay.shift_100.toString(), totalPay.extra_125.toString(), totalPay.extra_150.toString(), totalPay.special_150.toString(), totalPay.special_200.toString(), totalPay.shift_150.toString(), totalPay.extra_1875.toString(), totalPay.extra_225.toString(), totalPay.extra_20.toString(), totalPay.small_eco.toString(), totalPay.big_eco.toString(), totalPay.extra_eco.toString(), totalPay.travel.toString(), totalPay.extra_travel.toString()];
+    if (isLoading){
+        return <Spinner />
+    }
+
+    const heads = [{name: 'ימי העדרות', id: 'absence'}, {name: 'ע״ח שבת', id: 'extra_100'}, {name: 'משמרת 100%', id: 'shift_100'}, {name: 'שעות נוספות 125%', id: 'extra_125'}, {name: 'שעות נוספות 150%', id: 'extra_150'}, {name: 'איכות 150%', id: 'special_150'}, {name: 'איכות 200%', id: 'special_200'}, {name: 'לילה 150%', id: 'shift_150'}, {name: 'שעות נוספות 187.5%', id: 'extra_1875'}, {name: 'שעות נוספות 225%', id: 'extra_225'}, {name: 'צהריים 20%', id: 'extra_20'}, {name: 'כלכלה קטנה', id: 'small_eco'}, {name: 'כלכלה גדולה', id: 'big_eco'}, {name: 'אש"ל תגבור', id: 'extra_eco'}, {name: 'נסיעות', id: 'travel'}, {name: 'תחבורה ציבורית תגבור', id: 'extra_travel'}];
+    const quantity = [salary.absence.toString(), salary.extra_100.toString(), salary.shift_100.toString(), salary.extra_125.toString(), salary.extra_150.toString(), salary.special_150.toString(), salary.special_200.toString(), salary.shift_150.toString(), salary.extra_1875.toString(), salary.extra_225.toString(), salary.extra_20.toString(), salary.small_eco.toString(), salary.big_eco.toString(), salary.extra_eco.toString(), salary.travel.toString(), salary.extra_travel.toString()];
+    const pay = [totalPay.absence.toFixed(2).toString(), totalPay.extra_100.toFixed(2).toString(), totalPay.shift_100.toFixed(2).toString(), totalPay.extra_125.toFixed(2).toString(), totalPay.extra_150.toFixed(2).toString(), totalPay.special_150.toFixed(2).toString(), totalPay.special_200.toFixed(2).toString(), totalPay.shift_150.toFixed(2).toString(), totalPay.extra_1875.toFixed(2).toString(), totalPay.extra_225.toFixed(2).toString(), totalPay.extra_20.toFixed(2).toString(), totalPay.small_eco.toFixed(2).toString(), totalPay.big_eco.toFixed(2).toString(), totalPay.extra_eco.toFixed(2).toString(), totalPay.travel.toFixed(2).toString(), totalPay.extra_travel.toFixed(2).toString()];
 
   return (
     <main>

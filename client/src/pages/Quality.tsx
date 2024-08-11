@@ -6,15 +6,9 @@ import { UserQuality } from '../types/types';
 import { TextField, Paper, TableRow, TableHead, TableContainer, TableCell, TableBody,
           Table, Button } from '@mui/material';
 import { StyledTableCell, StyledTableRow } from '../components/StyledTable';
-import NotAuthorized from '../components/NotAuthorized';
 
 
-
-interface IProps {
-    manager: boolean;
-}
-
-const Quality = (props: IProps) => {
+const Quality = () => {
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const cookies = new Cookies();
@@ -119,19 +113,13 @@ const Quality = (props: IProps) => {
 
 
     useEffect(() => {
-        if (props.manager) {
-            getUsers();
-        }
-    }, [props.manager]);
+      getUsers();
+    }, []);
 
     const changeRef = (el: HTMLTableElement) => {
       if (el){
         setHeight(el.clientHeight as number);
       }
-    }
-
-    if (!props.manager) {
-        return <NotAuthorized />;
     }
 
     if (isLoading) {

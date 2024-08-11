@@ -8,21 +8,13 @@ import { ScheduleUser, Shift, User } from '../types/types';
 import { addDays, dateToString, numberToArray } from '../functions/functions';
 import { Button, TextareaAutosize, TextField, Typography } from '@mui/material';
 import TableHead2 from '../components/TableHead';
-import NotAuthorized from '../components/NotAuthorized';
 
-
-
-
-
-interface IProps {
-    manager: boolean;
-}
 
 const defaultValue = {weeks: [], _id: '', weekend_night: 0, weekend_day: 0, userId: "", scheduleId: "", notes: ""};
 const rows = ["morning", "noon", "night", "pull", "reinforcement"]
 type ShiftWeek = {morning: boolean[], noon: boolean[], night: boolean[], pull: boolean[], reinforcement: boolean[]};
 
-const ScheduleShiftUser = (props: IProps) => {
+const ScheduleShiftUser = () => {
     const [user, setUser] = useState<User>({nickname: "", _id: "", name: ""});
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [schedule, setSchedule] = useState<ScheduleUser>({num_weeks: 0, date: new Date(), days: [] as string[][], _id: '1'});
@@ -31,10 +23,8 @@ const ScheduleShiftUser = (props: IProps) => {
     const cookies = new Cookies();
 
     useEffect(() => {
-        if (props.manager) {
             getData();
-        }
-    }, [props.manager])
+    }, [])
 
     const getSchedule = async () => {
         try {
@@ -131,10 +121,6 @@ const ScheduleShiftUser = (props: IProps) => {
 
     const shiftTextChange = (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
         setShift({...shift, [e.target.name]: e.target.value});
-    }
-
-    if(!props.manager) {
-        return <NotAuthorized />;
     }
 
     if (isLoading) {

@@ -40,7 +40,6 @@ const Header = (props: IProps) => {
 
   const [title, setTitle] = React.useState<string>('');
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [authLoading, setAuthLoading] = React.useState<boolean>(false);
   const navigate = useNavigate();
   const cookies = new Cookies();
 
@@ -117,40 +116,11 @@ const Header = (props: IProps) => {
     setIsLoading(false);
   }
 
-  const authUser = async () => {
-    setAuthLoading(true);
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/auth`, { headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cookies.get('userToken') }})
-      const data = await response.json();
-      if (data.error || data.statusCode) {
-        props.setAuthenticated(false);
-        props.setManager(false);
-        cookies.remove('userToken')
-        cookies.remove('user')
-      } else {
-        props.setAuthenticated(true);
-        props.setManager(data.manager);
-        cookies.set('user', data.userCookie);
-      }
-    } catch (err) {
-      fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: 'users/auth', component: "Header" })})
-      toast.error("Internal Server Error");
-      props.setAuthenticated(false);
-      props.setManager(false);
-    }
-    setAuthLoading(false);
-  }
-
   React.useEffect(() => {
     getSettings();
   }, [props.settingsChange]);
 
-
-  React.useEffect(() => {
-    authUser();
-  }, [props.authenticated]);
-
-  if (isLoading || authLoading) {
+  if (isLoading) {
     return <Spinner />;
   }
 

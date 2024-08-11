@@ -6,14 +6,9 @@ import { Box, Paper, Button, TextField } from '@mui/material';
 import { password_regex, email_regex } from '../types/regularExpressions'
 import PasswordRules from '../components/PasswordRules'
 import PasswordInput from '../components/PasswordInput';
-import LogoutMessage from '../components/LogoutMessage';
 import Cookies from 'universal-cookie';
 
-interface IProps {
-    authenticated: boolean;
-}
-
-const Register = (props: IProps) => {
+const Register = () => {
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [formData, setFormData] = useState<{ name: string, username: string, password: string, confirmPassword: string, email: string, pin_code: string}>({ name: '', username: '', password: '', confirmPassword: '', email: '', pin_code: ''});
@@ -58,10 +53,6 @@ const Register = (props: IProps) => {
     if (isLoading) {
         return <Spinner />;
     }
-
-    if(props.authenticated) {
-        return <LogoutMessage />;
-      }
 
   return (
     <main>

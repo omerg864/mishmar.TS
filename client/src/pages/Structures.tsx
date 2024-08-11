@@ -8,14 +8,9 @@ import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRo
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { StyledTableCell, StyledTableRow } from '../components/StyledTable'
 import OptionsModal from '../components/OptionsModal';
-import NotAuthorized from '../components/NotAuthorized';
 
 
-interface IProps {
-    manager: boolean;
-}
-
-const Structures = (props: IProps) => {
+const Structures = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const cookies = new Cookies();
     const [structures, setStructures] = useState<Structure[]>([]);
@@ -195,11 +190,6 @@ const Structures = (props: IProps) => {
     }
     const openModal = () => {
       setModalOpen(true);
-    }
-
-
-    if (!props.manager) {
-        return <NotAuthorized />;
     }
 
     if (loading) {

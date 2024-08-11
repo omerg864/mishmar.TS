@@ -1,18 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { StyledTableRow, StyledTableCell } from '../components/StyledTable';
 import Cookies from 'universal-cookie';
-import NotAuthorized from '../components/NotAuthorized';
 
 
-interface IProps {
-    manager: boolean;
-}
-
-const ScheduleTable = (props: IProps) => {
+const ScheduleTable = () => {
     const [height, setHeight] = useState<number>(100);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [counts, setCounts] = useState<{name: string, night: number, weekend: number, [key: string]: number|string}[]>([]);
@@ -59,17 +54,11 @@ const ScheduleTable = (props: IProps) => {
     }
 
     useEffect(() => {
-        if (props.manager) {
-            getData();
-        }
-    }, [props.manager]);
+        getData();
+    }, []);
 
     if (isLoading) {
         return <Spinner/>;
-    }
-
-    if (!props.manager) {
-        return <NotAuthorized />;
     }
 
 

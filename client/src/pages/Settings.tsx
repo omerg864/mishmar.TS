@@ -7,7 +7,6 @@ import Cookies from 'universal-cookie';
 import NotAuthorized from '../components/NotAuthorized';
 
 interface IProps {
-    manager: boolean;
     setSettingsChange: React.Dispatch<React.SetStateAction<boolean>>;
     settingsChange: boolean;
 }
@@ -63,18 +62,12 @@ const SettingsPage = (props: IProps) => {
       }
 
     useEffect(() => {
-        if (props.manager) {
-            getSettings();
-        }
-    }, [props.manager]);
+      getSettings();
+    }, []);
 
 
     if (isLoading) {
         return <Spinner />;
-    }
-
-    if (!props.manager) {
-        return <NotAuthorized />;
     }
 
   return (

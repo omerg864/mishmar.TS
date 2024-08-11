@@ -12,14 +12,9 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { Box } from '@mui/material';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
-import NotAuthorized from '../components/NotAuthorized';
 
 
-interface IProps {
-  manager: boolean;
-}
-
-const PostEdit = (props: IProps) => {
+const PostEdit = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false)
   const [post, setPost] = useState<PostType>({title: "", content: "", date: (new Date()).toString(), userId: {nickname: ""}} as PostType);
@@ -90,20 +85,13 @@ const PostEdit = (props: IProps) => {
 
 
   useEffect(() => {
-    if (props.manager) {
-      getPost();
-    }
-  },[props.manager]);
+    getPost();
+  },[]);
 
 
   if (loading) {
     return <Spinner />
   }
-
-  if (!props.manager) {
-    return <NotAuthorized />;
-  }
-
 
   return (
     <main>

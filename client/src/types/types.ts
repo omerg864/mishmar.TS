@@ -117,6 +117,7 @@ export interface Salary {
     extra_eco: number;
     travel: number;
     extra_travel: number;
+    extra_100: number;
 }
 
 export interface BaseSalary {

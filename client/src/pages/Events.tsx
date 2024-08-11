@@ -11,13 +11,9 @@ import DatePicker from '../components/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import { StyledTableCell, StyledTableRow } from '../components/StyledTable';
 import { useSearchParams } from 'react-router-dom';
-import NotAuthorized from '../components/NotAuthorized';
 
-interface IProps {
-  manager: boolean;
-}
 
-const Events = (props: IProps) => {
+const Events = () => {
     const [events, setEvents] = useState<EventType[]>([]);
     const [newEvent, setNewEvent] = useState<EventType>({content: "", users: [], date: (new Date()).toString()});
     const [users, setUsers] = useState<User[]>([]);
@@ -185,10 +181,8 @@ const Events = (props: IProps) => {
     }
 
     useEffect(() => {
-        if (props.manager) {
-          getEvents(true);
-        }
-      }, [props.manager, searchParams]);
+        getEvents(true);
+      }, [searchParams]);
     
     
       const changeRef = (el: HTMLTableElement) => {
@@ -203,10 +197,6 @@ const Events = (props: IProps) => {
 
     if (isLoading) {
       return <Spinner/>;
-    }
-
-    if (!props.manager) {
-      return <NotAuthorized />;
     }
 
   return (

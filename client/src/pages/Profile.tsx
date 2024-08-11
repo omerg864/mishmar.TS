@@ -8,14 +8,8 @@ import { email_regex, password_regex } from '../types/regularExpressions'
 import PasswordRules from '../components/PasswordRules'
 import { Passwords } from '../types/types'
 import PasswordInput from '../components/PasswordInput'
-import NotAuthorized from '../components/NotAuthorized'
 
-
-interface IProps {
-  authenticated: boolean;
-}
-
-const Profile = (props: IProps) => {
+const Profile = () => {
   const cookies = new Cookies();
   const [formData, setFormData] = useState<{username: string, email: string, name: string}>({ username: cookies.get('user').username, email: cookies.get('user').email, name: cookies.get('user').name})
   const [passwordData, setPasswordData] = useState<Passwords>({ password:"", confirmPassword: ''});
@@ -108,10 +102,6 @@ const Profile = (props: IProps) => {
 
   if (loading) {
     return <Spinner />;
-  }
-
-  if (!props.authenticated) {
-    return <NotAuthorized />
   }
 
   return (

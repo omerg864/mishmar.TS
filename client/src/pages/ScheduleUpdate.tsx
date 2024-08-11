@@ -16,14 +16,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import DatasetIcon from '@mui/icons-material/Dataset';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import NotAuthorized from '../components/NotAuthorized';
 import Modal from '../components/Modal';
 
-interface IProps {
-    manager: boolean;
-}
 
-const ScheduleUpdate = (props: IProps) => {
+const ScheduleUpdate = () => {
 
     const { id } = useParams();
     const cookies = new Cookies();
@@ -186,11 +182,6 @@ const ScheduleUpdate = (props: IProps) => {
 
     if (isLoading) {
         return <Spinner />;
-    }
-
-
-    if (!props.manager) {
-        return <NotAuthorized />;
     }
 
     const modalChildren = 

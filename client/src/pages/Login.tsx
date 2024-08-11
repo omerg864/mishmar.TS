@@ -11,7 +11,6 @@ import LogoutMessage from '../components/LogoutMessage';
 import GoogleLogin from '../components/GoogleLogin';
 
 interface IProps {
-    authenticated: boolean;
     setAuthenticated: Dispatch<SetStateAction<boolean>>;
     setManager: Dispatch<SetStateAction<boolean>>;
   }
@@ -88,10 +87,6 @@ const Login = (props: IProps) => {
 
     if (isLoading) {
         return <Spinner />;
-    }
-
-    if(props.authenticated) {
-      return <LogoutMessage />;
     }
 
 

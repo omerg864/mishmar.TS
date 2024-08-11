@@ -8,14 +8,10 @@ import PasswordRules from '../components/PasswordRules'
 import { password_regex } from '../types/regularExpressions'
 import { Passwords } from '../types/types';
 import PasswordInput from '../components/PasswordInput';
-import LogoutMessage from '../components/LogoutMessage';
 import Cookies from 'universal-cookie';
 
-interface IProps {
-  authenticated: boolean;
-}
 
-const ResetPassword = (props: IProps) => {
+const ResetPassword = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [passwordData, setPasswordData] = useState<Passwords>({ password: "", confirmPassword: ""});
@@ -44,10 +40,8 @@ const ResetPassword = (props: IProps) => {
   }
 
   useEffect(() => {
-    if (!props.authenticated) {
       checkToken();
-    }
-  }, [props.authenticated]);
+  }, []);
 
 
   const changePassword = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -84,10 +78,6 @@ const ResetPassword = (props: IProps) => {
 
   if (isLoading) {
     return <Spinner />;
-  }
-
-  if (props.authenticated) {
-    return <LogoutMessage />
   }
 
   if (!token) {

@@ -10,14 +10,10 @@ import Modal from '../components/Modal';
 import PasswordRules from '../components/PasswordRules';
 import { email_regex, password_regex } from '../types/regularExpressions';
 import PasswordInput from '../components/PasswordInput';
-import NotAuthorized from '../components/NotAuthorized';
 
 
-interface IProps {
-  manager: boolean;
-}
 
-const Users = (props: IProps) => {
+const Users = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [users, setUsers] = useState<User[]>([]);
@@ -214,20 +210,14 @@ const Users = (props: IProps) => {
   </>)
 
   useEffect(() => {
-    if (props.manager) {
-      getUsers(true);
-    }
-  }, [props.manager]);
+    getUsers(true);
+  }, []);
 
 
   const changeRef = (el: HTMLTableElement) => {
     if (el){
       setHeight(el.clientHeight as number);
     }
-  }
-
-  if (!props.manager) {
-    return <NotAuthorized />;
   }
 
   if (isLoading) {

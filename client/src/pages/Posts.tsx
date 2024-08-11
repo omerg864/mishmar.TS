@@ -6,14 +6,9 @@ import { CardActionArea, Pagination, Typography, CardContent, Card } from '@mui/
 import { PostType, User } from '../types/types';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { dateToString } from '../functions/functions';
-import NotAuthorized from '../components/NotAuthorized';
 
 
-interface IProps {
-  authenticated: boolean;
-}
-
-const Posts = (props: IProps) => {
+const Posts = () => {
 
   const [posts, setPosts] = useState<PostType[]>([]);
   const [pages, setPages] = useState<number>(1);
@@ -52,19 +47,12 @@ const Posts = (props: IProps) => {
   }
 
   useEffect(() => {
-    if (props.authenticated) {
-      getPosts();
-    }
-  }, [props.authenticated, searchParams]);
+    getPosts();
+  }, [searchParams]);
   
   if (loading) {
     return <Spinner />
   }
-
-  if (!props.authenticated) {
-    return <NotAuthorized />;
-  }
-
 
   return (
     <main>

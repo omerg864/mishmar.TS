@@ -31,12 +31,35 @@ import ScheduleTable from './pages/ScheduleTable';
 import Page404 from './pages/Page404';
 import Salary from './pages/Salary';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import ProtectedRoute from './components/ProtectedRoute';
+import ManagerProtected from './components/ManagerProtected';
+import UserRestrictedRoute from './components/UserRestrictedRoute';
+import Cookies from 'universal-cookie';
 
 
 function App() {
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [manager, setManager] = useState<boolean>(false);
   const [settingsChange, setSettingsChange] = useState<boolean>(false);
+  const cookies = new Cookies();
+
+  if (cookies.get('userToken') && !authenticated) {
+    setAuthenticated(true);
+    const user = cookies.get('user');
+    if (user) {
+      if (user.role) {
+        let found = false;
+        user.role.forEach((role: string) => {
+          if (role === 'SITE_MANAGER' || role === 'ADMIN') {
+            found = true;
+          }
+        });
+        if (found) {
+          setManager(true);
+        }
+      }
+    }
+  }
 
 
   return (
@@ -45,31 +68,31 @@ function App() {
       <ToastContainer rtl={true} theme="colored" />
       <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID as string}>
       <Routes>
-        <Route path="/" element={<Home authenticated={authenticated} />} />
-        <Route path="/login" element={<Login authenticated={authenticated} setAuthenticated={setAuthenticated} setManager={setManager} />} />
-        <Route path="/register" element={<Register authenticated={authenticated} />} />
-        <Route path="/management" element={<Manager manager={manager} />} />
-        <Route path="/schedules" element={<Schedules manager={manager} />} />
-        <Route path="/schedule/new" element={<ScheduleNew manager={manager} />} />
-        <Route path="/schedule/:id/update" element={<ScheduleUpdate manager={manager} />} />
-        <Route path="/structure" element={<Structures manager={manager} />} />
-        <Route path="/shift" element={<Shift authenticated={authenticated} />} />
-        <Route path="/schedule/:id/shifts" element={<ScheduleShift manager={manager} />} />
-        <Route path="/schedule/:id/table" element={<ScheduleTable manager={manager} />} />
-        <Route path="/schedule/:id/view" element={<ScheduleView authenticated={authenticated} />} />
-        <Route path="/shift/schedule/:scheduleId/user/:userId" element={<ScheduleShiftUser manager={manager} />} />
-        <Route path="/events" element={<Events manager={manager} />} />
-        <Route path="/posts" element={<Posts authenticated={authenticated} />} />
-        <Route path="/post/:id" element={<PostEdit manager={manager} />} />
-        <Route path="/post/new" element={<PostNew manager={manager} />} />
-        <Route path="/users" element={<Users manager={manager} />} />
-        <Route path="/users/quality" element={<Quality manager={manager} />} />
-        <Route path="/password/reset/email" element={<EmailPassword authenticated={authenticated} />} />
-        <Route path="/password/reset/:reset_token" element={<ResetPassword authenticated={authenticated} />} />
-        <Route path="/profile" element={<Profile authenticated={authenticated} />} />
-        <Route path="/schedule" element={<ScheduleView authenticated={authenticated} />} />
-        <Route path="/salary" element={<Salary authenticated={authenticated} />} />
-        <Route path="/settings" element={<Settings settingsChange={settingsChange} setSettingsChange={setSettingsChange} manager={manager} />} />
+        <Route path="/" element={<ProtectedRoute isAuthenticated={authenticated}><Home authenticated={authenticated} /></ProtectedRoute>} />
+        <Route path="/login" element={<UserRestrictedRoute isAuthenticated={authenticated}><Login setAuthenticated={setAuthenticated} setManager={setManager} /></UserRestrictedRoute>} />
+        <Route path="/register" element={<UserRestrictedRoute isAuthenticated={authenticated}><Register /></UserRestrictedRoute>} />
+        <Route path="/management" element={<ManagerProtected manager={manager}><Manager /></ManagerProtected>} />
+        <Route path="/schedules" element={<ManagerProtected manager={manager}><Schedules /></ManagerProtected>} />
+        <Route path="/schedule/new" element={<ManagerProtected manager={manager}><ScheduleNew /></ManagerProtected>} />
+        <Route path="/schedule/:id/update" element={<ManagerProtected manager={manager}><ScheduleUpdate /></ManagerProtected>} />
+        <Route path="/structure" element={<ManagerProtected manager={manager}><Structures /></ManagerProtected>} />
+        <Route path="/shift" element={<ProtectedRoute isAuthenticated={authenticated}><Shift /></ProtectedRoute>} />
+        <Route path="/schedule/:id/shifts" element={<ManagerProtected manager={manager}><ScheduleShift /></ManagerProtected>} />
+        <Route path="/schedule/:id/table" element={<ManagerProtected manager={manager}><ScheduleTable /></ManagerProtected>} />
+        <Route path="/schedule/:id/view" element={<ProtectedRoute isAuthenticated={authenticated}><ScheduleView /></ProtectedRoute>} />
+        <Route path="/shift/schedule/:scheduleId/user/:userId" element={<ManagerProtected manager={manager}><ScheduleShiftUser /></ManagerProtected>} />
+        <Route path="/events" element={<ManagerProtected manager={manager}><Events /></ManagerProtected>} />
+        <Route path="/posts" element={<ProtectedRoute isAuthenticated={authenticated}><Posts /></ProtectedRoute>} />
+        <Route path="/post/:id" element={<ManagerProtected manager={manager}><PostEdit /></ManagerProtected>} />
+        <Route path="/post/new" element={<ManagerProtected manager={manager}><PostNew /></ManagerProtected>} />
+        <Route path="/users" element={<ManagerProtected manager={manager}><Users /></ManagerProtected>} />
+        <Route path="/users/quality" element={<ManagerProtected manager={manager}><Quality /></ManagerProtected>} />
+        <Route path="/password/reset/email" element={<UserRestrictedRoute isAuthenticated={authenticated}><EmailPassword /></UserRestrictedRoute>} />
+        <Route path="/password/reset/:reset_token" element={<UserRestrictedRoute isAuthenticated={authenticated}><ResetPassword /></UserRestrictedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute isAuthenticated={authenticated}><Profile /></ProtectedRoute>} />
+        <Route path="/schedule" element={<ProtectedRoute isAuthenticated={authenticated}><ScheduleView /></ProtectedRoute>} />
+        <Route path="/salary" element={<ProtectedRoute isAuthenticated={authenticated}><Salary /></ProtectedRoute>} />
+        <Route path="/settings" element={<ManagerProtected manager={manager}><Settings settingsChange={settingsChange} setSettingsChange={setSettingsChange} /></ManagerProtected>} />
         <Route path="*" element={<Page404 />} />
       </Routes>
       </GoogleOAuthProvider>

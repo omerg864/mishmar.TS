@@ -7,18 +7,14 @@ import { addDays, dateToString, dateToStringShort, numberToArray } from '../func
 import { Button, TextField, Typography, TextareaAutosize } from '@mui/material';
 import TableHead2 from '../components/TableHead';
 import TableBodyShift from '../components/TableBodyShift';
-import NotAuthorized from '../components/NotAuthorized';
 
 
-interface IProps {
-    authenticated: boolean;
-}
 
 const defaultValue = {weeks: [], _id: '', weekend_night: 0, weekend_day: 0, userId: "", scheduleId: "", notes: ""};
 const rows = ["morning", "noon", "night", "pull", "reinforcement"]
 type ShiftWeek = {morning: boolean[], noon: boolean[], night: boolean[], pull: boolean[], reinforcement: boolean[]};
 
-const Shift = (props: IProps) => {
+const Shift = () => {
 
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -35,8 +31,7 @@ const Shift = (props: IProps) => {
               fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/auth/last`, component: "Shift" })})
               toast.error(data.message);
             } else {
-              getShift(data._id);
-              await getEvents(data._id);
+              await Promise.all([getShift(data._id), getEvents(data._id)]);
               setSchedule({...data, date: new Date(data.date)});
             }
         } catch (err) {
@@ -138,15 +133,9 @@ const Shift = (props: IProps) => {
       }
 
       useEffect(() => {
-        if (props.authenticated) {
-            getGeneralSettings();
-            getLastSchedule();
-        }
-      }, [props.authenticated]);
-
-      if (!props.authenticated) {
-        return <NotAuthorized />;
-      }
+        getGeneralSettings();
+        getLastSchedule();
+      }, []);
 
 
       if (isLoading) {

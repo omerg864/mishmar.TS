@@ -8,15 +8,10 @@ import { Schedule } from '../types/types'
 import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
 import { useParams, useSearchParams } from 'react-router-dom';
-import NotAuthorized from '../components/NotAuthorized';
 import html2canvas from 'html2canvas';
 
 
-interface IProps {
-  authenticated: boolean;
-}
-
-const ScheduleView = (props: IProps) => {
+const ScheduleView = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [schedule, setSchedule] = useState<Schedule>({num_weeks: 0, days: [], weeks: [], date: new Date(), publish: true, id: "", _id: ""});
@@ -74,10 +69,8 @@ const ScheduleView = (props: IProps) => {
 
 
   useEffect(() => {
-    if (props.authenticated) {
-      getSchedule();
-    }
-  },[props.authenticated, searchParams] );
+    getSchedule();
+  },[searchParams] );
 
   useLayoutEffect(() => {
     function updateSize() {
@@ -127,10 +120,6 @@ const ScheduleView = (props: IProps) => {
 
   if (isLoading) {
     return <Spinner />;
-  }
-
-  if (!props.authenticated) {
-    return <NotAuthorized />;
   }
 
   const changeRef = (el: HTMLTableElement) => {

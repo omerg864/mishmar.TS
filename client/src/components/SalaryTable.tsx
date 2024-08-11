@@ -18,13 +18,13 @@ function SalaryTable(props: SalaryTableProps) {
             <TableHead>
                 <StyledTableRow>
                     {<StyledTableCell sx={{width: 'fit-content'}} align="center">{''}</StyledTableCell>}
-                    {<StyledTableCell sx={{width: '13rem'}} align="center">{props.head}</StyledTableCell>}
+                    {<StyledTableCell sx={{width: '9rem'}} align="center">{props.head}</StyledTableCell>}
                 </StyledTableRow>
             </TableHead>
         <TableBody>
             <TableRow>
                 {<TableCell align="center">{'מספר שעות'}</TableCell>}
-                {<TableCell align="center">{props.editable ? <TextField sx={{width: '7rem'}} id={props.id} type='number' onChange={props.onChange} value={props.quantity} /> : props.quantity}</TableCell>}
+                {<TableCell align="center">{props.editable ? <TextField sx={{width: '7rem'}} id={props.id} type='number' onChange={props.onChange} value={props.quantity !== '0' ? props.quantity : ''} /> : props.quantity}</TableCell>}
             </TableRow>
             <TableRow>
                 {<TableCell align="center">{'שכר'}</TableCell>}

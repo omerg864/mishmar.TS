@@ -5,7 +5,6 @@ import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify';
 import { PostType, User } from '../types/types';
 import { dateToString } from '../functions/functions';
-import NotAuthorized from '../components/NotAuthorized';
 
 interface IProps {
   authenticated: boolean;
@@ -16,8 +15,6 @@ const Home = (props: IProps) => {
   const cookies = new Cookies();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [posts, setPosts] = useState<PostType[]>([]);
-
-  console.log(process.env.TZ);
 
 
   const getPosts = async () =>{
@@ -42,12 +39,7 @@ const Home = (props: IProps) => {
     if (props.authenticated) {
       getPosts();
     }
-  }, [props.authenticated]);
-
-
-  if (!props.authenticated) {
-    return <NotAuthorized />
-  }
+  }, []);
 
   if (isLoading) {
     return <Spinner />;

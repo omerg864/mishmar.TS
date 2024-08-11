@@ -6,15 +6,9 @@ import { useNavigate } from 'react-router-dom'
 import Calendar from 'react-calendar';
 import { addDays, dateToString } from '../functions/functions';
 import { Box, Paper, TextField, Button } from '@mui/material';
-import NotAuthorized from '../components/NotAuthorized';
 
 
-interface IProps {
-    manager: boolean;
-}
-
-
-const ScheduleNew = (props: IProps) => {
+const ScheduleNew = () => {
 
     const [loading, setLoading] = useState<boolean>(false);
     const [date, setDate] = useState<Date>(new Date());
@@ -67,19 +61,12 @@ const ScheduleNew = (props: IProps) => {
     }
 
     useEffect(() => {
-        if (props.manager) {
-            getLast();
-        }
-    }, [props.manager]);
+        getLast();
+    }, []);
 
     useEffect(() => {
         setEndDate(addDays(date, numWeeks * 7 - 1))
     }, [numWeeks, date]);
-
-
-    if (!props.manager) {
-        return <NotAuthorized />;
-    }
 
     if (loading) {
         return <Spinner/>;

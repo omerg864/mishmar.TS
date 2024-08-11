@@ -4,13 +4,9 @@ import { toast} from 'react-toastify';
 import Spinner from '../components/Spinner'
 import { Box, Switch, FormControlLabel, Paper, Button } from '@mui/material';
 import Cookies from 'universal-cookie';
-import NotAuthorized from '../components/NotAuthorized';
 
-interface IProps {
-  manager: boolean;
-}
 
-const Manager = (props: IProps) => {
+const Manager = () => {
 
     const navigate = useNavigate();
     const [checked, setChecked] = useState<boolean>(false);
@@ -90,10 +86,6 @@ const Manager = (props: IProps) => {
 
     const goToNewPost = () => {
         navigate('/post/new')
-    }
-
-    if(!props.manager) {
-        return <NotAuthorized />;
     }
 
     if (loading) {

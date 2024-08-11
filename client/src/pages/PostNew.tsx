@@ -6,14 +6,9 @@ import { Box, Typography, CardContent, Card, TextField, Button, TextareaAutosize
 import { PostType } from '../types/types';
 import { useNavigate } from 'react-router-dom';
 import { dateToString } from '../functions/functions';
-import NotAuthorized from '../components/NotAuthorized';
 
 
-interface IProps {
-  manager: boolean;
-}
-
-const PostNew = (props: IProps) => {
+const PostNew = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false)
   const [post, setPost] = useState<PostType>({title: "", content: "", date: (new Date()).toString(), userId: {nickname: ""}} as PostType);
@@ -47,10 +42,6 @@ const PostNew = (props: IProps) => {
 
   if (loading) {
     return <Spinner />
-  }
-
-  if (!props.manager) {
-    return <NotAuthorized />;
   }
 
 

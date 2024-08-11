@@ -3,15 +3,11 @@ import { toast } from 'react-toastify';
 import Spinner from '../components/Spinner'
 import { Box, Button, TextField, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { email_regex } from '../types/regularExpressions'
-import LogoutMessage from '../components/LogoutMessage';
+import { email_regex } from '../types/regularExpressions';
 import Cookies from 'universal-cookie';
 
-interface IProps {
-  authenticated: boolean;
-}
 
-const EmailPassword = (props: IProps) => {
+const EmailPassword = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [email, setEmail] = useState<string>('');
@@ -44,10 +40,6 @@ const EmailPassword = (props: IProps) => {
     
   if (isLoading) {
     return <Spinner />
-  }
-
-  if (props.authenticated) {
-    return <LogoutMessage />
   }
 
   return (

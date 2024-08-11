@@ -7,14 +7,9 @@ import { addDays, dateToString } from '../functions/functions';
 import { Schedule } from '../types/types';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import NotAuthorized from '../components/NotAuthorized';
 
 
-interface IProps {
-    manager: boolean;
-}
-
-const Schedules = (props: IProps) => {
+const Schedules = () => {
 
     const [schedules, setSchedules] = useState<Schedule[]>([]);
     const [pages, setPages] = useState<number>(1);
@@ -52,10 +47,8 @@ const Schedules = (props: IProps) => {
     }
 
     useEffect(() => {
-        if (props.manager) {
-            getSchedules();
-        }
-    }, [props.manager, searchParams]);
+        getSchedules();
+    }, [searchParams]);
 
     const paginationClick = (e: React.ChangeEvent<unknown>, value: number) => {
         setSearchParams(`?page=${value}`);
@@ -63,10 +56,6 @@ const Schedules = (props: IProps) => {
 
     if (loading) {
         return <Spinner />;
-    }
-
-    if(!props.manager) {
-        return <NotAuthorized />;
     }
 
   return (
