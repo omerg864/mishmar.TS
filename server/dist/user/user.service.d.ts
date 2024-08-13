@@ -48,26 +48,27 @@ export declare class UserService {
             recuperation: number;
         };
     }>;
-    readPdf: (buffer: Buffer, lines: string[]) => Promise<string[]>;
+    readPdf: (buffer: Buffer) => Promise<string[]>;
+    isValidNumber(str: string): boolean;
     ReportData(files: Express.Multer.File[]): Promise<{
         data: {
-            s_travel: any;
-            extra_eco: any;
-            extra_travel: any;
-            travel: any;
-            small_eco: any;
-            big_eco: any;
-            extra_20: any;
-            extra_225: any;
-            extra_1875: any;
-            shift_150: any;
-            special_200: any;
-            special_150: any;
-            extra_150: any;
-            extra_125: any;
-            shift_100: any;
-            extra_100: any;
-            absence: any;
+            s_travel: number;
+            extra_eco: number;
+            extra_travel: number;
+            travel: number;
+            small_eco: number;
+            big_eco: number;
+            extra_20: number;
+            extra_225: number;
+            extra_1875: number;
+            shift_150: number;
+            special_200: number;
+            special_150: number;
+            extra_150: number;
+            extra_125: number;
+            shift_100: number;
+            extra_100: number;
+            absence: number;
         };
     }>;
     authUser(id: string): Promise<{

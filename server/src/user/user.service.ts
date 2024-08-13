@@ -271,53 +271,80 @@ export class UserService {
 		return { data: payData };
 	}
 
-	readPdf = (buffer: Buffer, lines: string[]): Promise<string[]> => {
+	readPdf = (buffer: Buffer): Promise<string[]> => {
+		const lines = [];
 		return new Promise((resolve, reject) => {
-			new PdfReader().parseBuffer(buffer, (err, item) => {
+			new PdfReader().parseBuffer(buffer, (err, item: {text: string, y: number}) => {
 				if (err) {
-					console.error('error:', err);
-					reject(err);
+				  console.error("error:", err);
+				  reject(err);
 				} else if (!item) {
-					console.warn('end of buffer');
-					resolve(lines); // Resolve the promise with the lines array
-				} else if (item.text) {
-					if (item.text.length === 51) {
-						lines.push(item.text);
-					}
+				  console.warn("end of buffer");
+				  // Convert object with y-coordinates to an array and sort by y-coordinate
+				  const sortedLines = Object.keys(lines)
+					.sort((a, b) => parseFloat(a) - parseFloat(b))
+					.map((y) => lines[y].join(''));
+				  resolve(sortedLines); // Resolve with the complete lines
+				} else if (item.text !== undefined) {
+				  // Use the y-coordinate to group text items
+				  const y = item.y;
+				  if (!lines[y]) {
+					lines[y] = [];
+				  }
+				  lines[y].push(item.text);
 				}
-			});
+			  });
 		});
 	};
 
+	isValidNumber(str: string) {
+		const regex = /^-?\d+(\.\d+)?$/;
+		return regex.test(str);
+	}
+
 	async ReportData(files: Express.Multer.File[]) {
 		// pass
-		const lines = [];
-		await this.readPdf(files[0].buffer, lines);
-		const newLines = lines.slice(Math.max(lines.length - 2, 1));
-		const data = newLines.join('');
-		const dataSplit = data.split(' ');
-		let dataOrganized = [];
-		const floatData = [];
+		const fullRows = await this.readPdf(files[0].buffer);
+		const indexAfter = fullRows.findIndex((row) => row.includes("ימוכיס"));
+		const lineFound = fullRows[indexAfter - 1];
+		const linesSplit = lineFound.split(" ")
+		let data = [];
 		let dataMissing = 0;
-		for (let i = 0; i < dataSplit.length; i++) {
-			if (dataSplit[i].length === 0) {
+		for(let i = 0; i < linesSplit.length; i++) {
+			if (linesSplit[i].length === 0) {
 				dataMissing++;
 			}
 			if (dataMissing === 6) {
 				dataMissing = 0;
-				dataOrganized.push('0');
+				data.push("0");
 				continue;
 			}
-			if (dataSplit[i].length === 0) {
+			if (linesSplit[i].length === 0) {
 				continue;
 			}
-			dataOrganized.push(dataSplit[i]);
+			data.push(linesSplit[i]);
 			dataMissing = 0;
 		}
-		dataOrganized = dataOrganized.slice(0, 16);
-		for (let i = 0; i < dataOrganized.length; i++) {
-			floatData.push(parseFloat(dataOrganized[i]));
+		let valid = true;
+		for (let i = 0; i < data.length; i++) {
+			if (!this.isValidNumber(data[i])) {
+				valid = false;
+				break;
+			}
 		}
+		if (!valid) {
+			data = new Array(18).fill("0");
+		}
+		if (data[data.length - 1]) {
+			// remove index data.length - 2
+			data.splice(data.length - 3, 2);
+		}
+		if (data.length < 17) {
+			for (let i = 0; i < 18 - data.length; i++) {
+				data.unshift("0");
+			}
+		}
+		const floatData = data.map((item) => parseFloat(item));
 		const payData = {
 			s_travel: floatData[0],
 			extra_eco: floatData[1],

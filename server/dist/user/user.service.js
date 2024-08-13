@@ -54,21 +54,27 @@ let UserService = class UserService {
     constructor(userModel, settingsModel) {
         this.userModel = userModel;
         this.settingsModel = settingsModel;
-        this.readPdf = (buffer, lines) => {
+        this.readPdf = (buffer) => {
+            const lines = [];
             return new Promise((resolve, reject) => {
                 new pdfreader_1.PdfReader().parseBuffer(buffer, (err, item) => {
                     if (err) {
-                        console.error('error:', err);
+                        console.error("error:", err);
                         reject(err);
                     }
                     else if (!item) {
-                        console.warn('end of buffer');
-                        resolve(lines);
+                        console.warn("end of buffer");
+                        const sortedLines = Object.keys(lines)
+                            .sort((a, b) => parseFloat(a) - parseFloat(b))
+                            .map((y) => lines[y].join(''));
+                        resolve(sortedLines);
                     }
-                    else if (item.text) {
-                        if (item.text.length === 51) {
-                            lines.push(item.text);
+                    else if (item.text !== undefined) {
+                        const y = item.y;
+                        if (!lines[y]) {
+                            lines[y] = [];
                         }
+                        lines[y].push(item.text);
                     }
                 });
             });
@@ -276,34 +282,51 @@ let UserService = class UserService {
         }
         return { data: payData };
     }
+    isValidNumber(str) {
+        const regex = /^-?\d+(\.\d+)?$/;
+        return regex.test(str);
+    }
     async ReportData(files) {
-        const lines = [];
-        await this.readPdf(files[0].buffer, lines);
-        const newLines = lines.slice(Math.max(lines.length - 2, 1));
-        const data = newLines.join('');
-        const dataSplit = data.split(' ');
-        let dataOrganized = [];
-        const floatData = [];
+        const fullRows = await this.readPdf(files[0].buffer);
+        const indexAfter = fullRows.findIndex((row) => row.includes("ימוכיס"));
+        const lineFound = fullRows[indexAfter - 1];
+        const linesSplit = lineFound.split(" ");
+        let data = [];
         let dataMissing = 0;
-        for (let i = 0; i < dataSplit.length; i++) {
-            if (dataSplit[i].length === 0) {
+        for (let i = 0; i < linesSplit.length; i++) {
+            if (linesSplit[i].length === 0) {
                 dataMissing++;
             }
             if (dataMissing === 6) {
                 dataMissing = 0;
-                dataOrganized.push('0');
+                data.push("0");
                 continue;
             }
-            if (dataSplit[i].length === 0) {
+            if (linesSplit[i].length === 0) {
                 continue;
             }
-            dataOrganized.push(dataSplit[i]);
+            data.push(linesSplit[i]);
             dataMissing = 0;
         }
-        dataOrganized = dataOrganized.slice(0, 16);
-        for (let i = 0; i < dataOrganized.length; i++) {
-            floatData.push(parseFloat(dataOrganized[i]));
+        let valid = true;
+        for (let i = 0; i < data.length; i++) {
+            if (!this.isValidNumber(data[i])) {
+                valid = false;
+                break;
+            }
         }
+        if (!valid) {
+            data = new Array(18).fill("0");
+        }
+        if (data[data.length - 1]) {
+            data.splice(data.length - 3, 2);
+        }
+        if (data.length < 17) {
+            for (let i = 0; i < 18 - data.length; i++) {
+                data.unshift("0");
+            }
+        }
+        const floatData = data.map((item) => parseFloat(item));
         const payData = {
             s_travel: floatData[0],
             extra_eco: floatData[1],
