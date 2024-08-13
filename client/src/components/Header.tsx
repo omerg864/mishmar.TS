@@ -20,8 +20,8 @@ import Cookies from 'universal-cookie';
 
 
 
-const pages = [{name: 'הגשת משמרות', id: "shift"},{name: 'סידור עבודה', id: "work"}, {name: 'חיושב שכר', id: "salary"}];
-const pages_manager = [{name: 'הגשת משמרות', id: "shift"},{name: 'סידור עבודה', id: "work"}, {name: 'חיושב שכר', id: "salary"}, {name: 'לוח מנהל', id: "manager"}];
+const pages = [{name: 'הגשת משמרות', id: "shift"},{name: 'סידור עבודה', id: "work"}, {name: 'חישוב שכר', id: "salary"}];
+const pages_manager = [{name: 'הגשת משמרות', id: "shift"},{name: 'סידור עבודה', id: "work"}, {name: 'חישוב שכר', id: "salary"}, {name: 'לוח מנהל', id: "manager"}];
 const settings_auth = [{name: 'פרופיל', id: "profile"}, {name: 'התנתק', id:"logout"}];
 const settings = [{name: 'התחבר', id: "login"}, {name: 'הירשם', id: "register"}];
 
