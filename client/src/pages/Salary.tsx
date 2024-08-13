@@ -9,7 +9,7 @@ import Cookies from 'universal-cookie';
 
 function Salary() {
     const cookies = new Cookies();
-    const [inputType, setInputType] = useState<string>('input');
+    const [inputType, setInputType] = useState<string>('file');
     const [salary, setSalary] = useState<SalaryInterface>({
         absence: 0,
         shift_100: 0,
@@ -162,7 +162,7 @@ function Salary() {
                 <MenuItem value={"file"}>קובץ</MenuItem>
             </Select>
         </FormControl>
-        {inputType === 'file' && <TextField sx={{width: '15rem'}} onChange={changeFile} id='file' type='file' />}
+        {inputType === 'file' && <TextField sx={{width: '15rem', marginTop: '10px'}} onChange={changeFile} id='file' type='file' />}
         <div className='salary_cells' style={{ justifyContent: 'center', width: '100%'}}>
             <MiniTable head="שכר" onChange={changeBaseData} editable={true} id='pay' body={baseData.pay.toString()} />
             <MiniTable head="דמי נסיעה" onChange={changeBaseData} editable={true} id='travel' body={baseData.travel.toString()} />

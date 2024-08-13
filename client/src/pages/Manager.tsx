@@ -52,6 +52,10 @@ const Manager = () => {
         }
     }
 
+    const gotoSalarySettings = () => {
+        navigate('/settings/salary')
+    }
+
     const goToSettings = () => {
         navigate('/settings')
     }
@@ -96,9 +100,13 @@ const Manager = () => {
     <main>
         <h1>לוח מנהל</h1>
       <Box className='box-container' component={Paper}>
+      <div className='manager-div'>
       <FormControlLabel control={<Switch onChange={changeSubmit} checked={checked} />} label="ניתן להגיש/לשנות הגשות לסידור" />
+      </div>
+        <h2 style={{marginTop: 0}}>ניהול</h2>
         <div className='manager-div'>
-        <Button variant="contained" color="info" onClick={goToSettings} >הגדרות</Button>
+            <Button variant="contained" color="success" onClick={goToSettings} >הגדרות</Button>
+            <Button variant="contained" color="primary" onClick={gotoSalarySettings} >הגדרות שכר</Button>
         </div>
         <h2 style={{marginTop: 0}}>סידורים</h2>
         <div className='manager-div'>

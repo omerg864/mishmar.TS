@@ -35,6 +35,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ManagerProtected from './components/ManagerProtected';
 import UserRestrictedRoute from './components/UserRestrictedRoute';
 import Cookies from 'universal-cookie';
+import SettingsSalary from './pages/SettingsSalary';
 
 
 function App() {
@@ -93,6 +94,7 @@ function App() {
         <Route path="/schedule" element={<ProtectedRoute isAuthenticated={authenticated}><ScheduleView /></ProtectedRoute>} />
         <Route path="/salary" element={<ProtectedRoute isAuthenticated={authenticated}><Salary /></ProtectedRoute>} />
         <Route path="/settings" element={<ManagerProtected manager={manager}><Settings settingsChange={settingsChange} setSettingsChange={setSettingsChange} /></ManagerProtected>} />
+        <Route path="/settings/salary" element={<ManagerProtected manager={manager}><SettingsSalary settingsChange={settingsChange} setSettingsChange={setSettingsChange} /></ManagerProtected>} />
         <Route path="*" element={<Page404 />} />
       </Routes>
       </GoogleOAuthProvider>

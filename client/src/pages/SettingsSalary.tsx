@@ -1,21 +1,19 @@
-import { Button, Box, Paper, TextField } from '@mui/material';
-import React, { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react';
+import Cookies from 'universal-cookie';
+import { SalarySettings } from '../types/types';
 import { toast } from 'react-toastify';
 import Spinner from '../components/Spinner';
-import { Settings } from '../types/types';
-import Cookies from 'universal-cookie';
+import { Box, Button, Paper, TextField } from '@mui/material';
 
 interface IProps {
     setSettingsChange: React.Dispatch<React.SetStateAction<boolean>>;
     settingsChange: boolean;
 }
-
-const SettingsPage = (props: IProps) => {
+function SettingsSalary(props: IProps) {
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [settings, setSettings] = useState<Settings>({} as Settings);
+    const [settings, setSettings] = useState<SalarySettings>({} as SalarySettings);
     const cookies = new Cookies();
-
 
     const getSettings = async () => {
         setIsLoading(true);
@@ -64,21 +62,25 @@ const SettingsPage = (props: IProps) => {
       getSettings();
     }, []);
 
-
     if (isLoading) {
         return <Spinner />;
     }
 
   return (
     <main>
-        <h1>הגדרות</h1>
+        <h1>הגדרות שכר</h1>
         <Box className='box-container' component={Paper}>
             <form className='box-container' style={{textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '15px'}} onSubmit={saveSettings}>
-            <TextField fullWidth value={settings.pin_code} required onChange={handleChange} name="pin_code" color="primary" label="קוד הרשמה" />
-            <TextField fullWidth value={settings.officer} onChange={handleChange} name="officer" label="קצין מתקן" />
-            <TextField fullWidth value={settings.title} required onChange={handleChange} name="title" color="primary" label="כותרת אתר" />
-            <TextField fullWidth value={settings.max_seq_noon} type="number" inputProps={{min: "0"}} required onChange={handleChange} name="max_seq_noon" color="primary" label="מ'ס רצפים צהריים לבוקר" />
-            <TextField fullWidth value={settings.max_seq_nights} type="number" inputProps={{min: "0"}} required onChange={handleChange} name="max_seq_nights" color="primary" label="מ'ס רצפים לילה לצהריים" />
+            <TextField fullWidth type='number' value={settings.base_pay} onChange={handleChange} name="base_pay" label="שכר מאבטח" />
+            <TextField fullWidth type='number' value={settings.base_pay2} onChange={handleChange} name="base_pay2" label="שכר אחמ״ש" />
+            <TextField fullWidth type='number' value={settings.base_pay3} onChange={handleChange} name="base_pay3" label="שכר קצין מתקן" />
+            <TextField fullWidth value={settings.travel} type="number" required onChange={handleChange} name="travel" color="primary" label="דמי נסיעה" />
+            <TextField fullWidth value={settings.big_eco} type="number" required onChange={handleChange} name="big_eco" color="primary" label="כלכלה גדולה" />
+            <TextField fullWidth value={settings.small_eco} type="number" required onChange={handleChange} name="small_eco" color="primary" label="כלכלה קטנה" />
+            <TextField fullWidth value={settings.extra_eco} type="number" required onChange={handleChange} name="extra_eco" color="primary" label="אש״ל תגבור" />
+            <TextField fullWidth value={settings.extra_travel} type="number" required onChange={handleChange} name="extra_travel" color="primary" label="תחבורה ציבורית תגבור" />
+            <TextField fullWidth value={settings.s_travel} type="number" required onChange={handleChange} name="s_travel" color="primary" label="נסיעות שבת" />
+            <TextField fullWidth value={settings.recuperation} type="number" required onChange={handleChange} name="recuperation" color="primary" label="הבראה" />
             <Button variant="contained" color="primary" type="submit">שמור</Button>
             </form>
       </Box>
@@ -86,4 +88,4 @@ const SettingsPage = (props: IProps) => {
   )
 }
 
-export default SettingsPage
+export default SettingsSalary

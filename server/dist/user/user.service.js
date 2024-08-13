@@ -68,7 +68,6 @@ let UserService = class UserService {
                     else if (item.text) {
                         if (item.text.length === 51) {
                             lines.push(item.text);
-                            console.log(item.text, item.text.length);
                         }
                     }
                 });
@@ -282,9 +281,7 @@ let UserService = class UserService {
         await this.readPdf(files[0].buffer, lines);
         const newLines = lines.slice(Math.max(lines.length - 2, 1));
         const data = newLines.join('');
-        console.log('Data:', data);
         const dataSplit = data.split(' ');
-        console.log(dataSplit);
         let dataOrganized = [];
         const floatData = [];
         let dataMissing = 0;
@@ -307,9 +304,6 @@ let UserService = class UserService {
         for (let i = 0; i < dataOrganized.length; i++) {
             floatData.push(parseFloat(dataOrganized[i]));
         }
-        console.log(dataOrganized);
-        console.log(dataOrganized.length);
-        console.log(floatData);
         const payData = {
             s_travel: floatData[0],
             extra_eco: floatData[1],
