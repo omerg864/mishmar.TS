@@ -16,6 +16,7 @@ exports.UserController = void 0;
 const user_service_1 = require("./user.service");
 const common_1 = require("@nestjs/common");
 const auth_middleware_1 = require("../middleware/auth.middleware");
+const platform_express_1 = require("@nestjs/platform-express");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
@@ -25,6 +26,12 @@ let UserController = class UserController {
     }
     async google(code) {
         return await this.userService.google(code);
+    }
+    async getPay(userId) {
+        return await this.userService.getPayData(userId);
+    }
+    async reportDataExtract(files) {
+        return await this.userService.ReportData(files);
     }
     async register(user, pinCode) {
         return await this.userService.register(user, pinCode);
@@ -75,6 +82,21 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "google", null);
+__decorate([
+    (0, common_1.Get)('pay'),
+    __param(0, (0, auth_middleware_1.UserID)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getPay", null);
+__decorate([
+    (0, common_1.Post)('report'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('file')),
+    __param(0, (0, common_1.UploadedFiles)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Array]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "reportDataExtract", null);
 __decorate([
     (0, common_1.Post)('register'),
     __param(0, (0, common_1.Body)('user')),

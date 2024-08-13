@@ -10,9 +10,9 @@ export class SettingsService {
 
 
     async get(): Promise<Settings> {
-        let settings = await this.settingsModel.findOne();
+        const settings = await this.settingsModel.findOne();
         if (!settings) {
-            let newSettings = new this.settingsModel();
+            const newSettings = new this.settingsModel();
             return await newSettings.save();
         }
         return settings;

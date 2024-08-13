@@ -118,13 +118,16 @@ export interface Salary {
     travel: number;
     extra_travel: number;
     extra_100: number;
+    s_travel: number;
 }
 
 export interface BaseSalary {
     pay: number;
     travel: number;
     extra_travel: number;
+    s_travel: number;
     small_eco: number;
     big_eco: number;
     extra_eco: number;
+    recuperation: number;
 }

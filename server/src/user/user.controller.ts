@@ -7,9 +7,12 @@ import {
 	Param,
 	Patch,
 	Post,
+	UploadedFiles,
+	UseInterceptors,
 } from '@nestjs/common';
 import { User } from './user.model';
 import { UserID } from '../middleware/auth.middleware';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('api/users')
 export class UserController {
@@ -28,6 +31,21 @@ export class UserController {
 		@Body('code') code: string,
 	): Promise<{ user: User; token: string }> {
 		return await this.userService.google(code);
+	}
+
+	@Get('pay')
+	async getPay(
+		@UserID() userId: string,
+	) {
+		return await this.userService.getPayData(userId);
+	}
+
+	@Post('report')
+	@UseInterceptors(FilesInterceptor('file'))
+	async reportDataExtract(
+		@UploadedFiles() files: Express.Multer.File[],
+	) {
+		return await this.userService.ReportData(files);
 	}
 
 	@Post('register')

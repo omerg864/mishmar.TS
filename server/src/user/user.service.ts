@@ -15,6 +15,7 @@ import * as crypto from 'crypto';
 import { email_regex } from '../types/regularExpressions';
 import { googleAuthClient } from '../functions/functions';
 import axios from 'axios';
+import { PdfReader } from 'pdfreader';
 
 @Injectable()
 export class UserService {
@@ -46,9 +47,7 @@ export class UserService {
 		return { user: { ...user['_doc'] }, token };
 	}
 
-	async google(
-		code: string
-	): Promise<{ user: User; token: string }> {
+	async google(code: string): Promise<{ user: User; token: string }> {
 		if (!code) {
 			throw new UnauthorizedException('Invalid code');
 		}
@@ -238,6 +237,113 @@ export class UserService {
 			throw new NotFoundException('משתמש לא נמצא');
 		}
 		return user;
+	}
+
+	async getPayData(userId: string) {
+		const settings = await this.settingsModel.findOne();
+		const user = await this.userModel.findById(userId);
+		const payData: {
+			travel: number;
+			extra_travel: number;
+			small_eco: number;
+			big_eco: number;
+			extra_eco: number;
+			pay: number;
+			s_travel: number;
+			recuperation: number;
+		} = {
+			pay: settings.base_pay,
+			travel: settings.travel,
+			extra_travel: settings.extra_travel,
+			small_eco: settings.small_eco,
+			big_eco: settings.big_eco,
+			extra_eco: settings.extra_eco,
+			s_travel: settings.s_travel,
+			recuperation: settings.recuperation,
+		};
+		if (settings.officer === user.nickname) {
+			payData.pay = settings.base_pay3;
+		} else {
+			if (user.role.includes('SHIFT_MANAGER')) {
+				payData.pay = settings.base_pay2;
+			}
+		}
+		return { data: payData };
+	}
+
+	readPdf = (buffer: Buffer, lines: string[]): Promise<string[]> => {
+		return new Promise((resolve, reject) => {
+			new PdfReader().parseBuffer(buffer, (err, item) => {
+				if (err) {
+					console.error('error:', err);
+					reject(err);
+				} else if (!item) {
+					console.warn('end of buffer');
+					resolve(lines); // Resolve the promise with the lines array
+				} else if (item.text) {
+					if (item.text.length === 51) {
+						lines.push(item.text);
+						console.log(item.text, item.text.length);
+					}
+				}
+			});
+		});
+	};
+
+	async ReportData(files: Express.Multer.File[]) {
+		// pass
+		const lines = [];
+		await this.readPdf(files[0].buffer, lines);
+		const newLines = lines.slice(Math.max(lines.length - 2, 1));
+		const data = newLines.join('');
+		console.log('Data:', data);
+		const dataSplit = data.split(' ');
+		console.log(dataSplit); // data missing 6 miss
+		let dataOrganized = [];
+		const floatData = [];
+		let dataMissing = 0;
+		for (let i = 0; i < dataSplit.length; i++) {
+			if (dataSplit[i].length === 0) {
+				dataMissing++;
+			}
+			if (dataMissing === 6) {
+				dataMissing = 0;
+				dataOrganized.push('0');
+				continue;
+			}
+			if (dataSplit[i].length === 0) {
+				continue;
+			}
+			dataOrganized.push(dataSplit[i]);
+			dataMissing = 0;
+		}
+		dataOrganized = dataOrganized.slice(0, 16);
+		for (let i = 0; i < dataOrganized.length; i++) {
+			floatData.push(parseFloat(dataOrganized[i]));
+		}
+		console.log(dataOrganized);
+		console.log(dataOrganized.length);
+		console.log(floatData);
+		const payData = {
+			s_travel: floatData[0],
+			extra_eco: floatData[1],
+			extra_travel: floatData[1],
+			travel: floatData[2],
+			small_eco: floatData[3],
+			big_eco: floatData[4],
+			extra_20: floatData[5],
+			extra_225: floatData[6],
+			extra_1875: floatData[7],
+			shift_150: floatData[8],
+			special_200: floatData[9],
+			special_150: floatData[10],
+			extra_150: floatData[11],
+			extra_125: floatData[12],
+			shift_100: floatData[13],
+			extra_100: floatData[14],
+			absence: floatData[15],
+		};
+		return { data: payData };
 	}
 
 	async authUser(

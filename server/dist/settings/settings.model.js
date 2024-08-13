@@ -33,17 +33,17 @@ exports.SettingsScheme = new mongoose.Schema({
     officer: {
         required: false,
         type: String,
-        default: "",
+        default: '',
     },
     pin_code: {
         required: false,
         type: String,
-        default: "1234",
+        default: '1234',
     },
     title: {
         required: false,
         type: String,
-        default: "",
+        default: '',
     },
     max_seq_nights: {
         required: false,
@@ -54,6 +54,56 @@ exports.SettingsScheme = new mongoose.Schema({
         required: false,
         type: Number,
         default: 2,
+    },
+    base_pay: {
+        required: false,
+        type: Number,
+        default: 40,
+    },
+    base_pay2: {
+        required: false,
+        type: Number,
+        default: 40.6,
+    },
+    base_pay3: {
+        required: false,
+        type: Number,
+        default: 46,
+    },
+    travel: {
+        required: false,
+        type: Number,
+        default: 18,
+    },
+    extra_travel: {
+        required: false,
+        type: Number,
+        default: 18,
+    },
+    small_eco: {
+        required: false,
+        type: Number,
+        default: 13.5,
+    },
+    big_eco: {
+        required: false,
+        type: Number,
+        default: 19.7,
+    },
+    extra_eco: {
+        required: false,
+        type: Number,
+        default: 33.9,
+    },
+    s_travel: {
+        required: false,
+        type: Number,
+        default: 28,
+    },
+    recuperation: {
+        required: false,
+        type: Number,
+        default: 250,
     }
 });
 //# sourceMappingURL=settings.model.js.map

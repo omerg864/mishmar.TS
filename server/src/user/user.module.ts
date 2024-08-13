@@ -33,6 +33,12 @@ export class UserModule implements NestModule {
 			.apply(AuthMiddleware)
 			.forRoutes({ path: 'api/users/auth', method: RequestMethod.GET });
 		consumer
+			.apply(AuthMiddleware)
+			.forRoutes({ path: 'api/users/pay', method: RequestMethod.GET });
+		consumer
+			.apply(AuthMiddleware)
+			.forRoutes({ path: 'api/users/report', method: RequestMethod.POST });
+		consumer
 			.apply(SiteManagerMiddleware)
 			.forRoutes({
 				path: 'api/users/manager',
