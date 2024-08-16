@@ -1,3 +1,4 @@
+/// <reference types="node" />
 /// <reference types="multer" />
 import { User } from './user.model';
 import { Model } from 'mongoose';

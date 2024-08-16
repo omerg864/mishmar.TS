@@ -55,6 +55,17 @@ EMAIL_ADDRESS=<email_address>
 DB_PASSWORD=<db_password>
 DB_USERNAME=<db_username>
 DB_NAME=<db_name>
+JWT_SECRET=<your_jwt_secret>
+GOOGLE_CLIENT_ID=<your_google_client_id>
+GOOGLE_CLIENT_SECRET=<your_google_client_secret>
+H_FILE_28=<file_himush_28_days_url>
+H_FILE_29=<file_himush_29_days_url>
+H_FILE_30=<file_himush_30_days_url>
+H_FILE_31=<file_himush_31_days_url>
+B_FILE_28=<file_bakara_28_days_url>
+B_FILE_29=<file_bakara_29_days_url>
+B_FILE_30=<file_bakara_30_days_url>
+B_FILE_31=<file_bakara_31_days_url>
 ```
 
 Replace the values with the appropriate values for your environment.
