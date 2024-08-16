@@ -21,6 +21,12 @@ let SettingsModule = class SettingsModule {
             .forRoutes({ path: 'api/settings', method: common_1.RequestMethod.PATCH });
         consumer
             .apply(auth_middleware_1.SiteManagerMiddleware)
+            .forRoutes({ path: 'api/bfile', method: common_1.RequestMethod.POST });
+        consumer
+            .apply(auth_middleware_1.SiteManagerMiddleware)
+            .forRoutes({ path: 'api/hfile', method: common_1.RequestMethod.POST });
+        consumer
+            .apply(auth_middleware_1.SiteManagerMiddleware)
             .forRoutes({ path: 'api/settings', method: common_1.RequestMethod.GET });
     }
 };

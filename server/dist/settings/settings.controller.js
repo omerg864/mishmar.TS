@@ -28,6 +28,12 @@ let SettingsController = class SettingsController {
     async getGeneral() {
         return this.settingsService.getGeneral();
     }
+    async getHFile(body) {
+        return this.settingsService.getHFile(body);
+    }
+    async getBFile(body) {
+        return this.settingsService.getBFile(body);
+    }
 };
 __decorate([
     (0, common_1.Get)(),
@@ -48,6 +54,20 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], SettingsController.prototype, "getGeneral", null);
+__decorate([
+    (0, common_1.Post)('hfile'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], SettingsController.prototype, "getHFile", null);
+__decorate([
+    (0, common_1.Post)('bfile'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], SettingsController.prototype, "getBFile", null);
 SettingsController = __decorate([
     (0, common_1.Controller)('api/settings'),
     __metadata("design:paramtypes", [settings_service_1.SettingsService])

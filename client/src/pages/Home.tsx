@@ -16,6 +16,8 @@ const Home = (props: IProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [posts, setPosts] = useState<PostType[]>([]);
 
+  const user = cookies.get('user');
+
 
   const getPosts = async () =>{
     setIsLoading(true);
@@ -52,19 +54,19 @@ const Home = (props: IProps) => {
       <Card className='user-data'>
           <CardContent sx={{textAlign: 'center', position: 'relative'}}>
             <Typography variant="h4" component="div">
-            {cookies.get('user').username}
+            {user?.username}
             </Typography>
             <Typography variant="h4" component="div">
-            שישי לילה/מוצ"ש: {cookies.get('user').weekend_night}
+            שישי לילה/מוצ"ש: {user?.weekend_night}
             </Typography>
             <Typography variant="h4" component="div">
-            שבת בוקר/צהריים: {cookies.get('user').weekend_day}
+            שבת בוקר/צהריים: {user?.weekend_day}
             </Typography>
             <Typography variant="h4" component="div">
-            לילה: {cookies.get('user').night}
+            לילה: {user?.night}
             </Typography>
             <Typography variant="h4" component="div">
-            שישי צהריים: {cookies.get('user').friday_noon}
+            שישי צהריים: {user?.friday_noon}
             </Typography>
           </CardContent>
       </Card>

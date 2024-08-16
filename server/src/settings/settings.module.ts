@@ -31,6 +31,12 @@ export class SettingsModule implements NestModule {
 			.forRoutes({ path: 'api/settings', method: RequestMethod.PATCH });
 		consumer
 			.apply(SiteManagerMiddleware)
+			.forRoutes({ path: 'api/bfile', method: RequestMethod.POST });
+		consumer
+			.apply(SiteManagerMiddleware)
+			.forRoutes({ path: 'api/hfile', method: RequestMethod.POST });
+		consumer
+			.apply(SiteManagerMiddleware)
 			.forRoutes({ path: 'api/settings', method: RequestMethod.GET });
 	}
 }

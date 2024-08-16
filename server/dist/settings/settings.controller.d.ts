@@ -1,3 +1,4 @@
+import { StreamableFile } from '@nestjs/common';
 import { Settings } from './settings.model';
 import { SettingsService } from './settings.service';
 export declare class SettingsController {
@@ -9,4 +10,12 @@ export declare class SettingsController {
         title: string;
         submit: boolean;
     }>;
+    getHFile(body: {
+        month: number;
+        year: number;
+    }): Promise<StreamableFile>;
+    getBFile(body: {
+        month: number;
+        year: number;
+    }): Promise<StreamableFile>;
 }

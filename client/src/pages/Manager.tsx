@@ -92,6 +92,10 @@ const Manager = () => {
         navigate('/post/new')
     }
 
+    const goToForms = () => {
+        navigate('/forms')
+    }
+
     if (loading) {
         return <Spinner />
     }
@@ -107,6 +111,7 @@ const Manager = () => {
         <div className='manager-div'>
             <Button variant="contained" color="success" onClick={goToSettings} >הגדרות</Button>
             <Button variant="contained" color="primary" onClick={gotoSalarySettings} >הגדרות שכר</Button>
+            <Button variant="contained" color="info" onClick={goToForms} >טפסים</Button>
         </div>
         <h2 style={{marginTop: 0}}>סידורים</h2>
         <div className='manager-div'>
