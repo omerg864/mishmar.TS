@@ -147,4 +147,5 @@ export interface BaseSalary {
 	big_eco: number;
 	extra_eco: number;
 	recuperation: number;
+	max_travel: number;
 }

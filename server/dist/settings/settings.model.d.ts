@@ -17,6 +17,7 @@ export interface Settings {
     extra_eco: number;
     s_travel: number;
     recuperation: number;
+    max_travel: number;
 }
 export interface BaseSalary {
     pay: number;
@@ -25,4 +26,5 @@ export interface BaseSalary {
     small_eco: number;
     big_eco: number;
     extra_eco: number;
+    max_travel: number;
 }

@@ -37,7 +37,8 @@ function Salary() {
         big_eco: 19.7,
         extra_eco: 33.9,
         s_travel: 28,
-        recuperation: 200
+        recuperation: 200,
+        max_travel: 267
     });
 
     const totalPay = useMemo<SalaryInterface & {work_hours_pay: number, total: number, work_hours: number}>(() => {
@@ -55,7 +56,7 @@ function Salary() {
         const small_eco = salary.small_eco * baseData.small_eco;
         const big_eco = salary.big_eco * baseData.big_eco;
         const extra_eco = salary.extra_eco * baseData.extra_eco;
-        const travel = salary.travel * baseData.travel < 255 ? salary.travel * baseData.travel : 255;
+        const travel = salary.travel * baseData.travel < baseData.max_travel ? salary.travel * baseData.travel : baseData.max_travel;
         const extra_travel = salary.extra_travel * baseData.extra_travel;
         const s_travel = salary.s_travel * baseData.s_travel;
         const work_hours = salary.shift_100 + salary.extra_125 + salary.extra_150 + salary.special_150 + salary.special_200 + salary.shift_150 + salary.extra_1875 + salary.extra_225;
@@ -172,6 +173,7 @@ function Salary() {
             <MiniTable head="תחבורה ציבורית תגבור" onChange={changeBaseData} editable={true} id='extra_travel' body={baseData.extra_travel.toString()} />
             <MiniTable head="נסיעות שבת" onChange={changeBaseData} editable={true} id='s_travel' body={baseData.s_travel.toString()} />
             <MiniTable head="הבראה" onChange={changeBaseData} editable={true} id='recuperation' body={baseData.recuperation.toString()} />
+            <MiniTable head="מקסימום דמי נסיעה" onChange={changeBaseData} editable={true} id='max_travel' body={baseData.max_travel.toString()} />
         </div>
         <div className='salary_cells'>
             {inputType === 'input' ? <Fragment>

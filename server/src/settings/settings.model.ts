@@ -79,6 +79,11 @@ export const SettingsScheme = new mongoose.Schema<Settings>({
 		required: false,
 		type: Number,
 		default: 250,
+	},
+	max_travel: {
+		required: false,
+		type: Number,
+		default: 267,
 	}
 });
 
@@ -99,6 +104,7 @@ export interface Settings {
 	extra_eco: number;
 	s_travel: number;
 	recuperation: number;
+	max_travel: number;
 }
 
 
@@ -109,4 +115,5 @@ export interface BaseSalary {
 	small_eco: number;
 	big_eco: number;
 	extra_eco: number;
+	max_travel: number;
 }

@@ -104,6 +104,11 @@ exports.SettingsScheme = new mongoose.Schema({
         required: false,
         type: Number,
         default: 250,
+    },
+    max_travel: {
+        required: false,
+        type: Number,
+        default: 267,
     }
 });
 //# sourceMappingURL=settings.model.js.map
