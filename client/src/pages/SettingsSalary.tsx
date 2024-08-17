@@ -81,6 +81,7 @@ function SettingsSalary(props: IProps) {
             <TextField fullWidth value={settings.extra_travel} type="number" required onChange={handleChange} name="extra_travel" color="primary" label="תחבורה ציבורית תגבור" />
             <TextField fullWidth value={settings.s_travel} type="number" required onChange={handleChange} name="s_travel" color="primary" label="נסיעות שבת" />
             <TextField fullWidth value={settings.recuperation} type="number" required onChange={handleChange} name="recuperation" color="primary" label="הבראה" />
+            <TextField fullWidth value={settings.max_travel} type="number" required onChange={handleChange} name="max_travel" color="primary" label="מקסימום דמי נסיעה" />
             <Button variant="contained" color="primary" type="submit">שמור</Button>
             </form>
       </Box>

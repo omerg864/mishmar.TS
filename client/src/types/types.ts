@@ -111,6 +111,7 @@ export interface SalarySettings {
 	base_pay: number;
 	base_pay2: number;
 	base_pay3: number;
+	max_travel: number;
 }
 
 export interface Passwords {
