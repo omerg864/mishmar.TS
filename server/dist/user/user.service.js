@@ -271,6 +271,7 @@ let UserService = class UserService {
             extra_eco: settings.extra_eco,
             s_travel: settings.s_travel,
             recuperation: settings.recuperation,
+            max_travel: settings.max_travel
         };
         if (settings.officer === user.nickname) {
             payData.pay = settings.base_pay3;

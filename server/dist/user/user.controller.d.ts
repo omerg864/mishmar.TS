@@ -22,6 +22,7 @@ export declare class UserController {
             pay: number;
             s_travel: number;
             recuperation: number;
+            max_travel: number;
         };
     }>;
     reportDataExtract(files: Express.Multer.File[]): Promise<{

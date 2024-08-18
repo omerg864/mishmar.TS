@@ -46,6 +46,7 @@ export declare class UserService {
             pay: number;
             s_travel: number;
             recuperation: number;
+            max_travel: number;
         };
     }>;
     readPdf: (buffer: Buffer) => Promise<string[]>;
