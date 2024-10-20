@@ -1,3 +1,11 @@
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+
 export const addDays = (date: Date, days: number): Date => {
 	var result = new Date(date);
 	result.setDate(result.getDate() + days);
@@ -13,19 +21,10 @@ export const dateToString = (date: Date): string => {
 };
 
 export const dateToStringShort = (date: Date): string => {
-	const dateString = date.toLocaleDateString('he-IL');
-	console.log(date.toLocaleDateString('he-IL'));
-	const data = dateString.split('.');
-	const dd = parseInt(data[0]);
-	const mm = parseInt(data[1]);
+    const datejs = dayjs(date);
+    datejs.tz('Asia/Jerusalem');
+    const formattedDate = datejs.format('DD.MM');
 
-	let MM = mm.toString();
-	let DD = dd.toString();
-
-	if (dd < 10) DD = '0' + dd;
-	if (mm < 10) MM = '0' + mm;
-
-	const formattedDate = DD + '.' + MM;
 	return formattedDate;
 };
 
