@@ -33,7 +33,7 @@ export declare class ScheduleService {
     private readonly userModel;
     private readonly settingsModel;
     constructor(scheduleModel: Model<Schedule>, structureModel: Model<Structure>, userModel: Model<User>, settingsModel: Model<Settings>);
-    sortStructures: (a: Shift, b: Shift) => 1 | 0 | -1;
+    sortStructures: (a: Shift, b: Shift) => 0 | 1 | -1;
     populateSchedule(schedule: Schedule): Promise<Schedule>;
     getViewSchedule(query: {
         page?: number;
