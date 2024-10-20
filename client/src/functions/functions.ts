@@ -21,8 +21,7 @@ export const dateToString = (date: Date): string => {
 };
 
 export const dateToStringShort = (date: Date): string => {
-    const datejs = dayjs(date);
-    datejs.tz('Asia/Jerusalem');
+    const datejs = dayjs(date).add(1, 'hour').tz('Asia/Jerusalem');
     const formattedDate = datejs.format('DD.MM');
 
 	return formattedDate;
