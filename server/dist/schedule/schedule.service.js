@@ -460,7 +460,6 @@ let ScheduleService = class ScheduleService {
             console.log(error);
             throw new common_1.ConflictException('שגיאה בקריאת הקובץ', error.message);
         }
-        console.log('🚀 ~ file: schedule.service.ts ~ line 261 ~ ScheduleService ~ excelToSchedule ~ extractedData', extractedData[0][0]);
         try {
             for (let i = 0; i < extractedData.length; i++) {
                 let morningShifts = weeks_tmp[i].filter((structure) => structure.shift.shift === 0);
@@ -486,7 +485,6 @@ let ScheduleService = class ScheduleService {
         catch (error) {
             throw new common_1.ConflictException('שגיאה בהכנסת הנתונים לסידור', error.message);
         }
-        console.log(extractedData[0]);
         schedule.weeks = weeks_tmp;
         await schedule.save();
         return {
@@ -669,7 +667,6 @@ let ScheduleService = class ScheduleService {
                                 .add(l, 'day');
                             const day = dateShift.day();
                             if (dateShift.month() === date.month) {
-                                console.log(dateShift.format('DD/MM/YYYY'), j, l);
                                 if (day <= 5 && shiftType === 0) {
                                     shifts[names[m]].morning += 1;
                                     continue;
@@ -687,7 +684,6 @@ let ScheduleService = class ScheduleService {
                                 }
                                 if (day === 6 &&
                                     (shiftType === 0 || shiftType === 1)) {
-                                    console.log('weekend_day', dateShift.format('DD/MM/YYYY'));
                                     shifts[names[m]].weekend_day += 1;
                                 }
                                 if ((day === 6 || day === 5) &&

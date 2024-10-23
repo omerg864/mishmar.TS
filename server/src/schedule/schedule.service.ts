@@ -599,10 +599,6 @@ export class ScheduleService {
 			console.log(error);
 			throw new ConflictException('שגיאה בקריאת הקובץ', error.message);
 		}
-		console.log(
-			'🚀 ~ file: schedule.service.ts ~ line 261 ~ ScheduleService ~ excelToSchedule ~ extractedData',
-			extractedData[0][0]
-		);
 		try {
 			for (let i = 0; i < extractedData.length; i++) {
 				// i - week number
@@ -668,7 +664,6 @@ export class ScheduleService {
 				error.message
 			);
 		}
-		console.log(extractedData[0]);
 		schedule.weeks = weeks_tmp;
 		await schedule.save();
 		return {
@@ -927,7 +922,6 @@ export class ScheduleService {
 								.add(l, 'day');
 							const day = dateShift.day();
 							if (dateShift.month() === date.month) {
-								console.log(dateShift.format('DD/MM/YYYY'), j, l);
 								if (day <= 5 && shiftType === 0) {
 									shifts[names[m]].morning += 1;
 									continue;
@@ -947,10 +941,6 @@ export class ScheduleService {
 									day === 6 &&
 									(shiftType === 0 || shiftType === 1)
 								) {
-									console.log(
-										'weekend_day',
-										dateShift.format('DD/MM/YYYY')
-									);
 									shifts[names[m]].weekend_day += 1;
 								}
 								if (
