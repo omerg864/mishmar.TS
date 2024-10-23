@@ -899,6 +899,10 @@ export class ScheduleService {
 			for (let j = 0; j < schedules[i].weeks.length; j++) {
 				for (let k = 0; k < schedules[i].weeks[j].length; k++) {
 					const shift = schedules[i].weeks[j][k];
+					const shiftType = structs[shift.shift as string].shift;
+					if (shiftType === 3) {
+						continue;
+					}
 					for (let l = 0; l < shift.days.length; l++) {
 						const names = shift.days[l].split('\n').filter(x => x.length > 0);
 						for (let m = 0; m < names.length; m++) {
@@ -915,8 +919,8 @@ export class ScheduleService {
 							}
 							const dateShift = Dayjs(schedules[i].date).hour(3).add(j, 'week').add(l, 'day');
 							const day = dateShift.day();
+							console.log(dateShift.format('DD/MM/YYYY'), day);
 							if (dateShift.month() === date.month) {
-								const shiftType = structs[shift.shift as string].shift;
 								if (day <= 5 && shiftType === 0) {
 									shifts[names[m]].morning += 1;
 									continue;
