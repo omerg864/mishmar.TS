@@ -16,6 +16,7 @@ import * as fs from 'fs';
 import { User } from '../user/user.model';
 import { Settings } from '../settings/settings.model';
 import { Logger } from '@nestjs/common';
+import Dayjs from 'dayjs';
 
 export type Shift = { shift: string | Structure; days: string[] };
 type dayShifts = 'morning' | 'noon' | 'night';
@@ -879,6 +880,72 @@ export class ScheduleService {
 		schedule = await this.populateSchedule(schedule);
 		let days: Date[][] = this.calculateDays(schedule);
 		return { ...schedule, days };
+	}
+
+	
+	async getShifts(date: {month: number, year: number}) {
+		const shifts = {};
+		const startDate = Dayjs(new Date(date.year, date.month, 1)).subtract(14, 'day').toDate();
+		const endDate = new Date(date.year, date.month, 32);
+		const schedules = await this.scheduleModel.find({
+			date: { $gte: startDate, $lte: endDate },
+		});
+		const structures = await this.structureModel.find();
+		const structs = {};
+		for (let i = 0; i < structures.length; i++) {
+			structs[structures[i]._id.toString()] = structures[i];
+		}
+		for (let i = 0; i < schedules.length; i++) {
+			for (let j = 0; j < schedules[i].weeks.length; j++) {
+				for (let k = 0; k < schedules[i].weeks[j].length; k++) {
+					const shift = schedules[i].weeks[j][k];
+					for (let l = 0; l < shift.days.length; l++) {
+						const names = shift.days[l].split('\n').filter(x => x.length > 0);
+						for (let m = 0; m < names.length; m++) {
+							if (!shifts[names[m]]) {
+								shifts[names[m]] = {
+									nickname: names[m],
+									morning: 0,
+									noon: 0,
+									night: 0,
+									friday_noon: 0,
+									weekend_night: 0,
+									weekend_day: 0
+								};
+							}
+							const dateShift = Dayjs(schedules[i].date).hour(3).add(j, 'week').add(l, 'day');
+							const day = dateShift.day();
+							if (dateShift.month() === date.month) {
+								const shiftType = structs[shift.shift as string].shift;
+								if (day <= 5 && shiftType === 0) {
+									shifts[names[m]].morning += 1;
+									continue;
+								}
+								if (day < 5 && shiftType === 1) {
+									shifts[names[m]].noon += 1;
+									continue;
+								}
+								if (day < 5 && shiftType === 2) {
+									shifts[names[m]].night += 1;
+									continue;
+								}
+								if (day === 5 && shiftType === 1) {
+									shifts[names[m]].friday_noon += 1;
+								}
+								if (day === 6 && (shiftType === 0 || shiftType === 1)) {
+									shifts[names[m]].weekend_day += 1;
+								}
+								if ((day === 6 || day === 5) && shiftType === 2) {
+									shifts[names[m]].weekend_night += 1;
+								}
+							}
+						}
+					}
+
+				}
+			}
+		}
+		return shifts;
 	}
 
 	async create(schedule: Schedule): Promise<Schedule> {

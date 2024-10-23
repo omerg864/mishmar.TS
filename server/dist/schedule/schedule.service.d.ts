@@ -88,6 +88,10 @@ export declare class ScheduleService {
     }>;
     scheduleValid(weeks: Shift[][]): Promise<string[]>;
     getSchedule(id: string): Promise<Schedule>;
+    getShifts(date: {
+        month: number;
+        year: number;
+    }): Promise<{}>;
     create(schedule: Schedule): Promise<Schedule>;
     update(schedule: Schedule): Promise<{
         success: boolean;

@@ -10,6 +10,7 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 interface IProps {
   value: Dayjs;
   onChange: (value: Dayjs| null, id?: string) => void;
+  onAccept?: () => void;
 }
 
 export default function MaterialUIPickers(props: IProps) {
@@ -28,6 +29,7 @@ export default function MaterialUIPickers(props: IProps) {
           views={['year', 'month']}
           onChange={handleChange}
           renderInput={(params) => <TextField {...params} />}
+          onAccept={props.onAccept}
         />
       </Stack>
     </LocalizationProvider>

@@ -15,9 +15,21 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { Schedule } from './schedule.model';
 import { ScheduleService, Shift } from './schedule.service';
 
+
+interface ShiftUser {
+	nickname: string;
+	morning: number;
+	noon: number;
+	night: number;
+	friday_noon: number;
+	weekend_night: number;
+	weekend_day: number;
+}
+
 @Controller('api/schedules')
 export class ScheduleController {
 	constructor(private readonly scheduleService: ScheduleService) {}
+
 
 	@Get('auth/all')
 	async getAllSchedules(
@@ -76,6 +88,11 @@ export class ScheduleController {
 	@Get(':id')
 	async getSchedule(@Param('id') id: string): Promise<Schedule> {
 		return await this.scheduleService.getSchedule(id);
+	}
+
+	@Post('shifts')
+	async getShifts(@Body() date: { month: number, year: number}): Promise<{ [key: string] :ShiftUser}> {
+		return await this.scheduleService.getShifts(date);
 	}
 
 	@Post()

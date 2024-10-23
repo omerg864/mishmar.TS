@@ -80,6 +80,10 @@ const Manager = () => {
         navigate('/users/quality')
     }
 
+    const goToShifts = () => {
+        navigate('/users/shifts')
+    }
+
     const goToEvents = () => {
         navigate('/events')
     }
@@ -122,6 +126,7 @@ const Manager = () => {
         <h2 style={{marginTop: 0}}>משתמשים</h2>
         <div className='manager-div'>
         <Button variant="contained" color="success" onClick={goToUsers} >משתמשים</Button>
+        <Button variant="contained" color="primary" onClick={goToShifts} >משמרות</Button>
         <Button variant="contained" color="info" onClick={goToQuality} >איכויות</Button>
         </div>
         <h2 style={{marginTop: 0}}>אירועים</h2>

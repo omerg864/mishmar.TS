@@ -150,3 +150,13 @@ export interface BaseSalary {
 	recuperation: number;
 	max_travel: number;
 }
+
+export interface UserShifts {
+	nickname: string;
+	morning: number;
+	noon: number;
+	night: number;
+	friday_noon: number;
+	weekend_night: number;
+	weekend_day: number;
+}

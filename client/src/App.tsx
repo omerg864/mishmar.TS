@@ -37,6 +37,7 @@ import UserRestrictedRoute from './components/UserRestrictedRoute';
 import Cookies from 'universal-cookie';
 import SettingsSalary from './pages/SettingsSalary';
 import Forms from './pages/Forms';
+import UsersShifts from './pages/UsersShifts';
 
 
 function App() {
@@ -89,6 +90,7 @@ function App() {
         <Route path="/post/new" element={<ManagerProtected manager={manager}><PostNew /></ManagerProtected>} />
         <Route path="/users" element={<ManagerProtected manager={manager}><Users /></ManagerProtected>} />
         <Route path="/users/quality" element={<ManagerProtected manager={manager}><Quality /></ManagerProtected>} />
+        <Route path="/users/shifts" element={<ManagerProtected manager={manager}><UsersShifts /></ManagerProtected>} />
         <Route path="/password/reset/email" element={<UserRestrictedRoute isAuthenticated={authenticated}><EmailPassword /></UserRestrictedRoute>} />
         <Route path="/password/reset/:reset_token" element={<UserRestrictedRoute isAuthenticated={authenticated}><ResetPassword /></UserRestrictedRoute>} />
         <Route path="/profile" element={<ProtectedRoute isAuthenticated={authenticated}><Profile /></ProtectedRoute>} />

@@ -67,7 +67,7 @@ const Schedules = () => {
                     <h1>{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
                     <div className='space-div'>
                         <Button variant='contained' color="info" onClick={() => goToUpdate(schedule._id)}>עדכון</Button>
-                        <Button variant='contained' color="success" onClick={() => goToShifts(schedule._id)} >משמרות</Button>
+                        <Button variant='contained' color="success" onClick={() => goToShifts(schedule._id)} >הגשות</Button>
                     </div>
                 </Card>
             ))}
