@@ -57,7 +57,7 @@ export class ScheduleService {
 	async populateSchedule(schedule: Schedule): Promise<Schedule> {
 		let schedule_temp: Schedule = { ...schedule['_doc'] };
 		let weeks_tmp: Shift[][] = [];
-		let cache: {[id: string] : Structure| null } = { omer: null };
+		let cache: { [id: string]: Structure | null } = { omer: null };
 		for (let i = 0; i < schedule.weeks.length; i++) {
 			let week_tmp: Shift[] = [];
 			for (let j = 0; j < schedule.weeks[i].length; j++) {
@@ -69,7 +69,8 @@ export class ScheduleService {
 					structureModel = await this.structureModel.findById(
 						schedule.weeks[i][j].shift
 					);
-					cache[schedule.weeks[i][j].shift.toString()] = structureModel;
+					cache[schedule.weeks[i][j].shift.toString()] =
+						structureModel;
 				}
 				if (structureModel) {
 					week_tmp.push({
@@ -882,10 +883,11 @@ export class ScheduleService {
 		return { ...schedule, days };
 	}
 
-	
-	async getShifts(date: {month: number, year: number}) {
+	async getShifts(date: { month: number; year: number }) {
 		const shifts = {};
-		const startDate = Dayjs(new Date(date.year, date.month, 1)).subtract(14, 'day').toDate();
+		const startDate = Dayjs(new Date(date.year, date.month, 1))
+			.subtract(14, 'day')
+			.toDate();
 		const endDate = new Date(date.year, date.month, 32);
 		const schedules = await this.scheduleModel.find({
 			date: { $gte: startDate, $lte: endDate },
@@ -904,7 +906,9 @@ export class ScheduleService {
 						continue;
 					}
 					for (let l = 0; l < shift.days.length; l++) {
-						const names = shift.days[l].split('\n').filter(x => x.length > 0);
+						const names = shift.days[l]
+							.split('\n')
+							.filter((x) => x.length > 0);
 						for (let m = 0; m < names.length; m++) {
 							if (!shifts[names[m]]) {
 								shifts[names[m]] = {
@@ -914,13 +918,16 @@ export class ScheduleService {
 									night: 0,
 									friday_noon: 0,
 									weekend_night: 0,
-									weekend_day: 0
+									weekend_day: 0,
 								};
 							}
-							const dateShift = Dayjs(schedules[i].date).hour(3).add(j, 'week').add(l, 'day');
+							const dateShift = Dayjs(schedules[i].date)
+								.hour(3)
+								.add(j, 'week')
+								.add(l, 'day');
 							const day = dateShift.day();
-							console.log(dateShift.format('DD/MM/YYYY'), day);
 							if (dateShift.month() === date.month) {
+								console.log(dateShift.format('DD/MM/YYYY'), j, l);
 								if (day <= 5 && shiftType === 0) {
 									shifts[names[m]].morning += 1;
 									continue;
@@ -936,16 +943,25 @@ export class ScheduleService {
 								if (day === 5 && shiftType === 1) {
 									shifts[names[m]].friday_noon += 1;
 								}
-								if (day === 6 && (shiftType === 0 || shiftType === 1)) {
+								if (
+									day === 6 &&
+									(shiftType === 0 || shiftType === 1)
+								) {
+									console.log(
+										'weekend_day',
+										dateShift.format('DD/MM/YYYY')
+									);
 									shifts[names[m]].weekend_day += 1;
 								}
-								if ((day === 6 || day === 5) && shiftType === 2) {
+								if (
+									(day === 6 || day === 5) &&
+									shiftType === 2
+								) {
 									shifts[names[m]].weekend_night += 1;
 								}
 							}
 						}
 					}
-
 				}
 			}
 		}
@@ -969,7 +985,7 @@ export class ScheduleService {
 		return await this.scheduleModel.create({ ...schedule, weeks });
 	}
 
-	async update(schedule: Schedule): Promise<{ success: boolean}> {
+	async update(schedule: Schedule): Promise<{ success: boolean }> {
 		let scheduleFound = await this.scheduleModel.findById(schedule._id);
 		if (!scheduleFound) {
 			throw new NotFoundException('סידור לא נמצא');

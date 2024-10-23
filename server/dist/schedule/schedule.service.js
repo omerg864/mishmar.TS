@@ -96,7 +96,8 @@ let ScheduleService = class ScheduleService {
                 }
                 else {
                     structureModel = await this.structureModel.findById(schedule.weeks[i][j].shift);
-                    cache[schedule.weeks[i][j].shift.toString()] = structureModel;
+                    cache[schedule.weeks[i][j].shift.toString()] =
+                        structureModel;
                 }
                 if (structureModel) {
                     week_tmp.push({
@@ -626,7 +627,9 @@ let ScheduleService = class ScheduleService {
     }
     async getShifts(date) {
         const shifts = {};
-        const startDate = (0, dayjs_1.default)(new Date(date.year, date.month, 1)).subtract(14, 'day').toDate();
+        const startDate = (0, dayjs_1.default)(new Date(date.year, date.month, 1))
+            .subtract(14, 'day')
+            .toDate();
         const endDate = new Date(date.year, date.month, 32);
         const schedules = await this.scheduleModel.find({
             date: { $gte: startDate, $lte: endDate },
@@ -645,7 +648,9 @@ let ScheduleService = class ScheduleService {
                         continue;
                     }
                     for (let l = 0; l < shift.days.length; l++) {
-                        const names = shift.days[l].split('\n').filter(x => x.length > 0);
+                        const names = shift.days[l]
+                            .split('\n')
+                            .filter((x) => x.length > 0);
                         for (let m = 0; m < names.length; m++) {
                             if (!shifts[names[m]]) {
                                 shifts[names[m]] = {
@@ -655,13 +660,16 @@ let ScheduleService = class ScheduleService {
                                     night: 0,
                                     friday_noon: 0,
                                     weekend_night: 0,
-                                    weekend_day: 0
+                                    weekend_day: 0,
                                 };
                             }
-                            const dateShift = (0, dayjs_1.default)(schedules[i].date).hour(3).add(j, 'week').add(l, 'day');
+                            const dateShift = (0, dayjs_1.default)(schedules[i].date)
+                                .hour(3)
+                                .add(j, 'week')
+                                .add(l, 'day');
                             const day = dateShift.day();
-                            console.log(dateShift.format('DD/MM/YYYY'), day);
                             if (dateShift.month() === date.month) {
+                                console.log(dateShift.format('DD/MM/YYYY'), j, l);
                                 if (day <= 5 && shiftType === 0) {
                                     shifts[names[m]].morning += 1;
                                     continue;
@@ -677,10 +685,13 @@ let ScheduleService = class ScheduleService {
                                 if (day === 5 && shiftType === 1) {
                                     shifts[names[m]].friday_noon += 1;
                                 }
-                                if (day === 6 && (shiftType === 0 || shiftType === 1)) {
+                                if (day === 6 &&
+                                    (shiftType === 0 || shiftType === 1)) {
+                                    console.log('weekend_day', dateShift.format('DD/MM/YYYY'));
                                     shifts[names[m]].weekend_day += 1;
                                 }
-                                if ((day === 6 || day === 5) && shiftType === 2) {
+                                if ((day === 6 || day === 5) &&
+                                    shiftType === 2) {
                                     shifts[names[m]].weekend_night += 1;
                                 }
                             }
