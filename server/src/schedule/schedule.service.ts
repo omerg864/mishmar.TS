@@ -12,11 +12,11 @@ import { Schedule } from './schedule.model';
 import { addDays, getRandomIndex, numberToDay } from '../functions/functions';
 import * as XLSX from 'xlsx';
 import * as excel from 'excel4node';
-import * as fs from 'fs';
 import { User } from '../user/user.model';
 import { Settings } from '../settings/settings.model';
-import { Logger } from '@nestjs/common';
 import Dayjs from 'dayjs';
+import { HebrewCalendar, Location } from '@hebcal/core';
+
 
 export type Shift = { shift: string | Structure; days: string[] };
 type dayShifts = 'morning' | 'noon' | 'night';
@@ -887,6 +887,9 @@ export class ScheduleService {
 		const schedules = await this.scheduleModel.find({
 			date: { $gte: startDate, $lte: endDate },
 		});
+		const location = Location.lookup('Tel Aviv');
+		const holiday_eve = 'Candle lighting';
+		const holiday_end = 'Havdalah';
 		const structures = await this.structureModel.find();
 		const structs = {};
 		for (let i = 0; i < structures.length; i++) {
@@ -904,6 +907,32 @@ export class ScheduleService {
 						const names = shift.days[l]
 							.split('\n')
 							.filter((x) => x.length > 0);
+						const dateShift = Dayjs(schedules[i].date)
+							.hour(3)
+							.add(j, 'week')
+							.add(l, 'day');
+						const day = dateShift.day();
+						const options = {
+							start: dateShift.toDate(),
+							end: dateShift.toDate(),
+							location,
+							candlelighting: true,
+							noHolidays: true
+						};
+						let holiday = 0;
+						const events = HebrewCalendar.calendar(options);
+						if (events && events.length > 0) {
+							for (let i = 0; i < events.length; i++) {
+								if (events[i].desc === holiday_eve) {
+									holiday = 1;
+									break;
+								}
+								if (events[i].desc === holiday_end) {
+									holiday = 2;
+									break;
+								}
+							}
+						}
 						for (let m = 0; m < names.length; m++) {
 							if (!shifts[names[m]]) {
 								shifts[names[m]] = {
@@ -916,12 +945,26 @@ export class ScheduleService {
 									weekend_day: 0,
 								};
 							}
-							const dateShift = Dayjs(schedules[i].date)
-								.hour(3)
-								.add(j, 'week')
-								.add(l, 'day');
-							const day = dateShift.day();
 							if (dateShift.month() === date.month) {
+								if (holiday) {
+									if (holiday === 1 && shiftType === 0) {
+										shifts[names[m]].morning += 1;
+										continue;
+									}
+									if (holiday === 1 && shiftType === 1) {
+										shifts[names[m]].friday_noon += 1;
+										continue;
+									}
+									if (shiftType === 0 || shiftType === 1) 
+									{
+										shifts[names[m]].weekend_day += 1;
+										continue;
+									}
+									if (shiftType === 2) {
+										shifts[names[m]].weekend_night += 1;
+										continue;
+									}
+								}
 								if (day <= 5 && shiftType === 0) {
 									shifts[names[m]].morning += 1;
 									continue;

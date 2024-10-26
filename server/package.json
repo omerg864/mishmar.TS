@@ -23,6 +23,8 @@
     "test:pitz": "node test/testPiz.js"
   },
   "dependencies": {
+    "@hebcal/core": "^5.5.2",
+    "@hebcal/rest-api": "^5.2.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.0.0",
