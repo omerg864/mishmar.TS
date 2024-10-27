@@ -1,6 +1,7 @@
 /// <reference types="multer" />
 import { Schedule } from './schedule.model';
 import { ScheduleService, Shift } from './schedule.service';
+import { ReinforcementInterface } from '../reinforcement/reinforcement.model';
 interface ShiftUser {
     nickname: string;
     morning: number;
@@ -45,7 +46,10 @@ export declare class ScheduleController {
         };
         weeksKeys: string[];
     }>;
-    getSchedule(id: string): Promise<Schedule>;
+    getSchedule(id: string): Promise<{
+        schedule: Schedule;
+        reinforcements: ReinforcementInterface[][][];
+    }>;
     getShifts(date: {
         month: number;
         year: number;
@@ -56,7 +60,12 @@ export declare class ScheduleController {
     deleteSchedule(id: string): Promise<{
         id: string;
     }>;
-    updateSchedule(schedule: Schedule): Promise<{
+    updateSchedule(body: {
+        schedule: Schedule;
+        reinforcements: ReinforcementInterface[];
+        deletedReinforcements: ReinforcementInterface[];
+        reset: boolean;
+    }): Promise<{
         success: boolean;
     }>;
 }

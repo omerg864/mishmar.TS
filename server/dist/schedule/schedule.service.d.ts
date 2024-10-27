@@ -5,6 +5,7 @@ import { Schedule } from './schedule.model';
 import * as XLSX from 'xlsx';
 import { User } from '../user/user.model';
 import { Settings } from '../settings/settings.model';
+import { ReinforcementInterface } from '../reinforcement/reinforcement.model';
 export type Shift = {
     shift: string | Structure;
     days: string[];
@@ -32,7 +33,8 @@ export declare class ScheduleService {
     private readonly structureModel;
     private readonly userModel;
     private readonly settingsModel;
-    constructor(scheduleModel: Model<Schedule>, structureModel: Model<Structure>, userModel: Model<User>, settingsModel: Model<Settings>);
+    private readonly reinforcementModel;
+    constructor(scheduleModel: Model<Schedule>, structureModel: Model<Structure>, userModel: Model<User>, settingsModel: Model<Settings>, reinforcementModel: Model<ReinforcementInterface>);
     sortStructures: (a: Shift, b: Shift) => 1 | 0 | -1;
     populateSchedule(schedule: Schedule): Promise<Schedule>;
     getViewSchedule(query: {
@@ -40,7 +42,9 @@ export declare class ScheduleService {
     }): Promise<{
         schedule: Schedule;
         pages: number;
+        reinforcements: ReinforcementInterface[][][];
     }>;
+    getReinforcement(schedule: Schedule): Promise<ReinforcementInterface[][][]>;
     getAll(query: {
         page?: number;
     }): Promise<{
@@ -87,15 +91,29 @@ export declare class ScheduleService {
         weeksKeys: string[];
     }>;
     scheduleValid(weeks: Shift[][]): Promise<string[]>;
-    getSchedule(id: string): Promise<Schedule>;
+    getSchedule(id: string): Promise<{
+        schedule: Schedule;
+        reinforcements: ReinforcementInterface[][][];
+    }>;
     getShifts(date: {
         month: number;
         year: number;
     }): Promise<{}>;
     create(schedule: Schedule): Promise<Schedule>;
-    update(schedule: Schedule): Promise<{
+    update(schedule: Schedule, reinforcements: ReinforcementInterface[], deletedReinforcements: ReinforcementInterface[], reset: boolean): Promise<{
+        success: boolean;
+        reinforcements: ReinforcementInterface[];
+    }>;
+    createAndUpdateReinforcements(reinforcements: ReinforcementInterface[], schedule: Schedule): Promise<{
         success: boolean;
     }>;
+    deleteReinforcements(reinforcements: ReinforcementInterface[]): Promise<{
+        success: boolean;
+    }>;
+    updateReinforcement(reinforcement: ReinforcementInterface): Promise<{
+        success: boolean;
+    }>;
+    createReinforcement(reinforcement: ReinforcementInterface, schedule: Schedule): Promise<ReinforcementInterface>;
     delete(id: string): Promise<{
         id: string;
     }>;

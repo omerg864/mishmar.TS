@@ -108,6 +108,24 @@ const UsersShifts = () => {
                                 <StyledTableCell align="center">
 									שישי לילה/מוצ"ש
 								</StyledTableCell>
+								<StyledTableCell align="center">
+									בוקר תגבור
+								</StyledTableCell>
+								<StyledTableCell align="center">
+									צהריים תגבור
+								</StyledTableCell>
+								<StyledTableCell align="center">
+									לילה תגבור
+								</StyledTableCell>
+								<StyledTableCell align="center">
+								שישי צהריים תגבור
+								</StyledTableCell>
+								<StyledTableCell align="center">
+								שבת בוקר/צהריים תגבור
+								</StyledTableCell>
+								<StyledTableCell align="center">
+								שישי לילה/מוצ"ש תגבור
+								</StyledTableCell>
 							</StyledTableRow>
 						</TableHead>
 						<TableBody>
@@ -140,6 +158,24 @@ const UsersShifts = () => {
 									</TableCell>
                                     <TableCell align="center" scope="row">
 										{users[user].weekend_night}
+									</TableCell>
+									<TableCell align="center" scope="row">
+										{users[user].morning_re}
+									</TableCell>
+									<TableCell align="center" scope="row">
+										{users[user].noon_re}
+									</TableCell>
+									<TableCell align="center" scope="row">
+										{users[user].night_re}
+									</TableCell>
+									<TableCell align="center" scope="row">
+										{users[user].friday_noon_re}
+									</TableCell>
+									<TableCell align="center" scope="row">
+										{users[user].weekend_day_re}
+									</TableCell>
+									<TableCell align="center" scope="row">
+										{users[user].weekend_night_re}
 									</TableCell>
 								</TableRow>
 							))}

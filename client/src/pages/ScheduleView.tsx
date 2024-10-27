@@ -4,7 +4,7 @@ import Spinner from '../components/Spinner'
 import TableBodySchedule from '../components/TableBodySchedule'
 import TableHeadSchedule from '../components/TableHeadSchedule'
 import { addDays, dateToString, numberToArray, dateToStringShort } from '../functions/functions'
-import { Schedule } from '../types/types'
+import { Reinforcement, Schedule } from '../types/types'
 import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
 import { useParams, useSearchParams } from 'react-router-dom';
@@ -15,6 +15,7 @@ const ScheduleView = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [schedule, setSchedule] = useState<Schedule>({num_weeks: 0, days: [], weeks: [], date: new Date(), publish: true, id: "", _id: ""});
+  const [reinforcements, setReinforcements] = useState<Reinforcement[][][]>([]);
   const cookies = new Cookies();
   const [height, setHeight] = useState<number>(100);
   const { id } = useParams(); 
@@ -40,10 +41,12 @@ const ScheduleView = () => {
           toast.error(data.message);
         } else {
           if (!id){
-          setSchedule(data.schedule);
-          setPages(data.pages);
+            setSchedule(data.schedule);
+            setPages(data.pages);
+            setReinforcements(data.reinforcements);
           } else {
-            setSchedule(data);
+            setSchedule(data.schedule);
+            setReinforcements(data.reinforcements);
           }
         }
     } catch (err) {
@@ -91,7 +94,6 @@ const ScheduleView = () => {
       const shifts = rows.length / schedule.num_weeks;
       while(rows.length) 
         rowsWeeks.push(rows.splice(0, shifts));
-      console.log(rowsWeeks)
       let heights: number[] = [];
       for (let i = 0; i < rowsWeeks.length; i++) { 
         for (let j = 0; j < rowsWeeks[i].length; j++) {
@@ -160,7 +162,7 @@ const ScheduleView = () => {
           <Table style={{width: 'fit-content'}} ref={changeRef} key={`week-${week}`}>
           <TableHeadSchedule days={schedule.days[index1]} >
           </TableHeadSchedule>
-          <TableBodySchedule week={week} data={schedule.weeks[index1]} update={false} />
+          <TableBodySchedule week={week} data={schedule.weeks[index1]} reinforcements={reinforcements[week]} update={false} />
           </Table>
         ))} 
         </div>

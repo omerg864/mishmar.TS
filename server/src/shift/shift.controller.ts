@@ -5,7 +5,6 @@ import {
 	Get,
 	Param,
 	Patch,
-	Post,
 	Put,
 	Query,
 	StreamableFile,

@@ -14,6 +14,7 @@ import {
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { Schedule } from './schedule.model';
 import { ScheduleService, Shift } from './schedule.service';
+import { ReinforcementInterface } from '../reinforcement/reinforcement.model';
 
 
 interface ShiftUser {
@@ -86,7 +87,7 @@ export class ScheduleController {
 	}
 
 	@Get(':id')
-	async getSchedule(@Param('id') id: string): Promise<Schedule> {
+	async getSchedule(@Param('id') id: string): Promise<{schedule: Schedule, reinforcements: ReinforcementInterface[][][]}> {
 		return await this.scheduleService.getSchedule(id);
 	}
 
@@ -107,8 +108,14 @@ export class ScheduleController {
 
 	@Patch()
 	async updateSchedule(
-		@Body() schedule: Schedule
+		@Body() body: {
+			schedule: Schedule;
+			reinforcements: ReinforcementInterface[];
+			deletedReinforcements: ReinforcementInterface[];
+			reset: boolean;
+		}
 	): Promise<{ success: boolean }> {
-		return await this.scheduleService.update(schedule);
+		const { schedule, reinforcements, reset, deletedReinforcements } = body;
+		return await this.scheduleService.update(schedule, reinforcements, deletedReinforcements, reset);
 	}
 }

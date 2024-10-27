@@ -4,8 +4,7 @@ import {
 	MiddlewareConsumer,
 	Module,
 	NestModule,
-	RequestMethod,
-	Delete,
+	RequestMethod
 } from '@nestjs/common';
 import { ScheduleController } from './schedule.controller';
 import { ScheduleService } from './schedule.service';
@@ -16,6 +15,7 @@ import {
 	SiteManagerMiddleware,
 } from '../middleware/auth.middleware';
 import { SettingsScheme } from '../settings/settings.model';
+import { ReinforcementScheme } from '../reinforcement/reinforcement.model';
 
 @Module({
 	imports: [
@@ -24,6 +24,7 @@ import { SettingsScheme } from '../settings/settings.model';
 			{ name: 'User', schema: UserScheme },
 			{ name: 'Structure', schema: StructureScheme },
 			{ name: 'Settings', schema: SettingsScheme },
+			{ name: 'Reinforcement', schema: ReinforcementScheme },
 		]),
 	],
 	controllers: [ScheduleController],

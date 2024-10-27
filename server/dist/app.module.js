@@ -41,6 +41,7 @@ const structure_module_1 = require("./structure/structure.module");
 const mongoose_1 = require("@nestjs/mongoose");
 const config_1 = require("@nestjs/config");
 const log_module_1 = require("./log/log.module");
+const reinforcement_module_1 = require("./reinforcement/reinforcement.module");
 const path = __importStar(require("path"));
 const dotenv = __importStar(require("dotenv"));
 if (process.env.NODE_ENV !== 'production') {
@@ -57,6 +58,7 @@ const imports = [
     settings_module_1.SettingsModule,
     structure_module_1.StructureModule,
     log_module_1.LogModule,
+    reinforcement_module_1.ReinforcementModule,
     config_1.ConfigModule.forRoot(),
     mongoose_1.MongooseModule.forRoot(`${process.env.MONGODB}`),
 ];

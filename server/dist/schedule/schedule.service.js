@@ -48,11 +48,12 @@ const excel = __importStar(require("excel4node"));
 const dayjs_1 = __importDefault(require("dayjs"));
 const core_1 = require("@hebcal/core");
 let ScheduleService = class ScheduleService {
-    constructor(scheduleModel, structureModel, userModel, settingsModel) {
+    constructor(scheduleModel, structureModel, userModel, settingsModel, reinforcementModel) {
         this.scheduleModel = scheduleModel;
         this.structureModel = structureModel;
         this.userModel = userModel;
         this.settingsModel = settingsModel;
+        this.reinforcementModel = reinforcementModel;
         this.sortStructures = (a, b) => {
             const first = a.shift;
             const second = b.shift;
@@ -143,9 +144,32 @@ let ScheduleService = class ScheduleService {
         if (!schedule_found) {
             throw new common_1.NotFoundException('לא נמצאו סידורים');
         }
-        let days = this.calculateDays(schedule_found);
-        let schedule = await this.populateSchedule(schedule_found);
-        return { schedule: Object.assign(Object.assign({}, schedule), { days }), pages };
+        const [reinforcements, days, schedule] = await Promise.all([
+            this.getReinforcement(schedule_found),
+            this.calculateDays(schedule_found),
+            this.populateSchedule(schedule_found),
+        ]);
+        return { schedule: Object.assign(Object.assign({}, schedule), { days }), pages, reinforcements };
+    }
+    async getReinforcement(schedule) {
+        let reinforcements = [];
+        let reinforcements_found = await this.reinforcementModel.find({
+            schedule: schedule._id,
+        }).sort({ week: 1, day: 1 });
+        for (let i = 0; i < schedule.num_weeks; i++) {
+            reinforcements.push([]);
+            for (let j = 0; j < 7; j++) {
+                reinforcements[i].push([]);
+                let found = reinforcements_found.filter((reinforcement) => reinforcement.week === i && reinforcement.day === j);
+                if (found.length > 0) {
+                    reinforcements[i][j] = found;
+                }
+                else {
+                    reinforcements[i][j] = null;
+                }
+            }
+        }
+        return reinforcements;
     }
     async getAll(query) {
         if (!query.page || query.page <= 0) {
@@ -616,13 +640,16 @@ let ScheduleService = class ScheduleService {
         return [...notifications];
     }
     async getSchedule(id) {
-        let schedule = await this.scheduleModel.findById(id);
-        if (!schedule) {
+        let schedule_found = await this.scheduleModel.findById(id);
+        if (!schedule_found) {
             throw new common_1.NotFoundException('סידור לא נמצא');
         }
-        schedule = await this.populateSchedule(schedule);
-        let days = this.calculateDays(schedule);
-        return Object.assign(Object.assign({}, schedule), { days });
+        const [reinforcements, schedule, days] = await Promise.all([
+            this.getReinforcement(schedule_found),
+            this.populateSchedule(schedule_found),
+            this.calculateDays(schedule_found),
+        ]);
+        return { schedule: Object.assign(Object.assign({}, schedule), { days }), reinforcements };
     }
     async getShifts(date) {
         const shifts = {};
@@ -689,6 +716,12 @@ let ScheduleService = class ScheduleService {
                                     friday_noon: 0,
                                     weekend_night: 0,
                                     weekend_day: 0,
+                                    morning_re: 0,
+                                    noon_re: 0,
+                                    night_re: 0,
+                                    friday_noon_re: 0,
+                                    weekend_night_re: 0,
+                                    weekend_day_re: 0,
                                 };
                             }
                             if (dateShift.month() === date.month) {
@@ -739,6 +772,104 @@ let ScheduleService = class ScheduleService {
                 }
             }
         }
+        for (let i = 0; i < schedules.length; i++) {
+            let reinforcements = await this.getReinforcement(schedules[i]);
+            for (let j = 0; j < reinforcements.length; j++) {
+                for (let k = 0; k < reinforcements[j].length; k++) {
+                    const dateShift = (0, dayjs_1.default)(schedules[i].date)
+                        .hour(3)
+                        .add(j, 'week')
+                        .add(k, 'day');
+                    const day = dateShift.day();
+                    if (reinforcements[j][k] && dateShift.month() === date.month) {
+                        const options = {
+                            start: dateShift.toDate(),
+                            end: dateShift.toDate(),
+                            location,
+                            candlelighting: true,
+                            noHolidays: true
+                        };
+                        let holiday = 0;
+                        const events = core_1.HebrewCalendar.calendar(options);
+                        if (events && events.length > 0) {
+                            for (let i = 0; i < events.length; i++) {
+                                if (events[i].desc === holiday_eve) {
+                                    holiday = 1;
+                                    break;
+                                }
+                                if (events[i].desc === holiday_end) {
+                                    holiday = 2;
+                                    break;
+                                }
+                            }
+                        }
+                        for (let l = 0; l < reinforcements[j][k].length; l++) {
+                            let shiftType = reinforcements[j][k][l].shift;
+                            let names = reinforcements[j][k][l].names.split('\n');
+                            for (let t = 0; t < names.length; t++) {
+                                if (!shifts[names[t]]) {
+                                    shifts[names[t]] = {
+                                        nickname: names[t],
+                                        morning: 0,
+                                        noon: 0,
+                                        night: 0,
+                                        friday_noon: 0,
+                                        weekend_night: 0,
+                                        weekend_day: 0,
+                                        morning_re: 0,
+                                        noon_re: 0,
+                                        night_re: 0,
+                                        friday_noon_re: 0,
+                                        weekend_night_re: 0,
+                                        weekend_day_re: 0,
+                                    };
+                                }
+                                if (holiday) {
+                                    if (holiday === 1 && shiftType === 0) {
+                                        shifts[names[t]].morning_re += 1;
+                                        continue;
+                                    }
+                                    if (holiday === 1 && shiftType === 1) {
+                                        shifts[names[t]].friday_noon_re += 1;
+                                        continue;
+                                    }
+                                    if (shiftType === 0 || shiftType === 1) {
+                                        shifts[names[t]].weekend_day_re += 1;
+                                        continue;
+                                    }
+                                    if (shiftType === 2) {
+                                        shifts[names[t]].weekend_night_re += 1;
+                                        continue;
+                                    }
+                                }
+                                if (day <= 5 && shiftType === 0) {
+                                    shifts[names[t]].morning_re += 1;
+                                    continue;
+                                }
+                                if (day < 5 && shiftType === 1) {
+                                    shifts[names[t]].noon_re += 1;
+                                    continue;
+                                }
+                                if (day < 5 && shiftType === 2) {
+                                    shifts[names[t]].night_re += 1;
+                                    continue;
+                                }
+                                if (day === 5 && shiftType === 1) {
+                                    shifts[names[t]].friday_noon_re += 1;
+                                }
+                                if (day === 6 &&
+                                    (shiftType === 0 || shiftType === 1)) {
+                                    shifts[names[t]].weekend_day_re += 1;
+                                }
+                                if ((day === 6 || day === 5) && shiftType === 2) {
+                                    shifts[names[t]].weekend_night_re += 1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return shifts;
     }
     async create(schedule) {
@@ -757,13 +888,68 @@ let ScheduleService = class ScheduleService {
         }
         return await this.scheduleModel.create(Object.assign(Object.assign({}, schedule), { weeks }));
     }
-    async update(schedule) {
+    async update(schedule, reinforcements, deletedReinforcements, reset) {
         let scheduleFound = await this.scheduleModel.findById(schedule._id);
         if (!scheduleFound) {
             throw new common_1.NotFoundException('סידור לא נמצא');
         }
-        let newSchedule = await this.scheduleModel.findByIdAndUpdate(schedule._id, schedule);
+        let scheduleUpdate, reinforcementsUpdate;
+        let newReinforcements;
+        if (!reset) {
+            [scheduleUpdate, reinforcementsUpdate] = await Promise.all([
+                this.scheduleModel.findByIdAndUpdate(schedule._id, schedule),
+                this.createAndUpdateReinforcements(reinforcements, schedule),
+                this.deleteReinforcements(deletedReinforcements)
+            ]);
+            newReinforcements = await this.getReinforcement(scheduleFound);
+        }
+        else {
+            [scheduleUpdate, reinforcementsUpdate] = await Promise.all([
+                this.scheduleModel.findByIdAndUpdate(schedule._id, schedule),
+                this.reinforcementModel.deleteMany({ schedule: schedule._id })
+            ]);
+            newReinforcements = [];
+        }
+        if (!scheduleUpdate || !reinforcementsUpdate.success) {
+            if (reset) {
+                newReinforcements = await this.getReinforcement(scheduleFound);
+            }
+            return { success: false, reinforcements: newReinforcements };
+        }
+        return { success: true, reinforcements: newReinforcements };
+    }
+    async createAndUpdateReinforcements(reinforcements, schedule) {
+        let promises = [];
+        for (let i = 0; i < reinforcements.length; i++) {
+            if (reinforcements[i]._id) {
+                promises.push(this.updateReinforcement(reinforcements[i]));
+            }
+            else {
+                promises.push(this.createReinforcement(reinforcements[i], schedule));
+            }
+        }
+        await Promise.all(promises);
         return { success: true };
+    }
+    async deleteReinforcements(reinforcements) {
+        let promises = [];
+        for (let i = 0; i < reinforcements.length; i++) {
+            promises.push(this.reinforcementModel.findByIdAndDelete(reinforcements[i]._id));
+        }
+        await Promise.all(promises);
+        return { success: true };
+    }
+    async updateReinforcement(reinforcement) {
+        let reinforcement_found = await this.reinforcementModel.findById(reinforcement._id);
+        if (!reinforcement_found) {
+            return { success: false };
+        }
+        await this.reinforcementModel.findByIdAndUpdate(reinforcement._id, reinforcement);
+        return { success: true };
+    }
+    async createReinforcement(reinforcement, schedule) {
+        const newReinforcement = await this.reinforcementModel.create(Object.assign(Object.assign({}, reinforcement), { schedule: schedule._id }));
+        return newReinforcement;
     }
     async delete(id) {
         const schedule = await this.scheduleModel.findById(id);
@@ -780,7 +966,9 @@ ScheduleService = __decorate([
     __param(1, (0, mongoose_1.InjectModel)('Structure')),
     __param(2, (0, mongoose_1.InjectModel)('User')),
     __param(3, (0, mongoose_1.InjectModel)('Settings')),
+    __param(4, (0, mongoose_1.InjectModel)('Reinforcement')),
     __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model])

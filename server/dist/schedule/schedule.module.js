@@ -16,6 +16,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const user_model_1 = require("../user/user.model");
 const auth_middleware_1 = require("../middleware/auth.middleware");
 const settings_model_1 = require("../settings/settings.model");
+const reinforcement_model_1 = require("../reinforcement/reinforcement.model");
 let ScheduleModule = class ScheduleModule {
     configure(consumer) {
         consumer
@@ -64,6 +65,7 @@ ScheduleModule = __decorate([
                 { name: 'User', schema: user_model_1.UserScheme },
                 { name: 'Structure', schema: structure_model_1.StructureScheme },
                 { name: 'Settings', schema: settings_model_1.SettingsScheme },
+                { name: 'Reinforcement', schema: reinforcement_model_1.ReinforcementScheme },
             ]),
         ],
         controllers: [schedule_controller_1.ScheduleController],

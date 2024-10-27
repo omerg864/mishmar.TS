@@ -159,4 +159,20 @@ export interface UserShifts {
 	friday_noon: number;
 	weekend_night: number;
 	weekend_day: number;
+	morning_re: number;
+	noon_re: number;
+	night_re: number;
+	friday_noon_re: number;
+	weekend_night_re: number;
+	weekend_day_re: number;
+}
+
+export interface Reinforcement {
+	_id?: string;
+	scheduleId: string;
+	week: number;
+	shift: number;
+	day: number;
+	names: string;
+	where: string;
 }

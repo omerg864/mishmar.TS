@@ -53,8 +53,9 @@ let ScheduleController = class ScheduleController {
     async deleteSchedule(id) {
         return await this.scheduleService.delete(id);
     }
-    async updateSchedule(schedule) {
-        return await this.scheduleService.update(schedule);
+    async updateSchedule(body) {
+        const { schedule, reinforcements, reset, deletedReinforcements } = body;
+        return await this.scheduleService.update(schedule, reinforcements, deletedReinforcements, reset);
     }
 };
 __decorate([
