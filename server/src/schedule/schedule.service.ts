@@ -926,6 +926,9 @@ export class ScheduleService {
 			for (let j = 0; j < schedules[i].weeks.length; j++) {
 				for (let k = 0; k < schedules[i].weeks[j].length; k++) {
 					const shift = schedules[i].weeks[j][k];
+					if (!structs[shift.shift as string]) {
+						continue;
+					}
 					const shiftType = structs[shift.shift as string].shift;
 					if (shiftType === 3) {
 						continue;
