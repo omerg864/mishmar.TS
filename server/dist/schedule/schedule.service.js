@@ -526,7 +526,7 @@ let ScheduleService = class ScheduleService {
             schedule: schedule._id
         });
         [reinforcements, schedule] = await Promise.all([
-            this.scheduleModel.find({
+            this.reinforcementModel.find({
                 schedule: schedule._id
             }),
             this.populateSchedule(schedule)
@@ -596,14 +596,18 @@ let ScheduleService = class ScheduleService {
             }
         }
         for (let i = 0; i < reinforcements.length; i++) {
-            const names = reinforcements[i].names.split('\n');
+            if (!reinforcements[i]) {
+                continue;
+            }
+            const names_re = reinforcements[i].names.split('\n');
             const shift = reinforcements[i].shift;
             const day = reinforcements[i].day;
-            for (let j = 0; j < names.length; j++) {
-                if (!counts.some((count) => count.name === names[j])) {
-                    counts.push(Object.assign({ name: names[j], night: 0, weekend: 0 }, resetObj));
+            for (let j = 0; j < names_re.length; j++) {
+                if (!names.includes(names_re[j])) {
+                    names.push(names_re[j]);
+                    counts.push(Object.assign({ name: names_re[j], night: 0, weekend: 0 }, resetObj));
                 }
-                const index = names.indexOf(names[j]);
+                const index = names.indexOf(names_re[j]);
                 switch (shift) {
                     case 0:
                         if (day !== 6) {
