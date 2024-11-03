@@ -34,7 +34,7 @@ const ScheduleShiftUser = () => {
                 fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/${scheduleId}`, component: "ScheduleShiftUser" })})
                 toast.error(data.message);
             } else {
-                setSchedule(data)
+                setSchedule(data.schedule)
             }
 
         } catch (err) {
