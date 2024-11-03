@@ -521,7 +521,16 @@ let ScheduleService = class ScheduleService {
         if (!schedule) {
             throw new common_1.NotFoundException('סידור לא נמצא');
         }
-        schedule = await this.populateSchedule(schedule);
+        let reinforcements;
+        await this.scheduleModel.find({
+            schedule: schedule._id
+        });
+        [reinforcements, schedule] = await Promise.all([
+            this.scheduleModel.find({
+                schedule: schedule._id
+            }),
+            this.populateSchedule(schedule)
+        ]);
         let counts = [];
         let total = {
             night: 0,
@@ -583,6 +592,51 @@ let ScheduleService = class ScheduleService {
                                 break;
                         }
                     }
+                }
+            }
+        }
+        for (let i = 0; i < reinforcements.length; i++) {
+            const names = reinforcements[i].names.split('\n');
+            const shift = reinforcements[i].shift;
+            const day = reinforcements[i].day;
+            for (let j = 0; j < names.length; j++) {
+                if (!counts.some((count) => count.name === names[j])) {
+                    counts.push(Object.assign({ name: names[j], night: 0, weekend: 0 }, resetObj));
+                }
+                const index = names.indexOf(names[j]);
+                switch (shift) {
+                    case 0:
+                        if (day !== 6) {
+                            counts[index][`morning${i}`] =
+                                +counts[index][`morning${i}`] + 1;
+                            total[`morning${i}`] += 1;
+                        }
+                        else {
+                            counts[index].weekend += 1;
+                            total.weekend += 1;
+                        }
+                        break;
+                    case 1:
+                        if (day < 5) {
+                            counts[index][`noon${i}`] =
+                                +counts[index][`noon${i}`] + 1;
+                            total[`noon${i}`] += 1;
+                        }
+                        else {
+                            counts[index].weekend += 1;
+                            total.weekend += 1;
+                        }
+                        break;
+                    case 2:
+                        if (day < 5) {
+                            counts[index].night += 1;
+                            total.night += 1;
+                        }
+                        else {
+                            counts[index].weekend += 1;
+                            total.weekend += 1;
+                        }
+                        break;
                 }
             }
         }
