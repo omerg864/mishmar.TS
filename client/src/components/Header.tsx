@@ -128,7 +128,7 @@ const Header = (props: IProps) => {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <ShieldRoundedIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          <ShieldRoundedIcon onClick={() => window.location.reload()} sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
@@ -187,7 +187,7 @@ const Header = (props: IProps) => {
               ))}
             </Menu>
           </Box>
-          <ShieldRoundedIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+          <ShieldRoundedIcon onClick={() => window.location.reload()} sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
