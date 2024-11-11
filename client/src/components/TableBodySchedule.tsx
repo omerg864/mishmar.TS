@@ -42,7 +42,7 @@ const TableBodySchedule = (props: IProps) => {
       <TableBody>
         {props.data.map((shift, index2) => (
           <TableRow key={(shift.shift as Structure)._id} >
-            <TableCell style={{padding: '4px'}} align="center" ><Typography>{(shift.shift as Structure).title} <br/>{(shift.shift as Structure).description}</Typography></TableCell>
+            <TableCell style={{padding: '4px'}} align="center" ><Typography>{(shift.shift as Structure).start_time}-{(shift.shift as Structure).end_time}<br/>{(shift.shift as Structure).title}</Typography></TableCell>
             {shift.days.map((day, index) => (
               <TableCell style={{padding: '4px'}} key={`${(shift.shift as Structure)._id}-${index}`} align="center">
                 {props.update ? <TextareaAutosize

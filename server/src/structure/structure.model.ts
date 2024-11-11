@@ -4,17 +4,22 @@ import * as mongoose from "mongoose";
 export const StructureScheme = new mongoose.Schema<Structure>({
     title: {
         type: String,
-        required: true,
+        required: false,
     },
     index: {
         type: Number,
         required: true,
         default: 0,
     },
-    description: {
+    start_time: {
         type: String,
         required: false,
-        default: ''
+        default: '07:00'
+    },
+    end_time: {
+        type: String,
+        required: false,
+        default: '15:00'
     },
     shift: {
         type: Number,
@@ -44,7 +49,8 @@ export interface Structure {
     _id? : mongoose.Schema.Types.ObjectId|string;
     title: string,
     index: number,
-    description: string,
+    start_time: string,
+    end_time: string,
     shift: number,
     opening: boolean,
     manager: boolean,

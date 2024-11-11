@@ -8,6 +8,7 @@ import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRo
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { StyledTableCell, StyledTableRow } from '../components/StyledTable'
 import OptionsModal from '../components/OptionsModal';
+import { time_shift_regex } from '../types/regularExpressions';
 
 
 const Structures = () => {
@@ -17,7 +18,7 @@ const Structures = () => {
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     //const [savedStractures, setSavedStractures] = useState<Structure[]>([]);
     //const [changes, setChanges] = useState<string[]>([]);
-    const defaultValue = {title: '', description: '', shift: 0, index: 0, opening: false, pull: false, manager: false} as Structure
+    const defaultValue = {title: '', start_time: '07:00', end_time: '15:00', shift: 0, index: 0, opening: false, pull: false, manager: false} as Structure
     const [newStructure, setNewStructure] = useState<Structure>(defaultValue);
     const [height, setHeight] = useState<number>(100);
 
@@ -106,8 +107,14 @@ const Structures = () => {
 
     const saveStructures = async () => {
       for ( let i = 0; i < structures.length; i++) {
-        if ( structures[i].title === "") {
-          toast.error("Please enter a title for all structures");
+        if (structures[i].end_time && !time_shift_regex.test(structures[i].end_time)) {
+          toast.error("נא לשמור זמן כך: HH:MM");
+          toast.info(`משמרת ${structures[i].title} ${i} נשמרה עם זמן לא תקין`);
+          return;
+        }
+        if (structures[i].start_time && !time_shift_regex.test(structures[i].start_time)) {
+          toast.error("נא לשמור זמן כך: HH:MM");
+          toast.info(`משמרת ${structures[i].title} ${i} נשמרה עם זמן לא תקין`);
           return;
         }
       }
@@ -136,6 +143,17 @@ const Structures = () => {
         toast.error("Please enter a title");
         return;
       }
+
+      if (newStructure.end_time && !time_shift_regex.test(newStructure.end_time) ) {
+        toast.error("נא לשמור זמן כך: HH:MM")
+        return;
+      }
+
+      if (newStructure.start_time && !time_shift_regex.test(newStructure.start_time)) {
+        toast.error("נא לשמור זמן כך: HH:MM")
+        return;
+      }
+
       let scheduleAdd = (e.target as HTMLButtonElement).value === 'true';
       closeModal();
       setLoading(true);
@@ -211,7 +229,8 @@ const Structures = () => {
             <StyledTableCell align="center">משמרת</StyledTableCell>
             <StyledTableCell align="center">מספר</StyledTableCell>
             <StyledTableCell align="center">כותרת</StyledTableCell>
-            <StyledTableCell align="center">תיאור</StyledTableCell>
+            <StyledTableCell align="center">התחלת משמרת</StyledTableCell>
+            <StyledTableCell align="center">סיום משמרת</StyledTableCell>
             <StyledTableCell align="center">פתיחה</StyledTableCell>
             <StyledTableCell align="center">אחמ"ש</StyledTableCell>
             <StyledTableCell align="center">משיכה</StyledTableCell>
@@ -235,8 +254,9 @@ const Structures = () => {
                 </Select>
                 </TableCell>
               <TableCell align="center"><TextField sx={{minWidth: '180px'}} type="number" required inputProps={{min: '0'}} name={`index`} value={newStructure.index} label="מספר" onChange={newInputChange} /></TableCell>
-              <TableCell align="center"><TextField sx={{minWidth: '180px'}} name={`title`} required value={newStructure.title} label="כותרת" onChange={newInputChange}/></TableCell>
-              <TableCell align="center"><TextField sx={{minWidth: '180px'}} name={`description`} value={newStructure.description} label="תיאור" onChange={newInputChange}/></TableCell>
+              <TableCell align="center"><TextField sx={{minWidth: '180px'}} name={`title`} value={newStructure.title} label="כותרת" onChange={newInputChange}/></TableCell>
+              <TableCell align="center"><TextField sx={{minWidth: '180px'}} name={`start_time`} value={newStructure.start_time} label="התחלת משמרת" onChange={newInputChange}/></TableCell>
+              <TableCell align="center"><TextField sx={{minWidth: '180px'}} name={`end_time`} value={newStructure.end_time} label="סיום משמרת" onChange={newInputChange}/></TableCell>
               <TableCell align="center"><Checkbox name={`opening`} checked={newStructure.opening} onChange={newCheckboxChange} /></TableCell>
               <TableCell align="center"><Checkbox name={`manager`} checked={newStructure.manager} onChange={newCheckboxChange} /></TableCell>
               <TableCell align="center"><Checkbox name={`pull`} checked={newStructure.pull} onChange={newCheckboxChange} /></TableCell>
@@ -260,8 +280,9 @@ const Structures = () => {
                 </Select>
                 </TableCell>
               <TableCell align="center"><TextField sx={{minWidth: '180px'}} required inputProps={{min: '0'}} type="number" name={`index&&${structure._id}`} value={structure.index} label="מספר" onChange={inputChange} /></TableCell>
-              <TableCell align="center"><TextField sx={{minWidth: '180px'}} required name={`title&&${structure._id}`} value={structure.title} label="כותרת" onChange={inputChange}/></TableCell>
-              <TableCell align="center"><TextField sx={{minWidth: '180px'}} name={`description&&${structure._id}`} value={structure.description} label="תיאור" onChange={inputChange}/></TableCell>
+              <TableCell align="center"><TextField sx={{minWidth: '180px'}} name={`title&&${structure._id}`} value={structure.title} label="כותרת" onChange={inputChange}/></TableCell>
+              <TableCell align="center"><TextField sx={{minWidth: '180px'}} name={`start_time&&${structure._id}`} value={structure.start_time} label="התחלת משמרת" onChange={inputChange}/></TableCell>
+              <TableCell align="center"><TextField sx={{minWidth: '180px'}} name={`end_time&&${structure._id}`} value={structure.end_time} label="סיום משמרת" onChange={inputChange}/></TableCell>
               <TableCell align="center"><Checkbox name={`opening&&${structure._id}`} checked={structure.opening} onChange={checkboxChange} /></TableCell>
               <TableCell align="center"><Checkbox name={`manager&&${structure._id}`} checked={structure.manager} onChange={checkboxChange} /></TableCell>
               <TableCell align="center"><Checkbox name={`pull&&${structure._id}`} checked={structure.pull} onChange={checkboxChange} /></TableCell>

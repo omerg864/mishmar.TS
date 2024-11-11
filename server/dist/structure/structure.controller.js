@@ -19,8 +19,8 @@ let StructureController = class StructureController {
     constructor(structureService) {
         this.structureService = structureService;
     }
-    async createStructure(strucure, scheduleAdd) {
-        return this.structureService.createStructure(strucure, scheduleAdd);
+    async createStructure(structure, scheduleAdd) {
+        return this.structureService.createStructure(structure, scheduleAdd);
     }
     async deleteStructure(id) {
         return this.structureService.deleteStructure(id);

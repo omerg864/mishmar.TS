@@ -8,8 +8,8 @@ export class StructureController {
     constructor(private readonly structureService: StructureService) {}
 
     @Post()
-    async createStructure(@Body('structure') strucure: Structure, @Body('scheduleAdd') scheduleAdd: boolean): Promise<Structure> {
-        return this.structureService.createStructure(strucure, scheduleAdd);
+    async createStructure(@Body('structure') structure: Structure, @Body('scheduleAdd') scheduleAdd: boolean): Promise<Structure> {
+        return this.structureService.createStructure(structure, scheduleAdd);
     }
 
     @Delete(':id')

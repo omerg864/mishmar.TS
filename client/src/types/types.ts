@@ -21,7 +21,8 @@ export interface Structure {
 	_id: string;
 	title: string;
 	index: number;
-	description: string;
+	start_time: string;
+	end_time: string;
 	shift: number;
 	opening: boolean;
 	manager: boolean;
