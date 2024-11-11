@@ -15,6 +15,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { Schedule } from './schedule.model';
 import { ScheduleService, Shift } from './schedule.service';
 import { ReinforcementInterface } from '../reinforcement/reinforcement.model';
+import { UserID } from 'src/middleware/auth.middleware';
 
 
 interface ShiftUser {
@@ -41,9 +42,10 @@ export class ScheduleController {
 
 	@Get('auth/view')
 	async getViewSchedule(
-		@Query() query: { page?: number }
+		@Query() query: { page?: number },
+		@UserID() userId: string,
 	): Promise<{ schedule: Schedule; pages: number }> {
-		return await this.scheduleService.getViewSchedule(query);
+		return await this.scheduleService.getViewSchedule(query, userId);
 	}
 
 	@Get('auth/last/data')

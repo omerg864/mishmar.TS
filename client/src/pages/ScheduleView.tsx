@@ -1,14 +1,17 @@
-import { Button, Pagination, Paper, Table, TableContainer } from '@mui/material'
+import { Button, Pagination, Paper, SpeedDial, SpeedDialAction, SpeedDialIcon, Table, TableContainer } from '@mui/material'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Spinner from '../components/Spinner'
 import TableBodySchedule from '../components/TableBodySchedule'
 import TableHeadSchedule from '../components/TableHeadSchedule'
 import { addDays, dateToString, numberToArray, dateToStringShort } from '../functions/functions'
-import { Reinforcement, Schedule } from '../types/types'
+import { CalendarEvent, Reinforcement, Schedule } from '../types/types'
 import { toast } from 'react-toastify';
 import Cookies from 'universal-cookie';
 import { useParams, useSearchParams } from 'react-router-dom';
 import html2canvas from 'html2canvas';
+import * as ics from 'ics';
+import ImageIcon from '@mui/icons-material/Image';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 
 const ScheduleView = () => {
@@ -16,6 +19,7 @@ const ScheduleView = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [schedule, setSchedule] = useState<Schedule>({num_weeks: 0, days: [], weeks: [], date: new Date(), publish: true, id: "", _id: ""});
   const [reinforcements, setReinforcements] = useState<Reinforcement[][][]>([]);
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
   const cookies = new Cookies();
   const [height, setHeight] = useState<number>(100);
   const { id } = useParams(); 
@@ -44,9 +48,11 @@ const ScheduleView = () => {
             setSchedule(data.schedule);
             setPages(data.pages);
             setReinforcements(data.reinforcements);
+            setEvents(data.events);
           } else {
             setSchedule(data.schedule);
             setReinforcements(data.reinforcements);
+            setEvents(data.events);
           }
         }
     } catch (err) {
@@ -149,12 +155,47 @@ const ScheduleView = () => {
     }
   }
 
+  const addToCalendar = async () => {
+    if (schedule.num_weeks !== 0) {
+      ics.createEvents(events, (error, value) => {
+        if (error) {
+          toast.error("יצירת אירוע נכשלה");
+          console.log(error);
+          return;
+        }
+        const blob = new Blob([value], { type: 'text/calendar' });
+        window.open(window.URL.createObjectURL(blob));
+        
+      });
+    }
+  }
+
+  const actions = [
+    { icon: <ImageIcon/>, name: 'הורדה כתמונה', action: getPicture },
+    { icon: <CalendarMonthIcon/>, name: 'הוספה ליומן', action: addToCalendar}
+  ]
+
   return (
     <main>
         {schedule.num_weeks !== 0 && <>
         <h1>{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
-        <div style={{marginBottom: '10px'}}>
-          <Button variant="contained" onClick={getPicture}>הורדה כתמונה</Button>
+        <div style={{height: '3rem', width: '100%', position: 'relative', marginBottom: '16px'}}>
+          <SpeedDial
+              direction="down"
+              ariaLabel="Schedule Actions"
+              sx={{ position: 'absolute', top: 0, right: 0 }}
+              icon={<SpeedDialIcon />}
+            >
+              {actions.map((action) => (
+                <SpeedDialAction
+                  tooltipOpen={true}
+                  key={action.name}
+                  icon={action.icon}
+                  tooltipTitle={action.name}
+                  onClick={action.action}
+                />
+              ))}
+            </SpeedDial>
         </div>
         <TableContainer ref={containerRef} style={{minHeight: height, paddingBottom: '10px'}} component={Paper}>
         <div id="tables" className={overflow ? 'tables' : 'tables-center'}>

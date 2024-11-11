@@ -114,7 +114,7 @@ let ScheduleService = class ScheduleService {
         schedule_temp.weeks = weeks_tmp;
         return schedule_temp;
     }
-    async getViewSchedule(query) {
+    async getViewSchedule(query, userId) {
         if (!query.page || query.page <= 0) {
             query.page = 0;
         }
@@ -144,12 +144,129 @@ let ScheduleService = class ScheduleService {
         if (!schedule_found) {
             throw new common_1.NotFoundException('לא נמצאו סידורים');
         }
-        const [reinforcements, days, schedule] = await Promise.all([
+        const [reinforcements, days, schedule, user] = await Promise.all([
             this.getReinforcement(schedule_found),
             this.calculateDays(schedule_found),
             this.populateSchedule(schedule_found),
+            this.userModel.findById(userId),
         ]);
-        return { schedule: Object.assign(Object.assign({}, schedule), { days }), pages, reinforcements };
+        const newSchedule = Object.assign(Object.assign({}, schedule), { days });
+        const events = await this.getEvents(newSchedule, reinforcements, user.nickname);
+        return { schedule: newSchedule, pages, reinforcements, events };
+    }
+    async getEvents(schedule, reinforcements, nickname) {
+        let events = [];
+        for (let i = 0; i < schedule.num_weeks; i++) {
+            for (let j = 0; j < 7; j++) {
+                if (reinforcements[i][j]) {
+                    for (let k = 0; k < reinforcements[i][j].length; k++) {
+                        const names = reinforcements[i][j][k].names.split('\n');
+                        for (let l = 0; l < names.length; l++) {
+                            if (names[l] !== nickname) {
+                                continue;
+                            }
+                            const date = new Date(schedule.days[i][j]);
+                            const start_time = this.shiftToStartTime(reinforcements[i][j][k].shift).split(':').map((x) => parseInt(x));
+                            const end_time = this.shiftToEndTime(reinforcements[i][j][k].shift).split(':').map((x) => parseInt(x));
+                            const new_date = [date.getFullYear(), date.getMonth(), date.getDate(), start_time[0], start_time[1]];
+                            const duration_hours = end_time[0] > start_time[0] ? end_time[0] - start_time[0] : 24 - start_time[0] + end_time[0];
+                            const duration_minutes = end_time[0] > start_time[0] ? end_time[1] - start_time[1] : 60 - start_time[1] + end_time[1];
+                            events.push({
+                                title: `משמרת ${this.numberToShift(reinforcements[i][j][k].shift)}`,
+                                start: new_date,
+                                duration: { hours: duration_hours, minutes: duration_minutes },
+                                location: `בית משפט ${reinforcements[i][j][k].where}`,
+                                attendees: names.filter((name) => name !== nickname).map((name) => ({ name })),
+                            });
+                        }
+                    }
+                }
+            }
+        }
+        const shifts = [];
+        for (let i = 0; i < schedule.weeks.length; i++) {
+            for (let j = 0; j < schedule.weeks[i].length; j++) {
+                const shift = schedule.weeks[i][j];
+                for (let k = 0; k < shift.days.length; k++) {
+                    const names = shift.days[k].split('\n');
+                    for (let l = 0; l < names.length; l++) {
+                        if (names[l] !== nickname) {
+                            continue;
+                        }
+                        if (shift.shift) {
+                            shifts.push({ shift: shift.shift.shift, week: i, day: k });
+                            const date = new Date(schedule.days[i][k]);
+                            const start_time = shift.shift.start_time.split(':').map((x) => parseInt(x));
+                            const end_time = shift.shift.end_time.split(':').map((x) => parseInt(x));
+                            const new_date = [date.getFullYear(), date.getMonth(), date.getDate(), start_time[0], start_time[1]];
+                            const duration_hours = end_time[0] > start_time[0] ? end_time[0] - start_time[0] : 24 - start_time[0] + end_time[0];
+                            const duration_minutes = end_time[0] > start_time[0] ? end_time[1] - start_time[1] : 60 - start_time[1] + end_time[1];
+                            events.push({
+                                id: `${i}-${k}-${shift.shift.shift}`,
+                                title: `משמרת ${this.numberToShift(shift.shift.shift)}`,
+                                start: new_date,
+                                duration: { hours: duration_hours, minutes: duration_minutes },
+                                location: `בית משפט רמלה`,
+                                attendees: names.filter((name) => name !== nickname).map((name) => ({ name })),
+                            });
+                        }
+                    }
+                }
+            }
+        }
+        for (let i = 0; i < shifts.length; i++) {
+            const shift = shifts[i];
+            const shifts_week = schedule.weeks[shift.week];
+            for (let j = 0; j < shifts_week.length; j++) {
+                const shift_tmp = shifts_week[j];
+                const event = events.find((event) => event.id === `${shift.week}-${shift.day}-${shift_tmp.shift.shift}`);
+                if (event) {
+                    const names = shift_tmp.days[shift.day].split('\n');
+                    for (let k = 0; k < names.length; k++) {
+                        if (names[k] !== nickname && names[k] !== '') {
+                            event.attendees.push({ name: names[k] });
+                        }
+                    }
+                }
+            }
+        }
+        return events.map((event) => (Object.assign(Object.assign({}, event), { id: undefined, description: event.attendees.map((attendee) => attendee.name).join(', ') })));
+    }
+    numberToShift(num) {
+        switch (num) {
+            case 0:
+                return 'בוקר';
+            case 1:
+                return 'צהריים';
+            case 2:
+                return 'לילה';
+            default:
+                return '';
+        }
+    }
+    shiftToStartTime(num) {
+        switch (num) {
+            case 0:
+                return '07:00';
+            case 1:
+                return '15:00';
+            case 2:
+                return '23:00';
+            default:
+                return '';
+        }
+    }
+    shiftToEndTime(num) {
+        switch (num) {
+            case 0:
+                return '15:00';
+            case 1:
+                return '23:00';
+            case 2:
+                return '07:00';
+            default:
+                return '';
+        }
     }
     async getReinforcement(schedule) {
         let reinforcements = [];

@@ -1,3 +1,5 @@
+import { Attendee, DateArray } from "ics";
+
 export type ShiftWeek = { shift: Structure | string; days: string[] };
 export interface Schedule {
 	_id: string;
@@ -176,4 +178,12 @@ export interface Reinforcement {
 	day: number;
 	names: string;
 	where: string;
+}
+
+export interface CalendarEvent {
+	title: string;
+	location: string;
+	start: DateArray;
+	attendees?: Attendee[];
+	duration: { hours?: number; minutes?: number };
 }

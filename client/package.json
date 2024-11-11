@@ -26,6 +26,7 @@
     "dayjs": "^1.11.13",
     "dayjs-plugin-utc": "^0.1.2",
     "html2canvas": "^1.4.1",
+    "ics": "^3.0.0",
     "react": "^18.2.0",
     "react-calendar": "^3.9.0",
     "react-dom": "^18.2.0",

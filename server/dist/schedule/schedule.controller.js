@@ -16,6 +16,7 @@ exports.ScheduleController = void 0;
 const common_1 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
 const schedule_service_1 = require("./schedule.service");
+const auth_middleware_1 = require("../middleware/auth.middleware");
 let ScheduleController = class ScheduleController {
     constructor(scheduleService) {
         this.scheduleService = scheduleService;
@@ -23,8 +24,8 @@ let ScheduleController = class ScheduleController {
     async getAllSchedules(query) {
         return await this.scheduleService.getAll(query);
     }
-    async getViewSchedule(query) {
-        return await this.scheduleService.getViewSchedule(query);
+    async getViewSchedule(query, userId) {
+        return await this.scheduleService.getViewSchedule(query, userId);
     }
     async getLastDataSchedule() {
         return await this.scheduleService.getLastData();
@@ -68,8 +69,9 @@ __decorate([
 __decorate([
     (0, common_1.Get)('auth/view'),
     __param(0, (0, common_1.Query)()),
+    __param(1, (0, auth_middleware_1.UserID)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
 ], ScheduleController.prototype, "getViewSchedule", null);
 __decorate([

@@ -53,7 +53,8 @@ const TableBodySchedule = (props: IProps) => {
                   style={{ maxWidth: '90px' }}
                 /> : <React.Fragment>
                   {day.split("\n").map((line, index) => {
-                    return <Typography className={`${ doesContain(line.split(' '), cookies.get('user').nickname) ? 'green' : ''}`} key={index}>{line}</Typography>
+                    let contains = doesContain(line.split(' '), cookies.get('user').nickname);
+                    return <Typography className={`${ contains ? 'green' : ''}`} key={index}>{line}</Typography>
                   })}
                   </React.Fragment>}
               </TableCell>
@@ -71,7 +72,8 @@ const TableBodySchedule = (props: IProps) => {
                     })}
                   </div>: <React.Fragment>
                         {reinforcements.map((reinforcement, index) => {
-                          return <Typography className={`${ doesContain(reinforcement.names.split('\n'), cookies.get('user').nickname) ? 'green' : ''}`} key={index}>{
+                          let contains = doesContain(reinforcement.names.split('\n'), cookies.get('user').nickname);
+                          return <Typography className={`${ contains ? 'green' : ''}`} key={index}>{
                             reinforcement.names.split("\n").join(',') + ' תגבור ' + getShift(reinforcement.shift) + ' ' + reinforcement.where
                           }</Typography>
                         })}

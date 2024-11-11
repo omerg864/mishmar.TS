@@ -22,7 +22,7 @@ export declare class ScheduleController {
     }>;
     getViewSchedule(query: {
         page?: number;
-    }): Promise<{
+    }, userId: string): Promise<{
         schedule: Schedule;
         pages: number;
     }>;

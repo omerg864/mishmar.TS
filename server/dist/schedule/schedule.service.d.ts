@@ -39,11 +39,16 @@ export declare class ScheduleService {
     populateSchedule(schedule: Schedule): Promise<Schedule>;
     getViewSchedule(query: {
         page?: number;
-    }): Promise<{
+    }, userId: string): Promise<{
         schedule: Schedule;
         pages: number;
         reinforcements: ReinforcementInterface[][][];
+        events: any[];
     }>;
+    getEvents(schedule: Schedule, reinforcements: ReinforcementInterface[][][], nickname: string): Promise<any[]>;
+    numberToShift(num: number): string;
+    shiftToStartTime(num: number): string;
+    shiftToEndTime(num: number): string;
     getReinforcement(schedule: Schedule): Promise<ReinforcementInterface[][][]>;
     getAll(query: {
         page?: number;
