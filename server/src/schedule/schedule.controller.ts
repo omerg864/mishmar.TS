@@ -15,7 +15,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { Schedule } from './schedule.model';
 import { ScheduleService, Shift } from './schedule.service';
 import { ReinforcementInterface } from '../reinforcement/reinforcement.model';
-import { UserID } from 'src/middleware/auth.middleware';
+import { UserID } from '../middleware/auth.middleware';
 
 
 interface ShiftUser {
