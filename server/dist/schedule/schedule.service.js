@@ -169,7 +169,7 @@ let ScheduleService = class ScheduleService {
                             const start_time = this.shiftToStartTime(reinforcements[i][j][k].shift).split(':').map((x) => parseInt(x));
                             const end_time = this.shiftToEndTime(reinforcements[i][j][k].shift).split(':').map((x) => parseInt(x));
                             const new_date = [date.getFullYear(), date.getMonth() + 1, date.getDate(), start_time[0], start_time[1]];
-                            const duration_hours = end_time[0] > start_time[0] ? end_time[0] - start_time[0] : 24 - start_time[0] + end_time[0];
+                            const duration_hours = end_time[0] > start_time[0] ? end_time[0] - start_time[0] : 24 - start_time[0] + end_time[0] - 1;
                             const duration_minutes = end_time[0] > start_time[0] ? end_time[1] - start_time[1] : 60 - start_time[1] + end_time[1];
                             events.push({
                                 title: `משמרת ${this.numberToShift(reinforcements[i][j][k].shift)}`,
@@ -199,7 +199,7 @@ let ScheduleService = class ScheduleService {
                             const start_time = shift.shift.start_time.split(':').map((x) => parseInt(x));
                             const end_time = shift.shift.end_time.split(':').map((x) => parseInt(x));
                             const new_date = [date.getFullYear(), date.getMonth() + 1, date.getDate(), start_time[0], start_time[1]];
-                            const duration_hours = end_time[0] > start_time[0] ? end_time[0] - start_time[0] : 24 - start_time[0] + end_time[0];
+                            const duration_hours = end_time[0] > start_time[0] ? end_time[0] - start_time[0] : 24 - start_time[0] + end_time[0] - 1;
                             const duration_minutes = end_time[0] > start_time[0] ? end_time[1] - start_time[1] : 60 - start_time[1] + end_time[1];
                             events.push({
                                 id: `${i}-${k}-${shift.shift.shift}`,
