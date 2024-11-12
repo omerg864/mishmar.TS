@@ -19,7 +19,7 @@ interface ShiftScheduleWeek {
     notes: string[];
 }
 
-const rows = ["morning", "noon", "night", "reinforcement"];
+const rows = ["morning", "noon", "night"];
 
 const ScheduleShift = () => {
 

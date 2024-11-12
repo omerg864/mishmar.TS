@@ -25,6 +25,5 @@ export interface ShiftScheduleWeek {
     noon: string[];
     night: string[];
     pull: string[];
-    reinforcement: string[];
     notes: string[];
 }

@@ -83,6 +83,7 @@ export declare class ScheduleController {
             }[][];
             num_weeks: number;
             date: Date;
+            _id: string | import("mongoose").Schema.Types.ObjectId;
             days: Date[][];
         };
     }>;

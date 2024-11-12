@@ -69,10 +69,6 @@ exports.ShiftScheme = new mongoose.Schema({
                     type: Boolean,
                     default: true,
                 }],
-            reinforcement: [{
-                    type: Boolean,
-                    default: false,
-                }],
             notes: [{
                     type: String,
                     default: "",

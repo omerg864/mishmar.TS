@@ -11,7 +11,7 @@ import TableBodyShift from '../components/TableBodyShift';
 
 
 const defaultValue = {weeks: [], _id: '', weekend_night: 0, weekend_day: 0, userId: "", scheduleId: "", notes: ""};
-const rows = ["morning", "noon", "night", "pull", "reinforcement"]
+const rows = ["morning", "noon", "night", "pull"]
 type ShiftWeek = {morning: boolean[], noon: boolean[], night: boolean[], pull: boolean[], reinforcement: boolean[]};
 
 const Shift = () => {

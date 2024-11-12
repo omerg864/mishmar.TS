@@ -46,10 +46,6 @@ export const ShiftScheme = new mongoose.Schema<Shift>({
             type: Boolean,
             default: true,
         }],
-        reinforcement: [{
-            type: Boolean,
-            default: false,
-        }],
         notes: [{
             type: String,
             default: "",
@@ -76,6 +72,5 @@ export interface ShiftScheduleWeek {
     noon: string[];
     night: string[]; 
     pull: string[];
-    reinforcement: string[]; 
     notes: string[];
 }

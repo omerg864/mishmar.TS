@@ -11,7 +11,7 @@ import TableHead2 from '../components/TableHead';
 
 
 const defaultValue = {weeks: [], _id: '', weekend_night: 0, weekend_day: 0, userId: "", scheduleId: "", notes: ""};
-const rows = ["morning", "noon", "night", "pull", "reinforcement"]
+const rows = ["morning", "noon", "night", "pull"]
 type ShiftWeek = {morning: boolean[], noon: boolean[], night: boolean[], pull: boolean[], reinforcement: boolean[]};
 
 const ScheduleShiftUser = () => {
@@ -28,7 +28,7 @@ const ScheduleShiftUser = () => {
 
     const getSchedule = async () => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/schedules/${scheduleId}`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') }});
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/schedules/shifts/${scheduleId}`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') }});
             const data = await response.json();
             if (data.error || data.statusCode) {
                 fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/${scheduleId}`, component: "ScheduleShiftUser" })})

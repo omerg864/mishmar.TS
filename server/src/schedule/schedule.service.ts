@@ -93,7 +93,7 @@ export class ScheduleService {
 			throw new NotFoundException('סידור לא נמצא');
 		}
 		const days = this.calculateDays(schedule_found);
-		return { schedule: {weeks: schedule_found.weeks, num_weeks: schedule_found.num_weeks, date: schedule_found.date, days} };
+		return { schedule: {weeks: schedule_found.weeks, num_weeks: schedule_found.num_weeks, date: schedule_found.date, _id: schedule_found._id, days} };
 	}
 
 	async getViewSchedule(query: {

@@ -66,7 +66,6 @@ export class ShiftService {
 			'noon',
 			'night',
 			'pull',
-			'reinforcement',
 			'notes',
 		];
 		let users: { nickname: string; id: string }[] = [];
@@ -88,7 +87,6 @@ export class ShiftService {
 				noon: ['', '', '', '', '', '', ''],
 				night: ['', '', '', '', '', '', ''],
 				pull: ['', '', '', '', '', '', ''],
-				reinforcement: ['', '', '', '', '', '', ''],
 				notes: ['', '', '', '', '', '', ''],
 			});
 		}

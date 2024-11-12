@@ -67,7 +67,6 @@ let ShiftService = class ShiftService {
             'noon',
             'night',
             'pull',
-            'reinforcement',
             'notes',
         ];
         let users = [];
@@ -84,7 +83,6 @@ let ShiftService = class ShiftService {
                 noon: ['', '', '', '', '', '', ''],
                 night: ['', '', '', '', '', '', ''],
                 pull: ['', '', '', '', '', '', ''],
-                reinforcement: ['', '', '', '', '', '', ''],
                 notes: ['', '', '', '', '', '', ''],
             });
         }

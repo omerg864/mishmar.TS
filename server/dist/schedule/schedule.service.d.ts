@@ -69,6 +69,7 @@ export declare class ScheduleService {
             }[][];
             num_weeks: number;
             date: Date;
+            _id: string | import("mongoose").Schema.Types.ObjectId;
             days: Date[][];
         };
     }>;

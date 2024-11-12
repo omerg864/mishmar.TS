@@ -17,7 +17,6 @@ interface ShiftScheduleWeek {
   noon: string[];
   night: string[];
   pull: string[];
-  reinforcement: string[];
   notes: string[];
 }
 
@@ -26,7 +25,6 @@ interface ShiftScheduleWeek2 {
   noon: boolean[];
   night: boolean[];
   pull: boolean[];
-  reinforcement: boolean[];
   notes: string[];
 }
 
@@ -34,7 +32,7 @@ const TableBody2 = (props: IProps) => {
 
 
   const rowToHebrew = (row: string) => {
-    const hebrewRows = { morning: 'בוקר', noon: 'צהריים', night: 'לילה', pull: 'משיכה', reinforcement: 'תגבור' }
+    const hebrewRows = { morning: 'בוקר', noon: 'צהריים', night: 'לילה', pull: 'משיכה' }
     return hebrewRows[(row as keyof typeof hebrewRows)]
   }
 
