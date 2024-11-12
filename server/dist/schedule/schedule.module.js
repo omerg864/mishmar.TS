@@ -48,6 +48,9 @@ let ScheduleModule = class ScheduleModule {
             .forRoutes({ path: 'api/schedules/shifts', method: common_1.RequestMethod.POST });
         consumer
             .apply(auth_middleware_1.SiteManagerMiddleware)
+            .forRoutes({ path: 'api/schedules/shifts/:id', method: common_1.RequestMethod.GET });
+        consumer
+            .apply(auth_middleware_1.SiteManagerMiddleware)
             .forRoutes({ path: 'api/schedules', method: common_1.RequestMethod.PATCH });
         consumer
             .apply(auth_middleware_1.SiteManagerMiddleware)

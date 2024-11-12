@@ -75,7 +75,7 @@ const ScheduleShift = () => {
 
     const getSchedule = async () => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/schedules/${id}`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') }});
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/schedules/shifts/${id}`, { headers: { 'Content-Type': 'application/json', authorization: 'Bearer ' + cookies.get('userToken') }});
             const data = await response.json();
             if (data.error || data.statusCode) {
                 fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: `schedules/${id}`, component: "ScheduleShift" })})

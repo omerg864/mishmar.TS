@@ -45,6 +45,9 @@ let ScheduleController = class ScheduleController {
     async getSchedule(id) {
         return await this.scheduleService.getSchedule(id);
     }
+    async getScheduleShifts(id) {
+        return await this.scheduleService.getScheduleShiftData(id);
+    }
     async getShifts(date) {
         return await this.scheduleService.getShifts(date);
     }
@@ -116,6 +119,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ScheduleController.prototype, "getSchedule", null);
+__decorate([
+    (0, common_1.Get)('shifts/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ScheduleController.prototype, "getScheduleShifts", null);
 __decorate([
     (0, common_1.Post)('shifts'),
     __param(0, (0, common_1.Body)()),

@@ -38,12 +38,15 @@ import Cookies from 'universal-cookie';
 import SettingsSalary from './pages/SettingsSalary';
 import Forms from './pages/Forms';
 import UsersShifts from './pages/UsersShifts';
+import Spinner from './components/Spinner';
 
 
 function App() {
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [manager, setManager] = useState<boolean>(false);
   const [settingsChange, setSettingsChange] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [title, setTitle] = useState<string>("");
   const cookies = new Cookies();
 
   if (cookies.get('userToken') && !authenticated) {
@@ -64,10 +67,34 @@ function App() {
     }
   }
 
+  const getSettings = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/settings/general`);
+      const data = await response.json();
+      if (data.error || data.statusCode) {
+        fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: 'settings/general', component: "Header" })})
+      } else {
+        setTitle(data.title);
+      }
+    } catch (err) {
+      fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: 'settings/general', component: "Header" })})
+    }
+    setIsLoading(false);
+  }
+
+    
+  useEffect(() => {
+    getSettings();
+  }, [settingsChange])
+
+  if (isLoading) {
+    return <Spinner />
+  }
 
   return (
     <>
-      <Header authenticated={authenticated} settingsChange={settingsChange} setAuthenticated={setAuthenticated} manager={manager} setManager={setManager} />
+      <Header title={title} authenticated={authenticated} setAuthenticated={setAuthenticated} manager={manager} setManager={setManager} />
       <ToastContainer rtl={true} theme="colored" />
       <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID as string}>
       <Routes>

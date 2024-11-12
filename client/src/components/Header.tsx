@@ -13,8 +13,6 @@ import MenuItem from '@mui/material/MenuItem';
 import ShieldRoundedIcon from '@mui/icons-material/ShieldRounded';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import { Dispatch, SetStateAction } from "react";
-import { toast } from 'react-toastify';
-import Spinner from './Spinner';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 
@@ -30,7 +28,7 @@ interface IProps {
   setAuthenticated: Dispatch<SetStateAction<boolean>>;
   manager: boolean;
   setManager: Dispatch<SetStateAction<boolean>>;
-  settingsChange: boolean;
+  title: string;
 }
 
 
@@ -38,8 +36,6 @@ const Header = (props: IProps) => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
-  const [title, setTitle] = React.useState<string>('');
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const navigate = useNavigate();
   const cookies = new Cookies();
 
@@ -98,32 +94,6 @@ const Header = (props: IProps) => {
     navigate('/');
   }
 
-  const getSettings = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/settings/general`);
-      const data = await response.json();
-      if (data.error || data.statusCode) {
-        fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err: data, path: 'settings/general', component: "Header" })})
-        toast.error(data.message);
-      } else {
-        setTitle(data.title);
-      }
-    } catch (err) {
-      fetch(`${process.env.REACT_APP_API_URL}/api/logs`, { headers: { 'Content-Type': 'application/json' },method: 'POST', body: JSON.stringify({user: cookies.get('user'), err, path: 'settings/general', component: "Header" })})
-      toast.error("Internal Server Error");
-    }
-    setIsLoading(false);
-  }
-
-  React.useEffect(() => {
-    getSettings();
-  }, [props.settingsChange]);
-
-  if (isLoading) {
-    return <Spinner />;
-  }
-
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -144,7 +114,7 @@ const Header = (props: IProps) => {
               textDecoration: 'none',
             }}
           >
-            {title}
+            {props.title}
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -204,7 +174,7 @@ const Header = (props: IProps) => {
               textDecoration: 'none',
             }}
           >
-            {title}
+            {props.title}
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {!props.manager ? pages.map((page) => (

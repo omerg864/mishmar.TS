@@ -159,13 +159,13 @@ const ScheduleView = () => {
     if (schedule.num_weeks !== 0) {
       ics.createEvents(events, (error, value) => {
         if (error) {
-          toast.error("יצירת אירוע נכשלה");
+          toast.error("יצירת אירועים נכשלה");
           console.log(error);
           return;
         }
         const blob = new Blob([value], { type: 'text/calendar' });
-        window.open(window.URL.createObjectURL(blob));
-        
+        const url = window.URL.createObjectURL(blob);
+        window.open(url);
       });
     }
   }
@@ -179,7 +179,7 @@ const ScheduleView = () => {
     <main>
         {schedule.num_weeks !== 0 && <>
         <h1>{dateToString(new Date(schedule.date))} - {dateToString(addDays(new Date(schedule.date), schedule.num_weeks * 7 - 1))}</h1>
-        <div style={{height: '3rem', width: '100%', position: 'relative', marginBottom: '16px'}}>
+        {!id && <div style={{height: '3rem', width: '100%', position: 'relative', marginBottom: '16px'}}>
           <SpeedDial
               direction="down"
               ariaLabel="Schedule Actions"
@@ -196,7 +196,7 @@ const ScheduleView = () => {
                 />
               ))}
             </SpeedDial>
-        </div>
+        </div>}
         <TableContainer ref={containerRef} style={{minHeight: height, paddingBottom: '10px'}} component={Paper}>
         <div id="tables" className={overflow ? 'tables' : 'tables-center'}>
         {numberToArray(schedule.num_weeks).map((week, index1) => (

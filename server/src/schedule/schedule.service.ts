@@ -87,6 +87,15 @@ export class ScheduleService {
 		return schedule_temp;
 	}
 
+	async getScheduleShiftData(id: string) {
+		let schedule_found: Schedule = await this.scheduleModel.findById(id);
+		if (!schedule_found) {
+			throw new NotFoundException('סידור לא נמצא');
+		}
+		const days = this.calculateDays(schedule_found);
+		return { schedule: {weeks: schedule_found.weeks, num_weeks: schedule_found.num_weeks, date: schedule_found.date, days} };
+	}
+
 	async getViewSchedule(query: {
 		page?: number;
 	}, userId: string): Promise<{ schedule: Schedule; pages: number, reinforcements: ReinforcementInterface[][][], events: any[] }> {
@@ -182,7 +191,7 @@ export class ScheduleService {
 								start: new_date,
 								duration: {hours: duration_hours, minutes: duration_minutes},
 								location: `בית משפט רמלה`,
-								attendees: names.filter((name) => name !== nickname).map((name) => ({ name })),
+								attendees: []
 							});
 						}
 					}

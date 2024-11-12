@@ -93,6 +93,11 @@ export class ScheduleController {
 		return await this.scheduleService.getSchedule(id);
 	}
 
+	@Get('shifts/:id')
+	async getScheduleShifts(@Param('id') id: string) {
+		return await this.scheduleService.getScheduleShiftData(id);
+	}
+
 	@Post('shifts')
 	async getShifts(@Body() date: { month: number, year: number}): Promise<{ [key: string] :ShiftUser}> {
 		return await this.scheduleService.getShifts(date);

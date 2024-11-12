@@ -61,6 +61,9 @@ export class ScheduleModule implements NestModule {
 			.forRoutes({ path: 'api/schedules/shifts', method: RequestMethod.POST });
 		consumer
 			.apply(SiteManagerMiddleware)
+			.forRoutes({ path: 'api/schedules/shifts/:id', method: RequestMethod.GET });
+		consumer
+			.apply(SiteManagerMiddleware)
 			.forRoutes({ path: 'api/schedules', method: RequestMethod.PATCH });
 		consumer
 			.apply(SiteManagerMiddleware)
