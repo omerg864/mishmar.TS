@@ -240,7 +240,7 @@ let ShiftService = class ShiftService {
             .string('הגשות')
             .style(workbook.createStyle(Object.assign(Object.assign({}, headerStyle), { font: { size: 24, bold: true } })));
         ws.cell(1, weeks.length * 7 + 3, 2, weeks.length * 7 + 10, true)
-            .string(`${(0, functions_1.dateToStringShort)((0, functions_1.addDays)(new Date(days[0][0]), 1))} - ${(0, functions_1.dateToStringShort)((0, functions_1.addDays)(new Date(days.slice(-1)[0].slice(-1)[0]), 1))}`)
+            .string(`${(0, functions_1.dateToStringShort)(new Date(days[0][0]))} - ${(0, functions_1.dateToStringShort)(new Date(days.slice(-1)[0].slice(-1)[0]))}`)
             .style(workbook.createStyle(Object.assign(Object.assign({}, headerStyle), { font: { size: 24, bold: true } })));
         const days_names = [
             'ראשון',
@@ -276,7 +276,7 @@ let ShiftService = class ShiftService {
                 .style(Object.assign(Object.assign({}, cellStyle), leftBorder));
             for (let j = 0; j < 7; j++) {
                 ws.cell(3, 2 + j + i * 7)
-                    .string((0, functions_1.dateToStringShort)((0, functions_1.addDays)(new Date(days[i][j]), 1)))
+                    .string((0, functions_1.dateToStringShort)(new Date(days[i][j])))
                     .style(workbook.createStyle(headerStyle));
                 ws.cell(4, 2 + j + i * 7)
                     .string(days_names[j])

@@ -271,9 +271,9 @@ export class ShiftService {
 		ws.cell(1, weeks.length * 7 + 3, 2, weeks.length * 7 + 10, true)
 			.string(
 				`${dateToStringShort(
-					addDays(new Date(days[0][0]), 1)
+					new Date(days[0][0])
 				)} - ${dateToStringShort(
-					addDays(new Date(days.slice(-1)[0].slice(-1)[0]), 1)
+					new Date(days.slice(-1)[0].slice(-1)[0])
 				)}`
 			)
 			.style(
@@ -328,7 +328,7 @@ export class ShiftService {
 				.style({ ...cellStyle, ...leftBorder });
 			for (let j = 0; j < 7; j++) {
 				ws.cell(3, 2 + j + i * 7)
-					.string(dateToStringShort(addDays(new Date(days[i][j]), 1)))
+					.string(dateToStringShort(new Date(days[i][j])))
 					.style(workbook.createStyle(headerStyle));
 				ws.cell(4, 2 + j + i * 7)
 					.string(days_names[j])
