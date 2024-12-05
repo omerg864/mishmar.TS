@@ -30,7 +30,7 @@ export declare class ShiftController {
     }>;
     getUserScheduleShiftManager(userId: string, scheduleId: string): Promise<Shift>;
     getUserScheduleShift(userId: string, scheduleId: string): Promise<Shift>;
-    toExcel(weeks: ShiftScheduleWeek[], days: string[][], num_users: number, weeksNotes: string[], generalNotes: string, events: EventInterface[]): Promise<StreamableFile>;
+    toExcel(weeks: ShiftScheduleWeek[], days: string[][], num_users: number, weeksNotes: string[], generalNotes: string, events: EventInterface[], scheduleId: string): Promise<StreamableFile>;
     deleteShift(id: string): Promise<{
         id: string;
     }>;

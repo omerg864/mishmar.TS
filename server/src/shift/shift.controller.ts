@@ -26,9 +26,7 @@ export class ShiftController {
 	}
 
 	@Get('schedule/:id')
-	async scheduleShifts(
-		@Param('id') id: string
-	): Promise<{
+	async scheduleShifts(@Param('id') id: string): Promise<{
 		weeks: ShiftScheduleWeek[];
 		weeksNotes: string[];
 		generalNotes: string;
@@ -67,7 +65,8 @@ export class ShiftController {
 		@Body('num_users') num_users: number,
 		@Body('weeksNotes') weeksNotes: string[],
 		@Body('generalNotes') generalNotes: string,
-		@Body('events') events: EventInterface[]
+		@Body('events') events: EventInterface[],
+		@Body('scheduleId') scheduleId: string
 	): Promise<StreamableFile> {
 		return await this.shiftService.toExcel(
 			weeks,
@@ -75,7 +74,8 @@ export class ShiftController {
 			num_users,
 			weeksNotes,
 			generalNotes,
-			events
+			events,
+			scheduleId
 		);
 	}
 

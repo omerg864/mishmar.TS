@@ -32,8 +32,8 @@ let ShiftController = class ShiftController {
     async getUserScheduleShift(userId, scheduleId) {
         return this.shiftService.getUserScheduleShift(userId, scheduleId);
     }
-    async toExcel(weeks, days, num_users, weeksNotes, generalNotes, events) {
-        return await this.shiftService.toExcel(weeks, days, num_users, weeksNotes, generalNotes, events);
+    async toExcel(weeks, days, num_users, weeksNotes, generalNotes, events, scheduleId) {
+        return await this.shiftService.toExcel(weeks, days, num_users, weeksNotes, generalNotes, events, scheduleId);
     }
     async deleteShift(id) {
         return this.shiftService.delete(id);
@@ -80,8 +80,9 @@ __decorate([
     __param(3, (0, common_1.Body)('weeksNotes')),
     __param(4, (0, common_1.Body)('generalNotes')),
     __param(5, (0, common_1.Body)('events')),
+    __param(6, (0, common_1.Body)('scheduleId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Array, Array, Number, Array, String, Array]),
+    __metadata("design:paramtypes", [Array, Array, Number, Array, String, Array, String]),
     __metadata("design:returntype", Promise)
 ], ShiftController.prototype, "toExcel", null);
 __decorate([

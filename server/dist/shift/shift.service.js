@@ -62,13 +62,7 @@ let ShiftService = class ShiftService {
         const shifts = await this.shiftModel
             .find({ scheduleId: scheduleId })
             .populate('userId');
-        const params = [
-            'morning',
-            'noon',
-            'night',
-            'pull',
-            'notes',
-        ];
+        const params = ['morning', 'noon', 'night', 'pull', 'notes'];
         let users = [];
         const weeks = [];
         let userMins = [];
@@ -179,7 +173,10 @@ let ShiftService = class ShiftService {
             minUsers: userMins,
         };
     }
-    async toExcel(weeks, days, num_users, weeksNotes, generalNotes, events) {
+    async toExcel(weeks, days, num_users, weeksNotes, generalNotes, events, scheduleId) {
+        const shifts = await this.shiftModel
+            .find({ scheduleId: scheduleId })
+            .populate('userId');
         const workbook = new excel.Workbook();
         const worksheetOptions = {
             sheetView: {
@@ -334,13 +331,30 @@ let ShiftService = class ShiftService {
         ws.cell(4, shiftsWeeksEnd + 2)
             .string(`סופ״ש`)
             .style(workbook.createStyle(headerStyle));
+        ws.cell(4, shiftsWeeksEnd + 3)
+            .string(`רצף חלש`)
+            .style(workbook.createStyle(headerStyle));
+        ws.cell(4, shiftsWeeksEnd + 4)
+            .string(`רצף חזק`)
+            .style(workbook.createStyle(headerStyle));
         names.add('');
         const namesArray = Array.from(names);
         for (let i = 0; i < namesArray.length; i++) {
             ws.cell(5 + i, weeks.length * 7 + 3, 5 + i, weeks.length * 7 + 4, true)
                 .string(namesArray[i])
                 .style(workbook.createStyle(headerStyle));
-            ws.cell(5 + i, weeks.length * 7 + 5, 5 + i, shiftsWeeksEnd + 2, false).style(workbook.createStyle(headerStyle));
+            ws.cell(5 + i, weeks.length * 7 + 5, 5 + i, shiftsWeeksEnd + 4, false).style(workbook.createStyle(headerStyle));
+            const shift = shifts.find((s) => s.userId &&
+                s.userId.nickname &&
+                s.userId.nickname === namesArray[i]);
+            if (shift) {
+                ws.cell(5 + i, shiftsWeeksEnd + 3, 5 + i, shiftsWeeksEnd + 3, false)
+                    .number(shift.weekend_day)
+                    .style(workbook.createStyle(headerStyle));
+                ws.cell(5 + i, shiftsWeeksEnd + 4, 5 + i, shiftsWeeksEnd + 4, false)
+                    .number(shift.weekend_night)
+                    .style(workbook.createStyle(headerStyle));
+            }
         }
         ws.cell(5 + namesArray.length, weeks.length * 7 + 3, 5 + namesArray.length, weeks.length * 7 + 4, true)
             .string('סה״כ')

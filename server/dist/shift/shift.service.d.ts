@@ -34,7 +34,7 @@ export declare class ShiftService {
             noon: number[];
         }[];
     }>;
-    toExcel(weeks: ShiftScheduleWeek[], days: string[][], num_users: number, weeksNotes: string[], generalNotes: string, events: EventInterface[]): Promise<StreamableFile>;
+    toExcel(weeks: ShiftScheduleWeek[], days: string[][], num_users: number, weeksNotes: string[], generalNotes: string, events: EventInterface[], scheduleId: string): Promise<StreamableFile>;
     createNewShift(userId: string, scheduleId: string): Promise<Shift>;
     getUserScheduleShift(userId: string, scheduleId: string): Promise<Shift>;
     update(shift: Shift, userId: string): Promise<Shift>;

@@ -3,7 +3,7 @@ import {
 	Injectable,
 	NotFoundException,
 	UnauthorizedException,
-	StreamableFile
+	StreamableFile,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -61,13 +61,7 @@ export class ShiftService {
 		const shifts = await this.shiftModel
 			.find({ scheduleId: scheduleId })
 			.populate('userId');
-		const params = [
-			'morning',
-			'noon',
-			'night',
-			'pull',
-			'notes',
-		];
+		const params = ['morning', 'noon', 'night', 'pull', 'notes'];
 		let users: { nickname: string; id: string }[] = [];
 		const weeks: ShiftScheduleWeek[] = [];
 		let userMins: {
@@ -198,8 +192,12 @@ export class ShiftService {
 		num_users: number,
 		weeksNotes: string[],
 		generalNotes: string,
-		events: EventInterface[]
+		events: EventInterface[],
+		scheduleId: string
 	): Promise<StreamableFile> {
+		const shifts = await this.shiftModel
+			.find({ scheduleId: scheduleId })
+			.populate('userId');
 		const workbook = new excel.Workbook();
 		const worksheetOptions = {
 			sheetView: {
@@ -390,6 +388,12 @@ export class ShiftService {
 		ws.cell(4, shiftsWeeksEnd + 2)
 			.string(`סופ״ש`)
 			.style(workbook.createStyle(headerStyle));
+		ws.cell(4, shiftsWeeksEnd + 3)
+			.string(`רצף חלש`)
+			.style(workbook.createStyle(headerStyle));
+		ws.cell(4, shiftsWeeksEnd + 4)
+			.string(`רצף חזק`)
+			.style(workbook.createStyle(headerStyle));
 		names.add('');
 		const namesArray = Array.from(names); // excel.getExcelAlpha(10);
 		for (let i = 0; i < namesArray.length; i++) {
@@ -406,9 +410,35 @@ export class ShiftService {
 				5 + i,
 				weeks.length * 7 + 5,
 				5 + i,
-				shiftsWeeksEnd + 2,
+				shiftsWeeksEnd + 4,
 				false
 			).style(workbook.createStyle(headerStyle));
+			const shift = shifts.find(
+				(s) =>
+					s.userId &&
+					(s.userId as User).nickname &&
+					(s.userId as User).nickname === namesArray[i]
+			);
+			if (shift) {
+				ws.cell(
+					5 + i,
+					shiftsWeeksEnd + 3,
+					5 + i,
+					shiftsWeeksEnd + 3,
+					false
+				)
+					.number(shift.weekend_day)
+					.style(workbook.createStyle(headerStyle));
+				ws.cell(
+					5 + i,
+					shiftsWeeksEnd + 4,
+					5 + i,
+					shiftsWeeksEnd + 4,
+					false
+				)
+					.number(shift.weekend_night)
+					.style(workbook.createStyle(headerStyle));
+			}
 		}
 		ws.cell(
 			5 + namesArray.length,
