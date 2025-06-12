@@ -1,290 +1,301 @@
 main {
-  display: flex;
-  flex-direction: column;
-  justify-content: top;
-  align-items: center;
-  min-height: 100vh;
-  padding: 15px;
-  padding-left: 25px;
-  box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	justify-content: top;
+	align-items: center;
+	min-height: calc(100vh - 7.6rem);
+	padding: 15px;
+	padding-left: 25px;
+	box-sizing: border-box;
 }
 
 .text_input {
-  background-color: white;
+	background-color: white;
 }
 
 .container {
-  border: 1px solid #000;
-  border-radius: 5px;
-  width: 50%;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: top;
-  align-items: center;
-  background-color: lightgray;
+	border: 1px solid #000;
+	border-radius: 5px;
+	width: 50%;
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	justify-content: top;
+	align-items: center;
+	background-color: lightgray;
 }
 
 .tables-center {
-  display: flex;
-  justify-content: center;
+	display: flex;
+	justify-content: center;
 }
 
 .tables {
-  display: flex;
+	display: flex;
 }
 
 .container form {
-  display: flex;
-  flex-direction: column;
-  justify-content: top;
-  align-items: center;
-  gap: 10px;
+	display: flex;
+	flex-direction: column;
+	justify-content: top;
+	align-items: center;
+	gap: 10px;
 }
 
 .form-new {
-  display: flex;
-  flex-direction: column;
-  justify-content: top;
-  align-items: center;
-  gap: 10px;
+	display: flex;
+	flex-direction: column;
+	justify-content: top;
+	align-items: center;
+	gap: 10px;
+}
+
+.loadingBackground {
+  background-color: #1975d2;
+  position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 5000;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .loadingSpinnerContainer {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 5000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 5000;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .loadingSpinner {
-  width: 64px;
-  height: 64px;
-  border: 8px solid;
-  border-color: #000 transparent rgb(0, 174, 255) transparent;
-  border-radius: 50%;
-  animation: spin 1.2s linear infinite;
+	width: 64px;
+	height: 64px;
+	border: 8px solid;
+	border-color: #000 transparent rgb(0, 174, 255) transparent;
+	border-radius: 50%;
+	animation: spin 1.2s linear infinite;
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
+	0% {
+		transform: rotate(0deg);
+	}
 
-  100% {
-    transform: rotate(360deg);
-  }
+	100% {
+		transform: rotate(360deg);
+	}
 }
 
 .manager-div {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  border-bottom: 1px solid black;
-  width: 100%;
-  padding-bottom: 10px;
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	justify-content: center;
+	border-bottom: 1px solid black;
+	width: 100%;
+	padding-bottom: 10px;
 }
 
 .schedule {
-  border: 1px solid black;
-  padding: 10px;
-  border-radius: 5px;
-  text-align: center;
-  margin-bottom: 6px;
+	border: 1px solid black;
+	padding: 10px;
+	border-radius: 5px;
+	text-align: center;
+	margin-bottom: 6px;
 }
 
 .space-div {
-  display: flex;
-  justify-content: space-around;
+	display: flex;
+	justify-content: space-around;
 }
 
 table {
-  width: 100%;
-  border-collapse: collapse;
+	width: 100%;
+	border-collapse: collapse;
 }
 
 /* Zebra striping */
 tr:nth-of-type(odd) {
-  background: rgb(179, 179, 179);
+	background: rgb(179, 179, 179);
 }
 
 th {
-  background: #333;
-  color: white;
-  font-weight: bold;
-  min-width: 15px;
+	background: #333;
+	color: white;
+	font-weight: bold;
+	min-width: 15px;
 }
 
 td,
 th {
-  padding: 6px;
-  border: 1px solid #ccc;
-  text-align: center;
-  white-space: pre-line;
-  min-width: 15px;
+	padding: 6px;
+	border: 1px solid #ccc;
+	text-align: center;
+	white-space: pre-line;
+	min-width: 15px;
 }
 
 .save-btn-container {
-  display: flex;
-  justify-content: flex-start;
-  width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
+	display: flex;
+	justify-content: flex-start;
+	width: 100%;
+	padding: 20px;
+	box-sizing: border-box;
 }
 
 .posts-home {
-  width: 60%;
-  margin-top: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  align-items: center;
+	width: 60%;
+	margin-top: 15px;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	align-items: center;
 }
 
 .box-container {
-  width: 60%;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  padding: 10px;
-  align-items: center;
+	width: 60%;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	padding: 10px;
+	align-items: center;
 }
 
 .card-container {
-  width: 100%;
+	width: 100%;
 }
 
 .user-data {
-  width: 30%;
-  height: fit-content;
+	width: 30%;
+	height: fit-content;
 }
 
 .schedule-shift-info {
-  display: flex;
-  width: 100%;
-  padding: 10px;
-  gap: 5%;
+	display: flex;
+	width: 100%;
+	padding: 10px;
+	gap: 5%;
 }
 
 .shift-user {
-  display: flex;
-  width: 100%;
-  padding: 10px;
-  gap: 10px;
+	display: flex;
+	width: 100%;
+	padding: 10px;
+	gap: 10px;
 }
 
 .general-notes {
-  font-family: inherit;
-  white-space: pre-wrap;       
-  white-space: -moz-pre-wrap;  
-  white-space: -pre-wrap;     
-  white-space: -o-pre-wrap;    
-  word-wrap: break-word;
+	font-family: inherit;
+	white-space: pre-wrap;
+	white-space: -moz-pre-wrap;
+	white-space: -pre-wrap;
+	white-space: -o-pre-wrap;
+	word-wrap: break-word;
 }
 
 .green {
-  color: green;
+	color: green;
 }
 
 .css-ahj2mt-MuiTypography-root {
-  font-size: 1.3rem;
+	font-size: 1.3rem;
 }
 
 .googleSignIn {
-  border: none;
-  border-radius: 2px;
-  background-color: #4285f4;
-  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.24), 0 0 1px 0 rgba(0, 0, 0, 0.12);
-  border: none;
-  display: flex;
-  padding: 1px;
-  color: #fff;
+	border: none;
+	border-radius: 2px;
+	background-color: #4285f4;
+	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.24), 0 0 1px 0 rgba(0, 0, 0, 0.12);
+	border: none;
+	display: flex;
+	padding: 1px;
+	color: #fff;
 }
 .googleSignIn:hover {
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 }
 .googleSignIn:active {
-  background: #3367d6;
+	background: #3367d6;
 }
 
 .googleSignIn--white {
-  background: #fff;
-  color: rgba(0, 0, 0, 0.8);
-  align-items: center;
-  justify-content: center;
+	background: #fff;
+	color: rgba(0, 0, 0, 0.8);
+	align-items: center;
+	justify-content: center;
 }
 .googleSignIn--white:active {
-  background: #eeeeee;
+	background: #eeeeee;
 }
 
 .googleSignIn:disabled {
-  background: rgba(0, 0, 0, 0.08);
-  color: rgba(0, 0, 0, 0.4);
-  box-shadow: none;
+	background: rgba(0, 0, 0, 0.08);
+	color: rgba(0, 0, 0, 0.4);
+	box-shadow: none;
 }
 
 .googleSignIn__text {
-  padding: 11px;
-  font-family: "Roboto";
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.2px;
-  text-align: left;
-  white-space: nowrap;
+	padding: 11px;
+	font-family: 'Roboto';
+	font-size: 14px;
+	font-weight: 500;
+	letter-spacing: 0.2px;
+	text-align: left;
+	white-space: nowrap;
 }
 
 .salary_cells {
-  display: flex;
-  margin-top: 10px;
-  flex-wrap: wrap;
+	display: flex;
+	margin-top: 10px;
+	flex-wrap: wrap;
 }
 
 #salaryTableContainer {
-  width: fit-content;
+	width: fit-content;
 }
 
-
 @media only screen and (max-width: 899px) {
-  .posts-home {
-    width: 100%;
-  }
+	.posts-home {
+		width: 100%;
+	}
 
-  .user-data {
-    width: 100%;
+	.user-data {
+		width: 100%;
+	}
 
-  }
+	.box-container {
+		width: 100%;
+	}
 
-  .box-container {
-    width: 100%;
-  }
+	.shift-user {
+		flex-direction: column;
+		justify-content: flex-start;
+	}
 
-  .shift-user {
-    flex-direction: column;
-    justify-content: flex-start;
-  }
+	.salary_cells {
+		flex-wrap: nowrap;
+		flex-direction: column;
+		box-sizing: border-box;
+		width: 100%;
+	}
 
-  .salary_cells {
-    flex-wrap: nowrap;
-    flex-direction: column;
-    box-sizing: border-box;
-    width: 100%;
-  }
-
-  #salaryTableContainer {
-    width: 100%;
-  }
+	#salaryTableContainer {
+		width: 100%;
+	}
 }
 
 @media only screen and (max-width: 700px) {
-  .schedule-shift-info {
-    flex-direction: column;
-    justify-content: flex-start;
-  }
+	.schedule-shift-info {
+		flex-direction: column;
+		justify-content: flex-start;
+	}
 }

@@ -473,9 +473,10 @@ let ShiftService = class ShiftService {
             }
             if (((_a = shiftFound.updatedAt) === null || _a === void 0 ? void 0 : _a.getTime()) ===
                 ((_b = shiftFound.createdAt) === null || _b === void 0 ? void 0 : _b.getTime())) {
-                const managers = await this.userModel.find({
+                let managers = await this.userModel.find({
                     role: { $in: ['ADMIN', 'SITE_MANAGER'] },
                 });
+                managers = managers.filter((manager) => manager.username !== 'admin');
                 const emails = [];
                 for (let i = 0; i < managers.length; i++) {
                     emails.push(managers[i].email);

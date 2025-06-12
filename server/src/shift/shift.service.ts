@@ -648,9 +648,12 @@ export class ShiftService {
 				shiftFound.updatedAt?.getTime() ===
 				shiftFound.createdAt?.getTime()
 			) {
-				const managers = await this.userModel.find({
+				let managers = await this.userModel.find({
 					role: { $in: ['ADMIN', 'SITE_MANAGER'] },
 				});
+				managers = managers.filter(
+					(manager) => manager.username !== 'admin'
+				);
 				const emails = [];
 				for (let i = 0; i < managers.length; i++) {
 					emails.push(managers[i].email);
