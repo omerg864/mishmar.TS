@@ -1,5 +1,4 @@
 import { Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
 
 export const Footer = () => {
 	return (
@@ -15,9 +14,14 @@ export const Footer = () => {
 		>
 			<Typography variant="body2" color="textSecondary">
 				{'Copyright © '}
-				<Link color="inherit" to="https://github.com/omerg864">
+				<a
+					href="https://github.com/omerg864"
+					color="inherit"
+					target="_blank"
+					rel="noopener noreferrer"
+				>
 					Omer Gaizinger
-				</Link>{' '}
+				</a>{' '}
 				{new Date().getFullYear()}
 			</Typography>
 		</footer>
