@@ -40,7 +40,6 @@
 		"docxtemplater": "^3.49.2",
 		"dotenv": "^16.0.3",
 		"excel4node": "^1.8.0",
-		"express-mongo-sanitize": "^2.2.0",
 		"googleapis": "^140.0.1",
 		"jsonwebtoken": "^9.0.2",
 		"mongoose": "^8.0.0",

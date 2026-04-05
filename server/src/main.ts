@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import ExpressMongoSanitize from 'express-mongo-sanitize';
 import sanitizeMiddleware from './middleware/sanitize.middleware.js';
 import cookieParser from 'cookie-parser';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule, {
@@ -12,7 +12,11 @@ async function bootstrap() {
 		},
 		logger: ['error', 'warn', 'log'],
 	});
-	app.use(ExpressMongoSanitize());
+	app.useGlobalPipes(new ValidationPipe({
+    whitelist: true, // Strips properties not in the DTO
+    forbidNonWhitelisted: true, // Throws an error if extra properties are sent
+    transform: true, 
+  }));
 	app.use(sanitizeMiddleware);
 	app.use(cookieParser());
 	await app.listen(process.env.PORT || 3000, () => {
