@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Patch, Post, StreamableFile } from '@nestjs/common';
-import { Settings } from './settings.model';
+import type { Settings } from './settings.model';
 import { SettingsService } from './settings.service';
 
 @Controller('api/settings')

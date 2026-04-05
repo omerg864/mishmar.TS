@@ -1,5 +1,5 @@
-import { Structure } from './structure.model';
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import type { Structure } from './structure.model';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post } from '@nestjs/common';
 import { StructureService } from './structure.service';
 
 @Controller('api/structures')
@@ -19,7 +19,11 @@ export class StructureController {
 
     @Patch()
     async updateStructure(@Body() structure: Structure): Promise<Structure> {
-        return this.structureService.updateStructure(structure);
+        const updated = await this.structureService.updateStructure(structure);
+        if (!updated) {
+            throw new NotFoundException('Structure not found');
+        }
+        return updated;
     }
 
     @Patch('many')
@@ -34,6 +38,10 @@ export class StructureController {
 
     @Get(':id')
     async getStructure(@Param('id') id: string): Promise<Structure> {
-        return this.structureService.getStructure(id);
+        const found = await this.structureService.getStructure(id);
+        if (!found) {
+            throw new NotFoundException('Structure not found');
+        }
+        return found;
     }
 }

@@ -10,7 +10,7 @@ import {
 	UploadedFiles,
 	UseInterceptors,
 } from '@nestjs/common';
-import { User } from './user.model';
+import type { User } from './user.model';
 import { UserID } from '../middleware/auth.middleware';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
@@ -21,7 +21,7 @@ export class UserController {
 	@Post('login')
 	async login(
 		@Body('username') username: string,
-		@Body('password') password: string
+		@Body('password') password: string,
 	): Promise<{ user: User; token: string }> {
 		return await this.userService.login(username, password);
 	}
@@ -34,31 +34,27 @@ export class UserController {
 	}
 
 	@Get('pay')
-	async getPay(
-		@UserID() userId: string,
-	) {
+	async getPay(@UserID() userId: string) {
 		return await this.userService.getPayData(userId);
 	}
 
 	@Post('report')
 	@UseInterceptors(FilesInterceptor('file'))
-	async reportDataExtract(
-		@UploadedFiles() files: Express.Multer.File[],
-	) {
+	async reportDataExtract(@UploadedFiles() files: Express.Multer.File[]) {
 		return await this.userService.ReportData(files);
 	}
 
 	@Post('register')
 	async register(
 		@Body('user') user: User,
-		@Body('pin_code') pinCode: string
+		@Body('pin_code') pinCode: string,
 	): Promise<{ message: string }> {
 		return await this.userService.register(user, pinCode);
 	}
 
 	@Post('forgot')
 	async forgotPasswordEmail(
-		@Body('email') email: string
+		@Body('email') email: string,
 	): Promise<{ error?: Error; response?: string }> {
 		return await this.userService.forgotPasswordEmail(email);
 	}
@@ -66,14 +62,14 @@ export class UserController {
 	@Post('resetPassword/:token')
 	async resetTokenPassword(
 		@Body('password') password: string,
-		@Param('token') reset_token: string
+		@Param('token') reset_token: string,
 	): Promise<{ success: boolean }> {
 		return await this.userService.resetTokenPassword(reset_token, password);
 	}
 
 	@Get('resetPassword/:token')
 	async resetTokenCheck(
-		@Param('token') reset_token: string
+		@Param('token') reset_token: string,
 	): Promise<{ success: boolean }> {
 		return await this.userService.resetTokenCheck(reset_token);
 	}
@@ -81,7 +77,7 @@ export class UserController {
 	@Patch()
 	async updateUser(
 		@Body() user: User,
-		@UserID() userId: string
+		@UserID() userId: string,
 	): Promise<User> {
 		return await this.userService.updateUser(user, userId);
 	}
@@ -108,7 +104,7 @@ export class UserController {
 
 	@Get('auth')
 	async authUser(
-		@UserID() id: string
+		@UserID() id: string,
 	): Promise<{ user: boolean; manager: boolean; userCookie: User }> {
 		return await this.userService.authUser(id);
 	}

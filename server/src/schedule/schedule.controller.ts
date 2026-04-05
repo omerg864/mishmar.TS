@@ -12,7 +12,7 @@ import {
 	UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { Schedule } from './schedule.model';
+import type { Schedule } from './schedule.model';
 import { ScheduleService, Shift } from './schedule.service';
 import { ReinforcementInterface } from '../reinforcement/reinforcement.model';
 import { UserID } from '../middleware/auth.middleware';

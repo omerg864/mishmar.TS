@@ -60,6 +60,6 @@ export class ShiftModule implements NestModule {
 			});
 		consumer
 			.apply(AdminManagerMiddleware)
-			.forRoutes({ path: 'api/shifts/*', method: RequestMethod.DELETE });
+			.forRoutes({ path: 'api/shifts/*path', method: RequestMethod.DELETE });
 	}
 }

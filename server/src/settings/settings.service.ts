@@ -1,4 +1,4 @@
-import { Injectable, StreamableFile } from '@nestjs/common';
+import { Injectable, StreamableFile, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Settings } from './settings.model';
@@ -22,8 +22,12 @@ export class SettingsService {
     }
 
     async updateSettings(settings: Settings): Promise<Settings> {
-        const settingsFound = await this.get();
-        return await this.settingsModel.findOneAndUpdate({}, settings, {new: true});
+        await this.get();
+        const updated = await this.settingsModel.findOneAndUpdate({}, settings, {new: true});
+        if (!updated) {
+            throw new NotFoundException('Settings not found');
+        }
+        return updated;
     }
 
     async getGeneral(): Promise<{title: string, submit: boolean}> {
@@ -33,7 +37,7 @@ export class SettingsService {
 
     async getBFile(body: {month: number, year: number}): Promise<StreamableFile> {
         const daysInMonth = this.getDaysInMonth(body.year, body.month);
-        let url: string;
+        let url: string | undefined;
         switch (daysInMonth) {
             case 28:
                 url = process.env.B_FILE_28;
@@ -48,6 +52,11 @@ export class SettingsService {
                 url = process.env.B_FILE_31;
                 break;
         }
+
+        if (!url) {
+            throw new NotFoundException('Template file URL not found');
+        }
+
         const response = await axios({
             url,
             method: 'GET',
@@ -64,7 +73,7 @@ export class SettingsService {
             linebreaks: true,
         });
 
-        const days = {};
+        const days: Record<string, string> = {};
 
         for (let i = 1; i <= daysInMonth; i++) {
             days[`date${i}`] = `${i}/${body.month}/${body.year}`; // Get the date in the format of dd/mm/yyyy
@@ -78,7 +87,7 @@ export class SettingsService {
             compression: "DEFLATE",
         });
 
-        return new StreamableFile(newBuffer);
+        return new StreamableFile(new Uint8Array(newBuffer));
 
     }
 
@@ -88,7 +97,7 @@ export class SettingsService {
 
     async getHFile(body: {month: number, year: number}): Promise<StreamableFile> {
         const daysInMonth = this.getDaysInMonth(body.year, body.month);
-        let url: string;
+        let url: string | undefined;
         switch (daysInMonth) {
             case 28:
                 url = process.env.H_FILE_28;
@@ -103,6 +112,11 @@ export class SettingsService {
                 url = process.env.H_FILE_31;
                 break;
         }
+
+        if (!url) {
+            throw new NotFoundException('Template file URL not found');
+        }
+
         const response = await axios({
             url,
             method: 'GET',
@@ -143,6 +157,6 @@ export class SettingsService {
             compression: "DEFLATE",
         });
 
-        return new StreamableFile(newBuffer);
+        return new StreamableFile(new Uint8Array(newBuffer));
     }
 }

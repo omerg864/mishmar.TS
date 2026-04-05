@@ -15,22 +15,23 @@ import * as crypto from 'crypto';
 import { email_regex } from '../types/regularExpressions';
 import { googleAuthClient } from '../functions/functions';
 import axios from 'axios';
-import { PdfReader } from 'pdfreader';
+// import { PdfReader } from 'pdfreader'; // Removed due to ESM/CJS conflict
 
 @Injectable()
 export class UserService {
 	constructor(
 		@InjectModel('User') private readonly userModel: Model<User>,
-		@InjectModel('Settings') private readonly settingsModel: Model<Settings>
+		@InjectModel('Settings')
+		private readonly settingsModel: Model<Settings>,
 	) {}
 
 	generateToken(id: string): string {
-		return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+		return jwt.sign({ id }, process.env.JWT_SECRET!, { expiresIn: '30d' });
 	}
 
 	async login(
 		username: string,
-		password: string
+		password: string,
 	): Promise<{ user: User; token: string }> {
 		const user = await this.userModel
 			.findOne({ username })
@@ -56,7 +57,7 @@ export class UserService {
 		googleAuthClient.setCredentials(googleRes.tokens);
 
 		const userRes = await axios.get(
-			`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`
+			`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`,
 		);
 		if (!userRes.data.email) {
 			throw new UnauthorizedException('Invalid email');
@@ -119,20 +120,22 @@ export class UserService {
 				const salt = await bcrypt.genSalt(10);
 				const hashedPassword = await bcrypt.hash(
 					userObj.password,
-					salt
+					salt,
 				);
 				userObj.password = hashedPassword;
 			}
 			const updatedUser = await this.userModel
 				.findByIdAndUpdate(userObj._id, userObj, { new: true })
 				.select(['-password', '-reset_token']);
-			users_temp.push(updatedUser);
+			if (updatedUser) {
+				users_temp.push(updatedUser);
+			}
 		}
 		return users_temp;
 	}
 
 	async forgotPasswordEmail(
-		email: string
+		email: string,
 	): Promise<{ error?: Error; response?: string }> {
 		if (!email || !email_regex.test(email)) {
 			throw new ConflictException('אימייל לא תקין');
@@ -152,13 +155,13 @@ export class UserService {
 		return sendMail(
 			email,
 			'איפוס סיסמה למשתמש',
-			`כדי לאפס סיסמה נא ללכת לכתובת:\n ${process.env.SITE_ADDRESS}/password/reset/${generatedToken}`
+			`כדי לאפס סיסמה נא ללכת לכתובת:\n ${process.env.SITE_ADDRESS}/password/reset/${generatedToken}`,
 		);
 	}
 
 	async resetTokenPassword(
 		reset_token: string,
-		password: string
+		password: string,
 	): Promise<{ success: boolean }> {
 		const userFound = await this.userModel.findOne({ reset_token });
 		if (!userFound) {
@@ -195,7 +198,7 @@ export class UserService {
 	}
 
 	async updateUser(user: User, userId: string): Promise<User> {
-		const userObj = { ...user };
+		const userObj: Partial<User> = { ...user };
 		if (userObj.role) {
 			delete userObj.role;
 		}
@@ -210,6 +213,9 @@ export class UserService {
 		const updatedUser = await this.userModel
 			.findByIdAndUpdate(userId, userObj, { new: true })
 			.select(['-password', '-reset_token']);
+		if (!updatedUser) {
+			throw new NotFoundException('משתמש לא נמצא');
+		}
 		return updatedUser;
 	}
 
@@ -218,7 +224,7 @@ export class UserService {
 		if (!user) {
 			throw new NotFoundException('משתמש לא נמצא');
 		}
-		await user.delete();
+		await user.deleteOne();
 		return { id: user.id.toString() };
 	}
 
@@ -241,7 +247,13 @@ export class UserService {
 
 	async getPayData(userId: string) {
 		const settings = await this.settingsModel.findOne();
+		if (!settings) {
+			throw new NotFoundException('הגדרות לא נמצאו');
+		}
 		const user = await this.userModel.findById(userId);
+		if (!user) {
+			throw new NotFoundException('משתמש לא נמצא');
+		}
 		const payData: {
 			travel: number;
 			extra_travel: number;
@@ -261,7 +273,7 @@ export class UserService {
 			extra_eco: settings.extra_eco,
 			s_travel: settings.s_travel,
 			recuperation: settings.recuperation,
-			max_travel: settings.max_travel
+			max_travel: settings.max_travel,
 		};
 		if (settings.officer === user.nickname) {
 			payData.pay = settings.base_pay3;
@@ -273,29 +285,33 @@ export class UserService {
 		return { data: payData };
 	}
 
-	readPdf = (buffer: Buffer): Promise<string[]> => {
-		const lines = [];
+	readPdf = async (buffer: Buffer): Promise<string[]> => {
+		const lines: Record<number, string[]> = {};
+		const { PdfReader } = await import('pdfreader');
 		return new Promise((resolve, reject) => {
-			new PdfReader().parseBuffer(buffer, (err, item: {text: string, y: number}) => {
-				if (err) {
-				  console.error("error:", err);
-				  reject(err);
-				} else if (!item) {
-				  console.warn("end of buffer");
-				  // Convert object with y-coordinates to an array and sort by y-coordinate
-				  const sortedLines = Object.keys(lines)
-					.sort((a, b) => parseFloat(a) - parseFloat(b))
-					.map((y) => lines[y].join(''));
-				  resolve(sortedLines); // Resolve with the complete lines
-				} else if (item.text !== undefined) {
-				  // Use the y-coordinate to group text items
-				  const y = item.y;
-				  if (!lines[y]) {
-					lines[y] = [];
-				  }
-				  lines[y].push(item.text);
-				}
-			  });
+			new PdfReader().parseBuffer(
+				buffer,
+				(err: any, item: any) => {
+					if (err) {
+						console.error('error:', err);
+						reject(err);
+					} else if (!item) {
+						console.warn('end of buffer');
+						// Convert object with y-coordinates to an array and sort by y-coordinate
+						const sortedLines = Object.keys(lines)
+							.sort((a, b) => parseFloat(a) - parseFloat(b))
+							.map((y) => lines[Number(y)].join(''));
+						resolve(sortedLines); // Resolve with the complete lines
+					} else if (item.text !== undefined) {
+						// Use the y-coordinate to group text items
+						const y = item.y;
+						if (!lines[y]) {
+							lines[y] = [];
+						}
+						lines[y].push(item.text);
+					}
+				},
+			);
 		});
 	};
 
@@ -307,18 +323,18 @@ export class UserService {
 	async ReportData(files: Express.Multer.File[]) {
 		// pass
 		const fullRows = await this.readPdf(files[0].buffer);
-		const indexAfter = fullRows.findIndex((row) => row.includes("ימוכיס"));
+		const indexAfter = fullRows.findIndex((row) => row.includes('ימוכיס'));
 		const lineFound = fullRows[indexAfter - 1];
-		const linesSplit = lineFound.split(" ")
-		let data = [];
+		const linesSplit = lineFound.split(' ');
+		let data: string[] = [];
 		let dataMissing = 0;
-		for(let i = 0; i < linesSplit.length; i++) {
+		for (let i = 0; i < linesSplit.length; i++) {
 			if (linesSplit[i].length === 0) {
 				dataMissing++;
 			}
 			if (dataMissing === 6) {
 				dataMissing = 0;
-				data.push("0");
+				data.push('0');
 				continue;
 			}
 			if (linesSplit[i].length === 0) {
@@ -335,7 +351,7 @@ export class UserService {
 			}
 		}
 		if (!valid) {
-			data = new Array(18).fill("0");
+			data = new Array(18).fill('0');
 		}
 		if (data[data.length - 1]) {
 			// remove index data.length - 2
@@ -343,7 +359,7 @@ export class UserService {
 		}
 		if (data.length < 17) {
 			for (let i = 0; i < 18 - data.length; i++) {
-				data.unshift("0");
+				data.unshift('0');
 			}
 		}
 		const floatData = data.map((item) => parseFloat(item));
@@ -370,11 +386,14 @@ export class UserService {
 	}
 
 	async authUser(
-		id: string
+		id: string,
 	): Promise<{ user: boolean; manager: boolean; userCookie: User }> {
 		const user = await this.userModel
 			.findById(id)
 			.select(['-password', '-reset_token']);
+		if (!user) {
+			throw new NotFoundException('משתמש לא נמצא');
+		}
 		let manager = false;
 		if (user.role.includes('ADMIN') || user.role.includes('SITE_MANAGER')) {
 			manager = true;

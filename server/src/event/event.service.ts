@@ -17,7 +17,7 @@ export class EventService {
         } else {
             query.page -= 1;
         }
-        const eventCount = await this.eventModel.find().count();
+        const eventCount = await this.eventModel.find().countDocuments();
         const pages = eventCount > 0 ? Math.ceil(eventCount / 4) : 1;
         const events = await this.eventModel.find().sort( { date: -1}).skip(query.page * 4).limit(4);
         const users = await this.userModel.find({ username: {$ne: "admin"}});
@@ -26,12 +26,18 @@ export class EventService {
 
     async getUserEventsSchedule(scheduleId: string, userId: string): Promise<EventInterface[]> {
         const schedule = await this.ScheduleModel.findById(scheduleId);
+        if (!schedule) {
+            throw new NotFoundException('Schedule not found');
+        }
         const events = await this.eventModel.find({users: userId, date: { $gte : schedule.date, $lte: addDays(schedule.date, schedule.num_weeks * 7)}}).sort( { date: -1});
         return events;
     }
 
     async getEventsSchedule(scheduleId: string): Promise<EventInterface[]> {
         const schedule = await this.ScheduleModel.findById(scheduleId);
+        if (!schedule) {
+            throw new NotFoundException('Schedule not found');
+        }
         const events = await this.eventModel.find({ date: { $gte : schedule.date, $lte: addDays(schedule.date, schedule.num_weeks * 7)}}).sort( { date: -1}).populate('users');
         return events;
     }
@@ -69,7 +75,8 @@ export class EventService {
             if (!eventFound) {
                 throw new NotFoundException('אירוע לא נמצא');
             }
-            events_temp.push(await this.eventModel.findByIdAndUpdate({ _id: events[i]._id }, events[i], { new: true }));
+            const updated = await this.eventModel.findByIdAndUpdate({ _id: events[i]._id }, events[i], { new: true });
+            if (updated) events_temp.push(updated);
         }
         return events_temp;
     }
@@ -79,6 +86,10 @@ export class EventService {
         if (!eventFound) {
             throw new NotFoundException('אירוע לא נמצא');
         }
-        return await this.eventModel.findByIdAndUpdate({ _id: event.id }, event, { new: true });
+        const updated = await this.eventModel.findByIdAndUpdate({ _id: event.id }, event, { new: true });
+        if (!updated) {
+            throw new NotFoundException('Event not found');
+        }
+        return updated;
     }
 }

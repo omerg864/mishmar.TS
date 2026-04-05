@@ -35,7 +35,7 @@ export class ScheduleModule implements NestModule {
 		consumer
 			.apply(AuthMiddleware)
 			.forRoutes({
-				path: 'api/schedules/auth/*',
+				path: 'api/schedules/auth/*path',
 				method: RequestMethod.GET,
 			});
 		consumer
@@ -52,7 +52,7 @@ export class ScheduleModule implements NestModule {
 			});
 		consumer
 			.apply(SiteManagerMiddleware)
-			.forRoutes({ path: 'api/schedules/*', method: RequestMethod.PUT });
+			.forRoutes({ path: 'api/schedules/*path', method: RequestMethod.PUT });
 		consumer
 			.apply(SiteManagerMiddleware)
 			.forRoutes({ path: 'api/schedules', method: RequestMethod.POST });
@@ -68,7 +68,7 @@ export class ScheduleModule implements NestModule {
 		consumer
 			.apply(SiteManagerMiddleware)
 			.forRoutes({
-				path: 'api/schedules/*',
+				path: 'api/schedules/*path',
 				method: RequestMethod.DELETE,
 			});
 	}

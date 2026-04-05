@@ -9,7 +9,7 @@ import {
 	Query,
 } from '@nestjs/common';
 import { UserID } from '../middleware/auth.middleware';
-import { PostInterface } from './post.model';
+import type { PostInterface } from './post.model';
 import { PostService } from './post.service';
 
 @Controller('api/posts')

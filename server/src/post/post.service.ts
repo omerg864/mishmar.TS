@@ -26,7 +26,7 @@ export class PostService {
         } else {
             query.page = query.page - 1;
         }
-        const postsCount = await this.postModel.find().count();
+        const postsCount = await this.postModel.find().countDocuments();
         const pages = postsCount > 0 ? Math.ceil(postsCount / 3) : 1;
         const posts = await this.postModel.find().sort({ date: -1 }).populate('userId', ["nickname"]).skip(query.page * 3).limit(3);
         return {posts, pages};
@@ -46,6 +46,10 @@ export class PostService {
         if (!postFound) {
             throw new NotFoundException('פוסט לא נמצא');
         }
-        return await this.postModel.findByIdAndUpdate(post._id, {...post, userId: userId}, { new: true});
+        const updated = await this.postModel.findByIdAndUpdate(post._id, {...post, userId: userId}, { new: true});
+        if (!updated) {
+            throw new NotFoundException('Post not found');
+        }
+        return updated;
     }
 }

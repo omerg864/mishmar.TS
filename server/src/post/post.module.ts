@@ -32,7 +32,7 @@ export class PostModule implements NestModule {
 			.forRoutes({ path: 'api/posts', method: RequestMethod.POST });
 		consumer
 			.apply(ShiftManagerMiddleware)
-			.forRoutes({ path: 'api/posts/*', method: RequestMethod.DELETE });
+			.forRoutes({ path: 'api/posts/*path', method: RequestMethod.DELETE });
 		consumer
 			.apply(ShiftManagerMiddleware)
 			.forRoutes({ path: 'api/posts', method: RequestMethod.PATCH });

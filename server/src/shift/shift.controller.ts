@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { EventInterface } from '../event/event.model';
 import { UserID } from '../middleware/auth.middleware';
-import { Shift, ShiftScheduleWeek } from './shift.model';
+import type { Shift, ShiftScheduleWeek } from './shift.model';
 import { ShiftService } from './shift.service';
 
 @Controller('api/shifts')

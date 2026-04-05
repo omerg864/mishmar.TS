@@ -30,7 +30,7 @@ export class EventModule implements NestModule {
 	configure(consumer: MiddlewareConsumer) {
 		consumer
 			.apply(SiteManagerMiddleware)
-			.forRoutes({ path: 'api/events/*', method: RequestMethod.DELETE });
+			.forRoutes({ path: 'api/events/*path', method: RequestMethod.DELETE });
 		consumer
 			.apply(SiteManagerMiddleware)
 			.forRoutes({ path: 'api/events', method: RequestMethod.PATCH });
@@ -55,7 +55,7 @@ export class EventModule implements NestModule {
 		consumer
 			.apply(AuthMiddleware)
 			.forRoutes({
-				path: 'api/events/schedule/*',
+				path: 'api/events/schedule/*path',
 				method: RequestMethod.GET,
 			});
 	}

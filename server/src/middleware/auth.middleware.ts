@@ -23,12 +23,12 @@ const checkUser = async (
 		throw new UnauthorizedException('לא נמצא טוקן הזדהות');
 	}
 	try {
-		const payload = jwt.verify(token, process.env.JWT_SECRET);
+		const payload = jwt.verify(token, process.env.JWT_SECRET!);
 		const userId = payload['id'];
 		if (!userId) {
 			throw new UnauthorizedException('טוקן הזדהות לא תקין');
 		}
-		const userFound = await userModel.findById(userId);
+		const userFound = await userModel.findById(userId).exec();
 		if (!userFound) {
 			throw new NotFoundException('משתמש לא נמצא');
 		}

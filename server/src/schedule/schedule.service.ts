@@ -6,16 +6,16 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Structure } from '../structure/structure.model';
-import { Schedule } from './schedule.model';
+import type { Structure } from '../structure/structure.model';
+import type { Schedule } from './schedule.model';
 import { addDays, getRandomIndex, numberToDay } from '../functions/functions';
 import * as XLSX from 'xlsx';
 import * as excel from 'excel4node';
-import { User } from '../user/user.model';
-import { Settings } from '../settings/settings.model';
+import type { User } from '../user/user.model';
+import type { Settings } from '../settings/settings.model';
 import Dayjs from 'dayjs';
 import { HebrewCalendar, Location } from '@hebcal/core';
-import { ReinforcementInterface } from '../reinforcement/reinforcement.model';
+import type { ReinforcementInterface } from '../reinforcement/reinforcement.model';
 
 
 export type Shift = { shift: string | Structure; days: string[] };
@@ -62,20 +62,19 @@ export class ScheduleService {
 		for (let i = 0; i < schedule.weeks.length; i++) {
 			let week_tmp: Shift[] = [];
 			for (let j = 0; j < schedule.weeks[i].length; j++) {
-				let structureModel: Structure;
-				if (cache[schedule.weeks[i][j].shift.toString()]) {
-					structureModel =
-						cache[schedule.weeks[i][j].shift.toString()];
+				let currentStructure: Structure | null;
+				const shiftId = schedule.weeks[i][j].shift.toString();
+				if (cache[shiftId] !== undefined) {
+					currentStructure = cache[shiftId];
 				} else {
-					structureModel = await this.structureModel.findById(
+					currentStructure = await this.structureModel.findById(
 						schedule.weeks[i][j].shift
 					);
-					cache[schedule.weeks[i][j].shift.toString()] =
-						structureModel;
+					cache[shiftId] = currentStructure;
 				}
-				if (structureModel) {
+				if (currentStructure) {
 					week_tmp.push({
-						shift: structureModel,
+						shift: currentStructure,
 						days: schedule.weeks[i][j].days,
 					});
 				}
@@ -88,7 +87,7 @@ export class ScheduleService {
 	}
 
 	async getScheduleShiftData(id: string) {
-		let schedule_found: Schedule = await this.scheduleModel.findById(id);
+		const schedule_found = await this.scheduleModel.findById(id);
 		if (!schedule_found) {
 			throw new NotFoundException('סידור לא נמצא');
 		}
@@ -108,7 +107,7 @@ export class ScheduleService {
 			.find()
 			.sort({ date: -1 })
 			.limit(2);
-		let count = await this.scheduleModel.find().count();
+		let count = await this.scheduleModel.find().countDocuments();
 		if (all_schedules.length === 0) {
 			throw new NotFoundException('לא נמצאו סידורים');
 		}
@@ -133,13 +132,16 @@ export class ScheduleService {
 			this.populateSchedule(schedule_found),
 			this.userModel.findById(userId),
 		]);
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
 		const newSchedule = { ...schedule, days };
 		const events = await this.getEvents(newSchedule, reinforcements, user.nickname);
 		return { schedule: newSchedule, pages, reinforcements, events };
 	}
 
 	async getEvents(schedule: Schedule, reinforcements: ReinforcementInterface[][][], nickname: string) {
-		let events = [];
+		let events: any[] = [];
 		for (let i = 0; i < schedule.num_weeks; i++) {
 			for (let j = 0; j < 7; j++) {
 				if (reinforcements[i][j]) {
@@ -149,7 +151,7 @@ export class ScheduleService {
 							if (names[l] !== nickname) {
 								continue;
 							}
-							const date = new Date(schedule.days[i][j]);
+							const date = new Date(schedule.days![i][j]);
 							const start_time = this.shiftToStartTime(reinforcements[i][j][k].shift).split(':').map((x) => parseInt(x));
 							const end_time = this.shiftToEndTime(reinforcements[i][j][k].shift).split(':').map((x) => parseInt(x));
 							const new_date = [date.getFullYear(), date.getMonth() + 1, date.getDate(), start_time[0], start_time[1]];
@@ -167,7 +169,7 @@ export class ScheduleService {
 				}
 			}
 		}
-		const shifts = [];
+		const shifts: { shift: any, week: number, day: number }[] = [];
 		for (let i = 0; i < schedule.weeks.length; i++) {
 			for (let j = 0; j < schedule.weeks[i].length; j++) {
 				const shift = schedule.weeks[i][j];
@@ -179,7 +181,7 @@ export class ScheduleService {
 						}
 						if (shift.shift) {
 							shifts.push({ shift: (shift.shift as Structure).shift, week: i, day: k });
-							const date = new Date(schedule.days[i][k]);
+							const date = new Date(schedule.days![i][k]);
 							const start_time = (shift.shift as Structure).start_time.split(':').map((x) => parseInt(x));
 							const end_time = (shift.shift as Structure).end_time.split(':').map((x) => parseInt(x));
 							const new_date = [date.getFullYear(), date.getMonth() + 1, date.getDate() , start_time[0], start_time[1]];
@@ -214,7 +216,7 @@ export class ScheduleService {
 				}
 			}
 		}
-		return events.map((event) => ({...event, id: undefined, description: event.attendees.map((attendee) => attendee.name).join(', ')}));
+		return events.map((event) => ({...event, id: undefined, description: event.attendees ? event.attendees.map((attendee: any) => attendee.name).join(', ') : ''}));
 	}
 
 	numberToShift(num: number): string {
@@ -269,7 +271,7 @@ export class ScheduleService {
 				if (found.length > 0) {
 					reinforcements[i][j] = found as ReinforcementInterface[];
 				} else {
-					reinforcements[i][j] = null;
+					reinforcements[i][j] = [];
 				}
 			}
 		}
@@ -284,7 +286,7 @@ export class ScheduleService {
 		} else {
 			query.page -= 1;
 		}
-		let scheduleCount = await this.scheduleModel.find().count();
+		let scheduleCount = await this.scheduleModel.find().countDocuments();
 		const pages = scheduleCount > 0 ? Math.ceil(scheduleCount / 5) : 1;
 		let schedules = await this.scheduleModel
 			.find()
@@ -374,7 +376,7 @@ export class ScheduleService {
 					return { cell, index };
 				}
 			} else {
-				if (cell.v === stop) {
+				if (cell?.v === stop) {
 					return { cell, index };
 				}
 			}
@@ -382,6 +384,7 @@ export class ScheduleService {
 				throw new ConflictException('שינוי במבנה קובץ אקסל');
 			}
 		}
+		return { cell: undefined, index };
 	}
 
 	getEmptyWeeksArrayShifts(num_weeks: number): ExcelWeeksData {
@@ -742,6 +745,9 @@ export class ScheduleService {
 			role: 'SHIFT_MANAGER',
 		});
 		let settings = await this.settingsModel.findOne();
+		if (!settings) {
+			throw new NotFoundException('Settings not found');
+		}
 		let managers_names = managers.map((user) => user.nickname);
 		let extractedData;
 		try {
@@ -818,6 +824,9 @@ export class ScheduleService {
 				error.message
 			);
 		}
+		if (!schedule) {
+			throw new NotFoundException('Schedule not found');
+		}
 		schedule.weeks = weeks_tmp;
 		await schedule.save();
 		return {
@@ -835,20 +844,18 @@ export class ScheduleService {
 		total: { night: number; weekend: number; [key: string]: number };
 		weeksKeys: string[];
 	}> {
-		let schedule: Schedule = await this.scheduleModel.findById(id);
+		let schedule = await this.scheduleModel.findById(id);
 		if (!schedule) {
 			throw new NotFoundException('סידור לא נמצא');
 		}
-		let reinforcements;
-		await this.scheduleModel.find({
-			schedule: schedule._id
-		});
-		[reinforcements, schedule] = await Promise.all([
+		const [reinforcements_list, populatedSchedule] = await Promise.all([
 			this.reinforcementModel.find({
-				schedule: schedule._id
+				schedule: (schedule as any)._id
 			}),
 			this.populateSchedule(schedule)
-		])
+		]);
+		let reinforcements = reinforcements_list;
+		const scheduleData = populatedSchedule;
 		let counts: {
 			name: string;
 			night: number;
@@ -861,6 +868,7 @@ export class ScheduleService {
 		};
 		let names: string[] = [];
 		let resetObj: { [key: string]: number } = {};
+		const days = schedule.days!;
 		for (let i = 0; i < schedule.num_weeks; i++) {
 			resetObj[`morning${i}`] = 0;
 			resetObj[`noon${i}`] = 0;
@@ -1085,7 +1093,7 @@ export class ScheduleService {
 	}
 
 	async getSchedule(id: string): Promise<{schedule: Schedule, reinforcements: ReinforcementInterface[][][]}> {
-		let schedule_found: Schedule = await this.scheduleModel.findById(id);
+		let schedule_found = await this.scheduleModel.findById(id);
 		if (!schedule_found) {
 			throw new NotFoundException('סידור לא נמצא');
 		}
@@ -1354,7 +1362,7 @@ export class ScheduleService {
 		if (!scheduleFound) {
 			throw new NotFoundException('סידור לא נמצא');
 		}
-		let scheduleUpdate, reinforcementsUpdate;
+		let scheduleUpdate: any, reinforcementsUpdate: any;
 		let newReinforcements;
 		if (!reset) {
 			[scheduleUpdate, reinforcementsUpdate] = await Promise.all([
@@ -1376,7 +1384,7 @@ export class ScheduleService {
 			]);
 			newReinforcements = []
 		}
-		if (!scheduleUpdate || !reinforcementsUpdate.success) {
+		if (!scheduleUpdate || (reinforcementsUpdate && typeof reinforcementsUpdate === 'object' && 'success' in reinforcementsUpdate && !reinforcementsUpdate.success)) {
 			if (reset) {
 				newReinforcements = await this.getReinforcement(scheduleFound);
 			}
@@ -1389,7 +1397,7 @@ export class ScheduleService {
 		reinforcements: ReinforcementInterface[],
 		schedule: Schedule
 	): Promise<{ success: boolean }> {
-		let promises = [];
+		let promises: Promise<any>[] = [];
 		for (let i = 0; i < reinforcements.length; i++) {
 			if (reinforcements[i]._id) {
 				promises.push(this.updateReinforcement(reinforcements[i]));
@@ -1402,7 +1410,7 @@ export class ScheduleService {
 	}
 
 	async deleteReinforcements(reinforcements: ReinforcementInterface[]): Promise<{ success: boolean }> {
-		let promises = [];
+		let promises: Promise<any>[] = [];
 		for (let i = 0; i < reinforcements.length; i++) {
 			promises.push(this.reinforcementModel.findByIdAndDelete(reinforcements[i]._id));
 		}
@@ -1442,7 +1450,7 @@ export class ScheduleService {
 		if (!schedule) {
 			throw new NotFoundException('סידור לא נמצא');
 		}
-		await schedule.remove();
+		await schedule.deleteOne();
 		return { id: schedule._id.toString() };
 	}
 }

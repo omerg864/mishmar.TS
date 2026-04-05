@@ -10,7 +10,7 @@ import {
 	Query,
 } from '@nestjs/common';
 import { User } from '../user/user.model';
-import { EventInterface } from './event.model';
+import type { EventInterface } from './event.model';
 import { EventService } from './event.service';
 
 @Controller('api/events')
