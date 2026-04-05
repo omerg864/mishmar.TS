@@ -10,8 +10,7 @@
 		"node": ">=24.0.0"
 	},
 	"scripts": {
-		"prebuild": "rimraf dist",
-		"build": "nest build",
+		"build": "npx nest build",
 		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
 		"start": "nest start",
 		"start:dev": "nest start --watch",
