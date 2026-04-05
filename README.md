@@ -45,16 +45,11 @@ npm run install_dep
 
 ```
 MONGODB=<mongodb_uri>
-DB_PORT=<port_number>
-DB_TYPE=<database_type>
 SITE_ADDRESS=<site_address>
 NODE_ENV=<node_environment>
 PORT=<port_number>
 EMAIL_PASSWORD=<email_password>
 EMAIL_ADDRESS=<email_address>
-DB_PASSWORD=<db_password>
-DB_USERNAME=<db_username>
-DB_NAME=<db_name>
 JWT_SECRET=<your_jwt_secret>
 GOOGLE_CLIENT_ID=<your_google_client_id>
 GOOGLE_CLIENT_SECRET=<your_google_client_secret>
